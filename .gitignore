@@ -32,7 +32,7 @@ next-env.d.ts
 out
 
 # production
-/build
+build
 
 # vercel
 .vercel
