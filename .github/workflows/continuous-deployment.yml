@@ -36,7 +36,7 @@ jobs:
 
       - name: Get Storage Connection String
         run: |
-          CONNECTION_STRING=$(az keyvault secret show --vault-name "kv-bgh-prod-centralus" --name "azure-storage-connection-string" --query value --out tsv)
+          CONNECTION_STRING=$(az keyvault secret show --vault-name "kv-bgh-prod-centralus" --name "storage-account-connection-string" --query value --out tsv)
           echo "::add-mask::$CONNECTION_STRING"
           echo "AZURE_STORAGE_CONNECTION_STRING=$CONNECTION_STRING" >> $GITHUB_ENV
 
