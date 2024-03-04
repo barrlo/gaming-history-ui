@@ -3,7 +3,20 @@
     "next/core-web-vitals",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    "plugin:jest/recommended"
+    "plugin:jest/recommended",
+    "plugin:jest-dom/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/tests/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[jt]s?(x)"
+      ],
+      "extends": [
+        "plugin:testing-library/react"
+      ]
+    }
   ],
   "settings": {
     "import/resolver": {
@@ -11,11 +24,14 @@
       "node": true
     }
   },
-  "env": {
-    "browser": true,
-    "node": true
-  },
   "rules": {
+    "no-unused-expressions": [
+      2,
+      {
+        "allowShortCircuit": true
+      }
+    ],
+    "no-unused-vars": 2,
     "import/no-unused-modules": [
       2,
       {
@@ -35,6 +51,17 @@
       }
     ],
     "jest/expect-expect": 2,
-    "jest/require-top-level-describe": 2
+    "jest/require-top-level-describe": 2,
+    "react/jsx-boolean-value": [
+      2,
+      "never"
+    ],
+    "react/jsx-fragments": 2,
+    "react/jsx-no-literals": 2,
+    "react/jsx-no-useless-fragment": 2,
+    "react/jsx-pascal-case": 2,
+    "react/jsx-props-no-spreading": 2,
+    "react/no-multi-comp": 2,
+    "react/no-unused-prop-types": 2
   }
 }
