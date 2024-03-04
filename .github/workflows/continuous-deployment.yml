@@ -1,0 +1,53 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  continuous-deployment:
+    name: Build and Deploy to Azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v1
+
+      - name: Use Correct Node Version
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: check build output
+        run: ls
+
+      - name: Azure CLI Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get Storage Connection String
+        run: |
+          CONNECTION_STRING=$(az keyvault secret show --vault-name "kv-bgh-prod-centralus" --name "azure-storage-connection-string" --query value --out tsv)
+          echo "::add-mask::$CONNECTION_STRING"
+          echo "AZURE_STORAGE_CONNECTION_STRING=$CONNECTION_STRING" >> $GITHUB_ENV
+
+      - name: Clear Old Files
+        run: |
+          az storage blob delete-batch --source '$web' --account-name sabghprodcentralus --connection-string '${{ env.AZURE_STORAGE_CONNECTION_STRING }}'
+
+      - name: Deploy New Files
+        run: |
+          az storage blob upload-batch --destination '$web' --account-name sabghprodcentralus --source 'out' --connection-string '${{ env.AZURE_STORAGE_CONNECTION_STRING }}'
+
+      - name: Purge Cache
+        run: |
+          az afd endpoint purge --content-path '/*' --profile-name fd-bgh-prod-centralus --resource-group rg-bgh-prod-centralus
