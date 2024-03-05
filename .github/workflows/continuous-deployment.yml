@@ -50,4 +50,4 @@ jobs:
 
       - name: Purge Cache
         run: |
-          az afd endpoint purge --content-path '/*' --profile-name fd-bgh-prod-centralus --resource-group rg-bgh-prod-centralus
+          az afd endpoint purge --content-path '/*' --resource-group rg-bgh-prod-centralus --profile-name fd-bgh-prod-centralus --endpoint-name fd-bgh-prod-centralus
