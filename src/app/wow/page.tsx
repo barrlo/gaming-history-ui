@@ -1,10 +1,17 @@
 'use client';
 import useSWR from 'swr';
 import {Skeleton} from '@mui/material';
+import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {getWowCharacters} from '@/services/wow-service';
 
 export default function WoW() {
     const {data, error, isLoading} = useSWR('/wow/characters', getWowCharacters);
+    const characters = data || [];
+    const columns: GridColDef[] = [
+        {field: 'name', headerName: 'Name', flex: 2, minWidth: 300},
+        {field: 'mythicPlusScore', headerName: 'Current M+ Score', flex: 1, minWidth: 200},
+        {field: 'itemLevel', headerName: 'Current Item Level', flex: 1, minWidth: 200}
+    ];
 
     if (error) {
         return <p>{'Failed to load.'}</p>;
@@ -19,5 +26,10 @@ export default function WoW() {
         );
     }
 
-    return <h1>{'World of Warcraft History'}</h1>;
+    return (
+        <>
+            <h1>{'World of Warcraft History'}</h1>
+            <DataGrid columns={columns} rows={characters} />
+        </>
+    );
 }
