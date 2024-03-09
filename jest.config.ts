@@ -4,34 +4,38 @@
  */
 
 import type {Config} from 'jest';
-import nextJest from 'next/jest.js'
+import nextJest from 'next/jest.js';
 
 const createJestConfig = nextJest({
     // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
-    dir: './',
-})
+    dir: './'
+});
 
 const config: Config = {
     clearMocks: true,
     collectCoverage: false,
     // An array of glob patterns indicating a set of files for which coverage information should be collected
-    collectCoverageFrom: ["src/**/*.(js|jsx|ts|tsx)"],
-    coverageDirectory: "coverage",
+    collectCoverageFrom: ['src/**/*.(js|jsx|ts|tsx)'],
+    coverageDirectory: 'coverage',
     // An array of regexp pattern strings used to skip coverage collection
     // coveragePathIgnorePatterns: [
     //   "/node_modules/"
     // ],
     // Indicates which provider should be used to instrument code for coverage
     // coverageProvider: "babel",
-    coverageReporters: [
-        "lcov"
-    ],
-    // An object that configures minimum threshold enforcement for coverage results
-    // coverageThreshold: undefined,
+    coverageReporters: ['lcov'],
+    coverageThreshold: {
+        global: {
+            branches: 50,
+            functions: 50,
+            lines: 50,
+            statements: 50
+        }
+    },
     resetModules: true,
     restoreMocks: true,
-    setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-    testEnvironment: "jsdom",
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+    testEnvironment: 'jsdom',
     verbose: true
 };
 

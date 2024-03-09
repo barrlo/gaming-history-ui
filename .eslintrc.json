@@ -25,6 +25,8 @@
     }
   },
   "rules": {
+    "curly": 2,
+    "no-console": 2,
     "no-unused-expressions": [
       2,
       {
@@ -39,6 +41,7 @@
         "unusedExports": true,
         "ignoreExports": [
           "src/app/layout.tsx",
+          "src/**/page.tsx",
           "tests/**/*.*"
         ]
       }
