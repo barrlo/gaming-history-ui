@@ -9,6 +9,12 @@ export const getWowCharacters = async (): Promise<WoWCharacter[]> => {
             name: 'Barrlidan',
             mythicPlusScore: 3223.6477,
             itemLevel: 485
+        },
+        {
+            id: 2,
+            name: 'Barrlo',
+            mythicPlusScore: 2562.5,
+            itemLevel: 480
         }
     ]);
 };

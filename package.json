@@ -7,6 +7,7 @@
     "dev": "open http://localhost:3000 && next dev",
     "build": "next build",
     "start": "next start",
+    "preview": "open http://localhost:3000 && npx serve@latest out",
     "lint": "next lint",
     "test": "jest",
     "test:coverage": "jest --collectCoverage"
