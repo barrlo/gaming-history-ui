@@ -8,9 +8,9 @@ export default function WoW() {
     const {data, error, isLoading} = useSWR('/wow/characters', getWowCharacters);
     const characters = data || [];
     const columns: GridColDef[] = [
-        {field: 'name', headerName: 'Name', flex: 2, minWidth: 300},
-        {field: 'mythicPlusScore', headerName: 'Current M+ Score', flex: 1, minWidth: 200},
-        {field: 'itemLevel', headerName: 'Current Item Level', flex: 1, minWidth: 200}
+        {field: 'name', headerName: 'Name', flex: 2, minWidth: 200},
+        {field: 'mythicPlusScore', headerName: 'Current M+ Score', flex: 1, minWidth: 150},
+        {field: 'itemLevel', headerName: 'Current Item Level', flex: 1, minWidth: 150}
     ];
 
     if (error) {
