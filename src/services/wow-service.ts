@@ -3,7 +3,6 @@ import {WoWCharacter} from '@/types/wow-character';
 export const getWowCharacters = async (): Promise<WoWCharacter[]> => {
     // const res = await fetch('https://api.github.com/repos/vercel/next.js');
     // return await res.json();
-    console.log('call service');
     return Promise.resolve([
         {
             id: 194665345,
@@ -49,25 +48,25 @@ export const getWowCharacters = async (): Promise<WoWCharacter[]> => {
                 {
                     id: 11,
                     name: 'Dragonflight Season 3',
-                    date: new Date('03/14/2024'),
+                    date: new Date('03/14/2024').valueOf(),
                     score: 3223.6477
                 },
                 {
                     id: 11,
                     name: 'Dragonflight Season 3',
-                    date: new Date('03/14/2024'),
+                    date: new Date('03/12/2024').valueOf(),
                     score: 3220.5
                 },
                 {
                     id: 11,
                     name: 'Dragonflight Season 3',
-                    date: new Date('03/14/2024'),
+                    date: new Date('03/10/2024').valueOf(),
                     score: 3200
                 },
                 {
                     id: 11,
                     name: 'Dragonflight Season 3',
-                    date: new Date('03/14/2024'),
+                    date: new Date('03/05/2024').valueOf(),
                     score: 3116.67
                 }
             ],
@@ -117,7 +116,7 @@ export const getWowCharacters = async (): Promise<WoWCharacter[]> => {
                 {
                     id: 11,
                     name: 'Dragonflight Season 3',
-                    date: new Date('03/14/2024'),
+                    date: new Date('03/14/2024').valueOf(),
                     score: 2562.5
                 }
             ],

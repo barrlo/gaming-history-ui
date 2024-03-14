@@ -1,6 +1,6 @@
 export type CurrentSeasonScore = {
     id: number | string;
     name: string;
-    date: Date;
+    date: number;
     score: number;
 };
