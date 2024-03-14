@@ -51,7 +51,7 @@ export const Content = ({name}: {name: string}) => {
                 series={[{dataKey: 'score'}]}
                 xAxis={[{dataKey: 'date', valueFormatter: dateFormatter}]}
                 height={300}
-                disableAxisListener
+                axisHighlight={{x: 'none', y: 'none'}}
             />
             <DataGrid
                 columns={columns}
