@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import {Button, Skeleton} from '@mui/material';
 import {DataGrid, GridCellParams, GridColDef} from '@mui/x-data-grid';
 import {getWowCharacters} from '@/services/wow-service';
+import {CurrentSeasonScore} from '@/types/current-season-score';
 
 export default function WoW() {
     const {data, error, isLoading} = useSWR('/wow/characters', getWowCharacters);
@@ -12,9 +13,19 @@ export default function WoW() {
         return <Button href={`/wow/${params.value?.toLowerCase()}`}>{params.value}</Button>;
     };
 
+    const renderCurrentScore = (params: GridCellParams<any, CurrentSeasonScore[]>) => {
+        return <div>{params.value ? params.value[0].score : ''}</div>;
+    };
+
     const columns: GridColDef[] = [
         {field: 'name', headerName: 'Name', flex: 2, minWidth: 200, renderCell: renderName},
-        {field: 'mythicPlusScore', headerName: 'Current M+ Score', flex: 1, minWidth: 150},
+        {
+            field: 'mythicPlusScoresCurrentSeason',
+            headerName: 'Current M+ Score',
+            flex: 1,
+            minWidth: 150,
+            renderCell: renderCurrentScore
+        },
         {field: 'itemLevel', headerName: 'Current Item Level', flex: 1, minWidth: 150}
     ];
 
