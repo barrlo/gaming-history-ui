@@ -3,13 +3,12 @@ import useSWR from 'swr';
 import {Skeleton} from '@mui/material';
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {LineChart} from '@mui/x-charts';
-import {getWowCharacters} from '@/services/wow-service';
+import {getWowCharacterDetails} from '@/services/wow-service';
 import dayjs from 'dayjs';
 
-export const Content = ({name}: {name: string}) => {
-    const {data, error, isLoading} = useSWR('/wow/characters', getWowCharacters);
-    const characters = data || [];
-    const character = characters.find(char => char.name.toLowerCase() === name) || {
+export const Content = ({id}: {id: number}) => {
+    const {data, error, isLoading} = useSWR(`/wow/character/${id}`, getWowCharacterDetails);
+    const character = data || {
         name: '',
         mythicPlusScoresBySeason: [],
         mythicPlusScoresCurrentSeason: []

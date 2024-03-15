@@ -26,9 +26,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: check build output
-        run: ls
-
       - name: Azure CLI Login
         uses: azure/login@v1
         with:
