@@ -2,27 +2,13 @@ import {WoWCharacter} from '@/types/wow-character';
 import {WoWCharacterDetails} from '@/types/wow-character-details';
 
 export const getWowCharacters = async (): Promise<WoWCharacter[]> => {
-    // const res = await fetch('https://api.github.com/repos/vercel/next.js');
-    // return await res.json();
-    return Promise.resolve([
-        {
-            id: 194665345,
-            name: 'Barrlidan',
-            mythicPlusScore: 3223.6477,
-            itemLevel: 485
-        },
-        {
-            id: 2,
-            name: 'Barrlo',
-            mythicPlusScore: 2562.5,
-            itemLevel: 480
-        }
-    ]);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wow/characters`);
+    return await response.json();
 };
 
 export const getWowCharacterDetails = async (path: string): Promise<WoWCharacterDetails> => {
     // const res = await fetch('https://api.github.com/repos/vercel/next.js');
-    // return await res.json();
+    // return await response.json();
     return path.includes('194665345')
         ? Promise.resolve({
               id: 194665345,
