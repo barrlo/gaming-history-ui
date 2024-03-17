@@ -4,10 +4,10 @@ import {Skeleton} from '@mui/material';
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {LineChart} from '@mui/x-charts';
 import {getWowCharacterDetails} from '@/services/wow-service';
-import dayjs from 'dayjs';
+import {unix} from 'dayjs';
 
 export const Content = ({id}: {id: number}) => {
-    const {data, error, isLoading} = useSWR(`/wow/character/${id}`, getWowCharacterDetails);
+    const {data, error, isLoading} = useSWR(`${id}`, getWowCharacterDetails);
     const character = data || {
         name: '',
         mythicPlusScoresBySeason: [],
@@ -25,7 +25,7 @@ export const Content = ({id}: {id: number}) => {
     ];
 
     const dateFormatter = (date: number) => {
-        return dayjs(date).format('MM/DD/YYYY');
+        return unix(date).format('MM/DD/YYYY');
     };
 
     if (error) {

@@ -6,5 +6,4 @@ export type WoWCharacterDetails = {
     name: string;
     mythicPlusScoresBySeason: SeasonScore[];
     mythicPlusScoresCurrentSeason: CurrentSeasonScore[];
-    itemLevel: number;
 };
