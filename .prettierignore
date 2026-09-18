@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+playwright-report
+test-results
+contracts/v1/openapi.json
+contracts/v1/fixtures
+src/api/generated
+public/mockServiceWorker.js
