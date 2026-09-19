@@ -33,3 +33,5 @@ Coverage includes untested runtime source files under `src`. It excludes the `ma
 CI installs the locked dependencies and checks generation, formatting, lint, tests with the same coverage thresholds, build and the layout/landing browser checks. The real-API integration test is opt-in until cross-repository CI orchestration is designed. UI deployment will target existing API-provisioned infrastructure in a later checkpoint; no deployment workflow is included yet.
 
 Vitest settings live in `vitest.config.ts`, separately from Vite development/build settings. Vitest globals are enabled, so React Testing Library automatically cleans up rendered components after each test. Keep explicit teardown hooks only for other resources, such as resetting MSW handlers or closing its server.
+
+Routing uses React Router Data Mode: `src/routes.tsx` defines the shared route tree, `main.tsx` creates one browser router outside React rendering, and `App` renders child routes through an `Outlet`. Component tests use the same route tree with `createMemoryRouter`. TanStack Query continues to own API fetching/caching; loaders and actions are not needed for the current landing-page scope.
