@@ -8,6 +8,8 @@ Keep UI and API changes in their respective repositories. When a feature spans b
 
 ## Code style
 
+Leave a blank line between CSS rule blocks in `.css` and `.module.css` files, including sibling rules inside media queries.
+
 Use component-scoped CSS Modules for UI styles, passed through Mantine `className` or `classNames`. Prefer appropriate Mantine layout components (`Box`, `Flex`, `Group`, `Stack`, `SimpleGrid`) and preserve semantic HTML with their `component` prop. Keep global CSS limited to shared theme tokens and document/body defaults.
 
 Always leave a blank line after the group of imports at the top of a file. ESLint enforces this for maintained JavaScript and TypeScript files; generated files remain owned by their generators.

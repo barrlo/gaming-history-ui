@@ -2,14 +2,17 @@
   outline: 2px solid var(--site-accent);
   outline-offset: 5px;
 }
+
 .homeIntro {
   margin-bottom: 54px;
 }
+
 .eyebrow {
   color: var(--site-accent);
   font-size: 14px;
   margin-bottom: 22px;
 }
+
 .homeTitle {
   font-size: 44px;
   font-weight: 600;
@@ -17,22 +20,26 @@
   line-height: 1.25;
   margin-bottom: 20px;
 }
+
 .homeDescription {
   color: var(--site-description);
   font-size: 18px;
   line-height: 1.75;
 }
+
 .sectionTitle {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 24px;
 }
+
 .gameCard {
   background: var(--site-surface);
   border-radius: 12px;
   min-height: 292px;
   padding: 28px 24px 30px;
 }
+
 .gameStatus {
   color: var(--site-muted);
   font-size: 11px;
@@ -40,23 +47,28 @@
   letter-spacing: 0.3px;
   text-transform: uppercase;
 }
+
 .gameStatus.available {
   color: var(--site-available);
 }
+
 .gameTitle {
   font-size: 24px;
   font-weight: 600;
   margin: 24px 0 12px;
 }
+
 .gameDescription {
   color: var(--site-description);
   font-size: 15px;
   line-height: 1.7;
   margin-bottom: 28px;
 }
+
 .trackingNote {
   display: block;
 }
+
 .gameAction {
   background: var(--site-action);
   color: var(--site-description);
@@ -66,22 +78,27 @@
   margin-top: auto;
   border-radius: 8px;
 }
+
 .gameAction.primaryAction {
   background: var(--site-primary-action);
   color: var(--site-primary-text);
 }
+
 .gameAction:hover {
   background: var(--site-primary-action);
   color: var(--site-primary-text);
 }
+
 .homeFooter {
   margin-top: 48px;
 }
+
 .footerTitle {
   font-size: 17px;
   font-weight: 500;
   margin-bottom: 14px;
 }
+
 .footerDescription {
   color: var(--site-muted);
   font-size: 15px;
@@ -91,45 +108,57 @@
   .homeIntro {
     margin-bottom: 42px;
   }
+
   .eyebrow {
     font-size: 13px;
     margin-bottom: 24px;
   }
+
   .homeTitle {
     font-size: 30px;
     letter-spacing: -0.5px;
     max-width: 330px;
   }
+
   .homeDescription {
     font-size: 14px;
   }
+
   .sectionTitle {
     font-size: 20px;
   }
+
   .gameCard {
     min-height: 202px;
     padding: 20px;
   }
+
   .gameStatus {
     font-size: 10px;
   }
+
   .gameTitle {
     font-size: 22px;
     margin-top: 18px;
   }
+
   .gameDescription {
     font-size: 13px;
     margin-bottom: 24px;
   }
+
   .trackingNote {
     display: none;
   }
+
   .gameAction {
     font-size: 14px;
   }
+
   .footerTitle {
     font-size: 16px;
   }
+
   .footerDescription {
     font-size: 13px;
   }
