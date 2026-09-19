@@ -32,7 +32,8 @@ describe('App', () => {
     renderApp();
 
     expect(screen.getByRole('heading', { name: 'Every character. Every season.' })).toBeInTheDocument();
-    expect(screen.getByText('Gaming History').closest('a')).toBeNull();
+    expect(screen.getByText('Gaming History')).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Gaming History' })).not.toBeInTheDocument();
     expect(document.documentElement).toHaveAttribute('data-mantine-color-scheme', 'dark');
   });
 

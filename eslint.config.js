@@ -4,6 +4,8 @@ import hooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import vitest from '@vitest/eslint-plugin';
 import playwright from 'eslint-plugin-playwright';
+import testingLibrary from 'eslint-plugin-testing-library';
+import jestDom from 'eslint-plugin-jest-dom';
 
 export default tseslint.config(
   {
@@ -76,6 +78,33 @@ export default tseslint.config(
       'vitest/padding-around-describe-blocks': 'error',
       'vitest/padding-around-test-blocks': 'error',
       'vitest/padding-around-expect-groups': 'error',
+    },
+  },
+  {
+    files: ['src/**/*.{test,spec}.{tsx,jsx}'],
+    plugins: { 'testing-library': testingLibrary, 'jest-dom': jestDom },
+    rules: {
+      ...testingLibrary.configs['flat/react'].rules,
+      ...jestDom.configs['flat/recommended'].rules,
+      'testing-library/prefer-user-event': 'error',
+      'testing-library/prefer-explicit-assert': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@testing-library/react',
+              importNames: ['fireEvent'],
+              message: 'Use userEvent.setup() and await user interactions instead of fireEvent.',
+            },
+            {
+              name: '@testing-library/dom',
+              importNames: ['fireEvent'],
+              message: 'Use userEvent.setup() and await user interactions instead of fireEvent.',
+            },
+          ],
+        },
+      ],
     },
   },
   {

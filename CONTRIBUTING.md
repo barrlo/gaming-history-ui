@@ -52,3 +52,17 @@ Vitest uses `globals: true` in its own `vitest.config.ts`. Use the global test A
 Alphabetize configuration object properties (except in the ESLint configuration and `package.json`), React JSX props, and object properties by name, case-insensitively. Keep spreads and computed or order-sensitive properties in their semantic positions; sort within safe sections only. Preserve array order. Do not manually sort generated artifacts or pinned contract fixtures.
 
 Leave a blank line before a `return` statement when another statement precedes it in the same block. A return that is the first statement in a block does not need padding against the opening brace. UI ESLint enforces this convention; API Rider/ReSharper formatting supports it through the control-transfer spacing setting (which also applies to other control-transfer statements). The API CLI formatter does not enforce this specific rule.
+
+## React Testing Library conventions
+
+Follow the behavior-focused guidance in [Common mistakes with React Testing Library](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library), using current Testing Library APIs.
+
+- Always use `userEvent.setup()` and await user interactions. Do not use `fireEvent`; discuss unsupported interactions before introducing an exception. Playwright tests use Playwright's browser interactions.
+- Prefer `screen` queries by role and accessible name, with `within` for scoped queries. Use labels or visible text where appropriate; avoid DOM traversal, CSS selectors, and test IDs when accessible queries work.
+- Use `getBy*` for elements already present, `findBy*` for asynchronous appearance, and `queryBy*` when asserting absence.
+- Use explicit assertions with descriptive jest-dom matchers, such as `toBeInTheDocument` and `toBeDisabled`.
+- Rely on automatic cleanup and avoid unnecessary `act` wrappers. Investigate asynchronous warnings instead of hiding them.
+- Keep actions outside `waitFor`. Its callback should contain one specific assertion, never an empty callback or a snapshot. Prefer `findBy*` when waiting for an element to appear.
+- Use semantic HTML and appropriate accessible names. Do not add redundant or incorrect ARIA attributes just to make a test pass.
+
+Component tests (`src/**/*.{test,spec}.{tsx,jsx}`) use the recommended React Testing Library and jest-dom ESLint rules, plus explicit user-event and assertion rules. Direct `fireEvent` imports are prohibited. Query choice, semantic HTML, use of `userEvent.setup()`, and unsupported interactions also require review; lint does not enforce every convention. In particular, the installed side-effect rule does not catch every call through a `userEvent.setup()` instance, so review `waitFor` callbacks for these interactions too. These rules do not apply to Playwright or non-component unit tests.
