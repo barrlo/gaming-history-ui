@@ -45,4 +45,4 @@ Keep test hooks inside the top-level `describe` block in each unit test file, be
 
 Vitest uses `globals: true` in its own `vitest.config.ts`. Use the global test APIs in unit tests. React Testing Library automatically cleans up rendered components; do not add redundant cleanup hooks. Resource-specific teardown hooks still belong inside the relevant describe block.
 
-Alphabetize configuration object properties (except in the ESLint configuration), React JSX props, and object properties by name, case-insensitively. Keep spreads and computed or order-sensitive properties in their semantic positions; sort within safe sections only. Preserve array order. Do not manually sort generated artifacts or pinned contract fixtures.
+Alphabetize configuration object properties (except in the ESLint configuration and `package.json`), React JSX props, and object properties by name, case-insensitively. Keep spreads and computed or order-sensitive properties in their semantic positions; sort within safe sections only. Preserve array order. Do not manually sort generated artifacts or pinned contract fixtures.
