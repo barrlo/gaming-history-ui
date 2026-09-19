@@ -41,6 +41,7 @@ export default tseslint.config(
         'error',
         { blankLine: 'always', prev: 'import', next: '*' },
         { blankLine: 'always', prev: 'block-like', next: '*' },
+        { blankLine: 'always', prev: '*', next: 'return' },
         { blankLine: 'never', prev: 'import', next: 'import' },
       ],
     },

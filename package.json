@@ -1,4 +1,27 @@
 {
+  "name": "gaming-history-ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build": "npm run typecheck && vite build",
+    "check:generated": "node scripts/check-generated.mjs",
+    "start": "vite",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "generate:types": "openapi-typescript contracts/v1/openapi.json -o src/api/generated/schema.d.ts",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:integration": "INTEGRATION_API=1 playwright test e2e/api-integration.spec.ts",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@mantine/charts": "9.6.1",
     "@mantine/core": "9.6.1",
@@ -37,32 +60,9 @@
     "vite": "8.3.0",
     "vitest": "5.0.1"
   },
-  "engines": {
-    "node": ">=24 <25"
-  },
   "msw": {
     "workerDirectory": [
       "public"
     ]
-  },
-  "name": "gaming-history-ui",
-  "private": true,
-  "scripts": {
-    "build": "npm run typecheck && vite build",
-    "check:generated": "node scripts/check-generated.mjs",
-    "dev": "vite",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "generate:types": "openapi-typescript contracts/v1/openapi.json -o src/api/generated/schema.d.ts",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test",
-    "test:integration": "INTEGRATION_API=1 playwright test e2e/api-integration.spec.ts",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
-  },
-  "type": "module",
-  "version": "0.1.0"
+  }
 }

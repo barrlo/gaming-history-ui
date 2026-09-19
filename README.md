@@ -4,7 +4,7 @@ Scaffold checkpoint for the React/TypeScript application. This is a minimal navi
 
 ## Local development
 
-Use Node 24 (`nvm use`, installing Node 24 yourself if necessary), then `npm ci` and `npm run dev`. Vite serves http://localhost:5173 and proxies `/api` and `/health` to the API at http://localhost:5080. Start the API independently using its README.
+Use Node 24 (`nvm use`, installing Node 24 yourself if necessary), then `npm ci` and `npm run start`. Vite serves http://localhost:5173 and proxies `/api` and `/health` to the API at http://localhost:5080. Start the API independently using its README.
 
 For independent mock development, copy `.env.example` to `.env.local` and set `VITE_ENABLE_MOCKS=true`. Browser MSW is opt-in and development-only. The scaffold handlers currently support the populated roster and Aeloria detail; expand scenario coverage with the vertical slice. Mock responses use the fixed fictional September 15, 2026 fixture clock and must not be represented as today's data.
 
