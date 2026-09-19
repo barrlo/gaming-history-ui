@@ -39,6 +39,7 @@ export const App = () => {
       {label}
     </Button>
   ));
+
   return (
     <AppShell header={{ height: 72 }} padding="md">
       <AppShell.Header>
