@@ -4,10 +4,12 @@ test('navigation and theme remain usable on desktop and mobile', async ({ page }
   await page.goto('/');
 
   await expect(page.getByRole('heading', { name: 'Every character. Every season.' })).toBeVisible();
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(16, 21, 30)');
 
   await page.getByRole('button', { name: 'Switch to light theme' }).click();
 
   await expect(page.locator('html')).toHaveAttribute('data-mantine-color-scheme', 'light');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(245, 247, 251)');
 
   await page.setViewportSize({ height: 844, width: 390 });
   await page.getByRole('button', { name: 'Open navigation' }).click();

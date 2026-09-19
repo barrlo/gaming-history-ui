@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { MantineProvider } from '@mantine/core';
 import { createQueryClient } from './api/query-client';
 import { routes } from './routes';
+import { cssVariablesResolver, theme } from './theme';
 import { useNavigation } from './state/navigation';
 import './test/setup';
 
@@ -13,7 +14,7 @@ const renderApp = (path = '/') => {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
 
   return render(
-    <MantineProvider defaultColorScheme="dark" env="test">
+    <MantineProvider cssVariablesResolver={cssVariablesResolver} defaultColorScheme="dark" env="test" theme={theme}>
       <QueryClientProvider client={createQueryClient()}>
         <RouterProvider router={router} />
       </QueryClientProvider>

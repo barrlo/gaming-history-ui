@@ -1,31 +1,5 @@
-:root[data-mantine-color-scheme='dark'] {
-  --site-background: #10151e;
-  --site-surface: #18212d;
-  --site-text: #edf2fa;
-  --site-muted: #a8b6c9;
-  --site-description: #bbc5d3;
-  --site-accent: #88baff;
-  --site-available: #82d9bb;
-  --site-action: #1e2938;
-  --site-primary-action: #243247;
-  --site-primary-text: #bcd8ff;
-}
-
-:root[data-mantine-color-scheme='light'] {
-  --site-background: #f5f7fb;
-  --site-surface: #ffffff;
-  --site-text: #172437;
-  --site-muted: #566479;
-  --site-description: #4c5b70;
-  --site-accent: #245ca6;
-  --site-available: #237458;
-  --site-action: #edf1f7;
-  --site-primary-action: #e7effb;
-  --site-primary-text: #245ca6;
-}
-
 body {
-  background: var(--site-background);
-  color: var(--site-text);
-  font-family: Inter, Arial, sans-serif;
+  background: var(--mantine-color-body);
+  color: var(--mantine-color-text);
+  font-family: var(--mantine-font-family);
 }

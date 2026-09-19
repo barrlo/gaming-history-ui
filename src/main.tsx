@@ -7,6 +7,7 @@ import '@mantine/core/styles.css';
 import '@mantine/charts/styles.css';
 import { createQueryClient } from './api/query-client';
 import { routes } from './routes';
+import { cssVariablesResolver, theme } from './theme';
 
 const router = createBrowserRouter(routes);
 
@@ -18,7 +19,7 @@ const start = async () => {
 
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-      <MantineProvider defaultColorScheme="dark">
+      <MantineProvider cssVariablesResolver={cssVariablesResolver} defaultColorScheme="dark" theme={theme}>
         <QueryClientProvider client={createQueryClient()}>
           <RouterProvider router={router} />
         </QueryClientProvider>
