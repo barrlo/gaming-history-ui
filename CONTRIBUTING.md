@@ -8,6 +8,10 @@ Keep UI and API changes in their respective repositories. When a feature spans b
 
 ## Code style
 
+Leave a blank line between CSS rule blocks in `.css` and `.module.css` files, including sibling rules inside media queries.
+
+Use component-scoped CSS Modules for UI styles, passed through Mantine `className` or `classNames`. Prefer appropriate Mantine layout components (`Box`, `Flex`, `Group`, `Stack`, `SimpleGrid`) and preserve semantic HTML with their `component` prop. Define shared colors and typography in `src/theme.ts` using Mantine `createTheme` and `cssVariablesResolver`; consume the generated variables in CSS Modules. Keep global CSS limited to document/body defaults.
+
 Always leave a blank line after the group of imports at the top of a file. ESLint enforces this for maintained JavaScript and TypeScript files; generated files remain owned by their generators.
 
 Use curly braces for all control-flow bodies, including single-line `if`, `else`, and loops. Leave a blank line after a completed block (such as `if`, `switch`, or a function definition) when another statement follows. Keep related `else`, `catch`, and `finally` clauses attached to their block. Prefer arrow functions over the `function` keyword in JavaScript and TypeScript, except when function-specific behavior (such as a dynamic `this` or a generator) is required.
