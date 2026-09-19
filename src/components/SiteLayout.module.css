@@ -1,0 +1,94 @@
+.siteLayout {
+  min-height: 100dvh;
+}
+.siteHeader {
+  align-items: center;
+  gap: 32px;
+  margin: auto;
+  max-width: 1440px;
+  min-height: 92px;
+  padding: 24px 48px;
+}
+.siteBrand {
+  color: var(--site-text);
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.desktopNavigation {
+  margin-left: 32px;
+}
+.navigationLink {
+  color: var(--site-muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.navigationLink:hover,
+.navigationLink[aria-current='page'] {
+  color: var(--site-accent);
+}
+.navigationLink:focus-visible {
+  outline: 2px solid var(--site-accent);
+  outline-offset: 5px;
+}
+.themeToggle {
+  background: var(--site-surface);
+  color: var(--site-text);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.navigationDrawer {
+  background: var(--site-surface);
+  color: var(--site-text);
+}
+.drawerLink {
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.drawerLink[aria-current='page'] {
+  background: var(--site-primary-action);
+}
+.siteContent {
+  margin: auto;
+  max-width: 1440px;
+  padding: 45px 48px 48px;
+}
+.skipLink {
+  background: var(--site-surface);
+  color: var(--site-text);
+  left: 16px;
+  padding: 12px;
+  position: fixed;
+  top: -100px;
+  z-index: 300;
+}
+.skipLink:focus {
+  top: 8px;
+}
+
+@media (max-width: 61.99375em) {
+  .siteHeader {
+    gap: 12px;
+    min-height: 76px;
+    padding: 16px 20px 16px 16px;
+  }
+  .siteBrand {
+    font-size: 16px;
+  }
+  .siteContent {
+    padding: 30px 20px 40px;
+  }
+}
+
+@media (min-width: 62em) and (max-width: 75em) {
+  .siteHeader {
+    gap: 24px;
+  }
+  .desktopNavigation {
+    margin-left: 0;
+  }
+}

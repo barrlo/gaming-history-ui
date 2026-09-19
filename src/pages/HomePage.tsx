@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Button, Text, Title } from '@mantine/core';
+import { Box, Button, Flex, SimpleGrid, Text, Title } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
+import styles from './HomePage.module.css';
 
 const games = [
   {
@@ -29,36 +30,40 @@ const games = [
 export const HomePage = () => {
   return (
     <>
-      <section aria-labelledby="home-title" className="home-intro">
-        <Text className="eyebrow">{'A personal gaming journal'}</Text>
-        <Title className="home-title" id="home-title" order={1}>
+      <Box aria-labelledby="home-title" className={styles.homeIntro} component="section">
+        <Text className={styles.eyebrow}>{'A personal gaming journal'}</Text>
+        <Title className={styles.homeTitle} id="home-title" order={1}>
           {'Every character. Every season.'}
         </Title>
-        <Text className="home-description">
+        <Text className={styles.homeDescription}>
           {'A place to follow my progress across the games I play.'}
           <br />
           {'Start with World of Warcraft and explore the journey week by week.'}
         </Text>
-      </section>
-      <section aria-labelledby="games-title">
-        <Title className="section-title" id="games-title" order={2}>
+      </Box>
+      <Box aria-labelledby="games-title" component="section">
+        <Title className={styles.sectionTitle} id="games-title" order={2}>
           {'Explore the games'}
         </Title>
-        <div className="game-grid">
+        <SimpleGrid cols={{ base: 1, md: 3 }} spacing={{ base: 20, md: 24 }}>
           {games.map(({ action, available, description, path, title }) => (
-            <article aria-label={title} className="game-card" key={path}>
-              <Text className={`game-status ${available ? 'available' : ''}`}>
+            <Flex aria-label={title} className={styles.gameCard} component="article" direction="column" key={path}>
+              <Text className={`${styles.gameStatus} ${available ? styles.available : ''}`}>
                 {available ? 'Available' : 'Under construction'}
               </Text>
-              <Title className="game-title" order={3}>
+              <Title className={styles.gameTitle} order={3}>
                 {title}
               </Title>
-              <Text className="game-description">
+              <Text className={styles.gameDescription}>
                 {description}
-                {!available && <span className="tracking-note">{'Tracking details are still taking shape.'}</span>}
+                {!available && (
+                  <Box className={styles.trackingNote} component="span">
+                    {'Tracking details are still taking shape.'}
+                  </Box>
+                )}
               </Text>
               <Button
-                className={`game-action ${available ? 'primary-action' : ''}`}
+                className={`${styles.gameAction} ${available ? styles.primaryAction : ''}`}
                 component={Link}
                 fullWidth
                 justify="space-between"
@@ -68,16 +73,16 @@ export const HomePage = () => {
               >
                 {action}
               </Button>
-            </article>
+            </Flex>
           ))}
-        </div>
-      </section>
-      <footer className="home-footer">
-        <Text className="footer-title">{'Made for the journey'}</Text>
-        <Text className="footer-description">
+        </SimpleGrid>
+      </Box>
+      <Box className={styles.homeFooter} component="footer">
+        <Text className={styles.footerTitle}>{'Made for the journey'}</Text>
+        <Text className={styles.footerDescription}>
           {'A personal archive to share with friends, one snapshot at a time.'}
         </Text>
-      </footer>
+      </Box>
     </>
   );
 };

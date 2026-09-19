@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
-import { ActionIcon, Burger, Drawer, Group, Stack, Text, useMantineColorScheme } from '@mantine/core';
+import { ActionIcon, Box, Burger, Drawer, Flex, Group, Stack, Text, useMantineColorScheme } from '@mantine/core';
 import { IconMoon, IconSun } from '@tabler/icons-react';
 import { useNavigation } from '../state/navigation';
+import styles from './SiteLayout.module.css';
 
 const links = [
   { label: 'Home', path: '/', shortLabel: 'Home' },
@@ -16,11 +17,11 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
   const { close, opened, toggle } = useNavigation();
 
   return (
-    <div className="site-layout">
-      <a className="skip-link" href="#main-content">
+    <Box className={styles.siteLayout}>
+      <Box className={styles.skipLink} component="a" href="#main-content">
         {'Skip to content'}
-      </a>
-      <header className="site-header">
+      </Box>
+      <Flex className={styles.siteHeader} component="header">
         <Group gap={16} wrap="nowrap">
           <Burger
             aria-controls="mobile-navigation"
@@ -32,25 +33,25 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
             size="sm"
             style={{ height: 44, width: 44 }}
           />
-          <Text className="site-brand">{'Gaming History'}</Text>
+          <Text className={styles.siteBrand}>{'Gaming History'}</Text>
         </Group>
         <Group
           aria-label="Main navigation"
-          className="desktop-navigation"
+          className={styles.desktopNavigation}
           component="nav"
           gap={48}
           visibleFrom="md"
           wrap="nowrap"
         >
           {links.map(({ label, path, shortLabel }) => (
-            <NavLink aria-label={label} className="navigation-link" end={path === '/'} key={path} to={path}>
+            <NavLink aria-label={label} className={styles.navigationLink} end={path === '/'} key={path} to={path}>
               {shortLabel}
             </NavLink>
           ))}
         </Group>
         <ActionIcon
           aria-label={`Switch to ${colorScheme === 'dark' ? 'light' : 'dark'} theme`}
-          className="theme-toggle"
+          className={styles.themeToggle}
           onClick={toggleColorScheme}
           radius="md"
           size={44}
@@ -62,9 +63,13 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
             <IconMoon aria-hidden="true" size={24} stroke={1.7} />
           )}
         </ActionIcon>
-      </header>
+      </Flex>
       <Drawer
-        classNames={{ body: 'navigation-drawer', content: 'navigation-drawer', header: 'navigation-drawer' }}
+        classNames={{
+          body: styles.navigationDrawer,
+          content: styles.navigationDrawer,
+          header: styles.navigationDrawer,
+        }}
         closeButtonProps={{ 'aria-label': 'Close navigation' }}
         id="mobile-navigation"
         onClose={close}
@@ -75,15 +80,21 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
       >
         <Stack aria-label="Mobile navigation" component="nav" gap="sm">
           {links.map(({ label, path }) => (
-            <NavLink className="navigation-link drawer-link" end={path === '/'} key={path} onClick={close} to={path}>
+            <NavLink
+              className={`${styles.navigationLink} ${styles.drawerLink}`}
+              end={path === '/'}
+              key={path}
+              onClick={close}
+              to={path}
+            >
               {label}
             </NavLink>
           ))}
         </Stack>
       </Drawer>
-      <main className="site-content" id="main-content" tabIndex={-1}>
+      <Box className={styles.siteContent} component="main" id="main-content" tabIndex={-1}>
         {children}
-      </main>
-    </div>
+      </Box>
+    </Box>
   );
 };
