@@ -102,6 +102,210 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/poe/characters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Stored roster; never fetch upstream. */
+        get: operations["listPoeCharacters"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe/characters/{characterId}/build": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Most recent eligible stored build for this character, including archived retained data; permanent-league migration never replaces it. Includes mutable refresh state. Missing first build returns 503 build_unavailable; roster may still show discovered identity. */
+        get: operations["getPoeLatestBuild"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe/characters/{characterId}/snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Saved history summaries across this character’s tracked leagues. Each summary retains league metadata. */
+        get: operations["listPoeSnapshots"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe/characters/{characterId}/snapshots/{snapshotId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Immutable saved build; no mutable cooldown metadata. */
+        get: operations["getPoeSnapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe/characters/{characterId}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Admit asynchronous refresh for this character’s current eligible participation, resolved by the server. Recheck eligibility before commit; never import a permanent-league build into retained history. Atomically reserve five-minute cooldown. No historical write. Current manual operation returns 409 refresh_in_progress with operationId; scheduled lease also returns 409 without a public operationId. Cooldown returns 429 with nextAllowedAt and Retry-After. Ineligible participation returns 409 refresh_not_allowed. Rejected requests do not extend cooldown. Worker performs one bounded attempt; terminal failure remains failed until a newly admitted manual request. Scheduled retry policy remains separate. */
+        post: operations["refreshPoeCharacter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe/refresh-operations/{operationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Poll only while pending/running, using Retry-After; stop on completion. Operation lookup is game scoped. */
+        get: operations["getPoeRefreshOperation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe2/characters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Stored roster; never fetch upstream. */
+        get: operations["listPoe2Characters"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe2/characters/{characterId}/build": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Most recent eligible stored build for this character, including archived retained data; permanent-league migration never replaces it. Includes mutable refresh state. Missing first build returns 503 build_unavailable; roster may still show discovered identity. */
+        get: operations["getPoe2LatestBuild"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe2/characters/{characterId}/snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Saved history summaries across this character’s tracked leagues. Each summary retains league metadata. */
+        get: operations["listPoe2Snapshots"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe2/characters/{characterId}/snapshots/{snapshotId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Immutable saved build; no mutable cooldown metadata. */
+        get: operations["getPoe2Snapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe2/characters/{characterId}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Admit asynchronous refresh for this character’s current eligible participation, resolved by the server. Recheck eligibility before commit; never import a permanent-league build into retained history. Atomically reserve five-minute cooldown. No historical write. Current manual operation returns 409 refresh_in_progress with operationId; scheduled lease also returns 409 without a public operationId. Cooldown returns 429 with nextAllowedAt and Retry-After. Ineligible participation returns 409 refresh_not_allowed. Rejected requests do not extend cooldown. Worker performs one bounded attempt; terminal failure remains failed until a newly admitted manual request. Scheduled retry policy remains separate. */
+        post: operations["refreshPoe2Character"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/poe2/refresh-operations/{operationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Poll only while pending/running, using Retry-After; stop on completion. Operation lookup is game scoped. */
+        get: operations["getPoe2RefreshOperation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -211,6 +415,269 @@ export interface components {
             weeklyChange: number | null;
             baselineScore: number | null;
             baselineWeekIndex: number | null;
+        };
+        /** @description Actual temporary public league variant. Dates may be unknown; no WoW fallback. IDs are opaque, scoped by game. */
+        PoeLeague: {
+            id: string;
+            name: string;
+            /** Format: date-time */
+            startAt: string | null;
+            /** Format: date-time */
+            endAt: string | null;
+            rules: {
+                id: string;
+                name: string;
+            }[];
+        };
+        /** @description Known requires a name; none/unavailable require null. None hides the section; unavailable must not claim the character has no ascendancy. */
+        PoeAscendancy: {
+            /** @enum {string} */
+            status: "known" | "none" | "unavailable";
+            name: string | null;
+        };
+        /** @description Class is the resolved base class; ascendancy separate. All values are from the selected observation. IDs are stable and not names. */
+        PoeIdentity: {
+            id: string;
+            name: string;
+            class: string;
+            ascendancy: components["schemas"]["PoeAscendancy"];
+            level: number;
+        };
+        /** @description Operational state, never embedded in immutable snapshot content. Missing requires successful complete discovery; absence is not proof of deletion. */
+        PoeTracking: {
+            /** @enum {string} */
+            status: "active" | "archived";
+            /** @enum {string|null} */
+            reason: null | "leagueEnded" | "permanentMigration" | "missing" | "ineligible";
+            /** Format: date-time */
+            firstSeenAt: string;
+        };
+        /** @description ObservedAt dates the displayed identity. Discovery can supply roster identity before the first successful build. */
+        PoeRosterEntry: {
+            character: components["schemas"]["PoeIdentity"];
+            league: components["schemas"]["PoeLeague"];
+            tracking: components["schemas"]["PoeTracking"];
+            /** Format: date-time */
+            observedAt: string;
+            buildAvailable: boolean;
+        };
+        /** @description Stored data only, including archived participation. Groups by league family, start descending (unknown last), then ID. Characters level descending, case-insensitive name then character ID then league ID. Empty groups omitted. */
+        PoeRoster: {
+            /** @enum {string} */
+            game: "poe" | "poe2";
+            groups: {
+                id: string;
+                name: string;
+                /** Format: date-time */
+                startAt: string | null;
+                characters: components["schemas"]["PoeRosterEntry"][];
+            }[];
+        };
+        /** @description GGG-compatible display property. Do not assume every property is a numeric stat. */
+        PoeItemProperty: {
+            name: string;
+            values: [
+                string,
+                number
+            ][];
+            displayMode?: number;
+            type?: number;
+            suffix?: string;
+        };
+        PoeItemMod: {
+            description: string;
+            flags?: {
+                [key: string]: boolean;
+            };
+        };
+        /** @description GGG-shaped allowlisted equipment subset, not a complete reproduction of Item. Optional fields omitted when unavailable. No inventory or user notes. Unknown future properties ignored by clients. */
+        PoeItem: {
+            id?: string;
+            name: string;
+            typeLine: string;
+            baseType: string;
+            icon?: string;
+            rarity?: string;
+            ilvl: number;
+            identified: boolean;
+            inventoryId?: string;
+            frameTypeId: string;
+            corrupted?: boolean;
+            properties?: components["schemas"]["PoeItemProperty"][];
+            requirements?: components["schemas"]["PoeItemProperty"][];
+            implicitMods?: components["schemas"]["PoeItemMod"][];
+            explicitMods?: components["schemas"]["PoeItemMod"][];
+            enchantMods?: string[];
+            runeMods?: string[];
+            flavourText?: string[];
+            socketedItems?: components["schemas"]["PoeItem"][];
+            sockets?: {
+                group: number;
+                attr?: string;
+                sColour?: string;
+                type?: string;
+                item?: string;
+            }[];
+        };
+        /** @description Skill gem in either game, or PoE support gem. Quality is a percentage number, e.g. 20. Null means applicable but unavailable; zero is valid. No arbitrary maximum of 20. */
+        PoeGem: {
+            name: string;
+            level: number | null;
+            quality: number | null;
+        };
+        /** @description PoE2 support has no level or quality properties. */
+        Poe2Support: {
+            name: string;
+        };
+        /** @description One linked socket group; multiple active skills are allowed. Linkage does not assert calculated support compatibility. */
+        PoeSkillGroup: {
+            id: string;
+            skills: components["schemas"]["PoeGem"][];
+            supports: components["schemas"]["PoeGem"][];
+        };
+        /** @description Skill/support relationship resolved by the PoE2 adapter, not PoE socket rules. */
+        Poe2SkillGroup: {
+            id: string;
+            skills: components["schemas"]["PoeGem"][];
+            supports: components["schemas"]["Poe2Support"][];
+        };
+        /** @description Retain unresolved IDs. Set IDs preserve alternate allocations; selected effect supports mastery choices. Empty stats do not imply no effect when definition is unavailable. */
+        PoePassive: {
+            id: string;
+            name: string | null;
+            stats: string[];
+            /** @enum {string} */
+            definitionStatus: "resolved" | "unavailable";
+            setIds: string[];
+            selectedEffectId: string | null;
+        };
+        /** @description Available plus an empty list means confirmed empty. Unavailable/notApplicable require empty entries. Partial retains known entries from this observation only; never silently substitute older data. */
+        PoeEquipmentSection: {
+            /** @enum {string} */
+            availability: "available" | "partial" | "unavailable";
+            entries: components["schemas"]["PoeItem"][];
+        };
+        /** @description Available plus an empty list means confirmed empty. Unavailable/notApplicable require empty entries. Partial retains known entries from this observation only; never silently substitute older data. */
+        PoeSkillsSection: {
+            /** @enum {string} */
+            availability: "available" | "partial" | "unavailable";
+            entries: components["schemas"]["PoeSkillGroup"][];
+        };
+        /** @description Available plus an empty list means confirmed empty. Unavailable/notApplicable require empty entries. Partial retains known entries from this observation only; never silently substitute older data. */
+        Poe2SkillsSection: {
+            /** @enum {string} */
+            availability: "available" | "partial" | "unavailable";
+            entries: components["schemas"]["Poe2SkillGroup"][];
+        };
+        /** @description Available plus an empty list means confirmed empty. Unavailable/notApplicable require empty entries. Partial retains known entries from this observation only; never silently substitute older data. */
+        PoePassivesSection: {
+            /** @enum {string} */
+            availability: "available" | "partial" | "unavailable";
+            entries: components["schemas"]["PoePassive"][];
+        };
+        /** @description Available plus an empty list means confirmed empty. Unavailable/notApplicable require empty entries. Partial retains known entries from this observation only; never silently substitute older data. */
+        PoeAscendancySection: {
+            /** @enum {string} */
+            availability: "available" | "partial" | "unavailable" | "notApplicable";
+            entries: components["schemas"]["PoePassive"][];
+        };
+        /** @description One observation, with identity/league/gem/tree data from that time. No mixed-date fallback. Confirmed absent ascendancy uses notApplicable with empty entries. */
+        PoeBuild: {
+            /** @constant */
+            game: "poe";
+            character: components["schemas"]["PoeIdentity"];
+            league: components["schemas"]["PoeLeague"];
+            /** Format: date-time */
+            observedAt: string;
+            definitionVersion: string | null;
+            equipment: components["schemas"]["PoeEquipmentSection"];
+            skills: components["schemas"]["PoeSkillsSection"];
+            ascendancySkills: components["schemas"]["PoeAscendancySection"];
+            passiveSkills: components["schemas"]["PoePassivesSection"];
+        };
+        /** @description One observation, with identity/league/gem/tree data from that time. No mixed-date fallback. Confirmed absent ascendancy uses notApplicable with empty entries. */
+        Poe2Build: {
+            /** @constant */
+            game: "poe2";
+            character: components["schemas"]["PoeIdentity"];
+            league: components["schemas"]["PoeLeague"];
+            /** Format: date-time */
+            observedAt: string;
+            definitionVersion: string | null;
+            equipment: components["schemas"]["PoeEquipmentSection"];
+            skills: components["schemas"]["Poe2SkillsSection"];
+            ascendancySkills: components["schemas"]["PoeAscendancySection"];
+            passiveSkills: components["schemas"]["PoePassivesSection"];
+        };
+        /** @description Five-minute shared cooldown from admitted manual request; scheduled collections do not reset it. InProgress may also be scheduled work. OperationId only when a public manual operation exists. */
+        PoeRefreshState: {
+            /** @enum {string} */
+            status: "available" | "cooldown" | "inProgress" | "archived";
+            /** Format: date-time */
+            nextAllowedAt: string | null;
+            operationId: string | null;
+        };
+        PoeLatest: {
+            build: components["schemas"]["PoeBuild"];
+            tracking: components["schemas"]["PoeTracking"];
+            refresh: components["schemas"]["PoeRefreshState"];
+        };
+        PoeSnapshot: {
+            snapshot: components["schemas"]["PoeSnapshotSummary"];
+            build: components["schemas"]["PoeBuild"];
+        };
+        Poe2Latest: {
+            build: components["schemas"]["Poe2Build"];
+            tracking: components["schemas"]["PoeTracking"];
+            refresh: components["schemas"]["PoeRefreshState"];
+        };
+        Poe2Snapshot: {
+            snapshot: components["schemas"]["PoeSnapshotSummary"];
+            build: components["schemas"]["Poe2Build"];
+        };
+        /** @description HistoryDate is intended America/Chicago collection date, not retry date. ObservedAt is actual successful fetch time. Snapshot content is immutable. */
+        PoeSnapshotSummary: {
+            id: string;
+            league: components["schemas"]["PoeLeague"];
+            /** Format: date-time */
+            scheduledAt: string;
+            /** Format: date */
+            historyDate: string;
+            /** Format: date-time */
+            observedAt: string;
+            level: number;
+        };
+        /** @description ScheduledAt descending then ID. Opaque cursor; new snapshots do not duplicate entries already returned. Empty list is valid; no invented daily entries after cadence becomes weekly. */
+        PoeSnapshots: {
+            snapshots: components["schemas"]["PoeSnapshotSummary"][];
+            nextCursor: string | null;
+        };
+        PoeProblem: {
+            /** Format: uri-reference */
+            type: string;
+            title: string;
+            status: number;
+            /** @enum {string} */
+            code: "invalid_request" | "character_not_found" | "snapshot_not_found" | "build_unavailable" | "refresh_in_progress" | "refresh_not_allowed" | "cooldown_active" | "rate_limited" | "provider_unavailable" | "unexpected_error" | "operation_not_found";
+            traceId: string;
+            /** Format: date-time */
+            nextAllowedAt?: string | null;
+            operationId?: string | null;
+        };
+        /** @description Completed operation records are retained for 24 hours after completedAt, then eligible for cleanup. This does not expire character builds or snapshots. Succeeded means latest commit completed; re-read latest and roster. Failed retains previous build. CompletedAt only terminal; error only failed. No automatic repeated POST after uncertain network outcome: GET latest refresh state first. */
+        PoeRefreshOperation: {
+            id: string;
+            characterId: string;
+            leagueId: string;
+            /** @enum {string} */
+            status: "pending" | "running" | "succeeded" | "failed";
+            /** Format: date-time */
+            acceptedAt: string;
+            /** Format: date-time */
+            completedAt: string | null;
+            /** Format: date-time */
+            nextAllowedAt: string;
+            error: components["schemas"]["PoeProblem"] | null;
         };
     };
     responses: never;
@@ -526,6 +993,1270 @@ export interface operations {
                 };
                 content: {
                     "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listPoeCharacters: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-cache";
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "game": "poe",
+                     *       "groups": [
+                     *         {
+                     *           "id": "demo-family",
+                     *           "name": "Emberfall",
+                     *           "startAt": "2026-09-04T19:00:00Z",
+                     *           "characters": [
+                     *             {
+                     *               "character": {
+                     *                 "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                     *                 "name": "Ashwarden",
+                     *                 "class": "Witch",
+                     *                 "ascendancy": {
+                     *                   "status": "none",
+                     *                   "name": null
+                     *                 },
+                     *                 "level": 18
+                     *               },
+                     *               "league": {
+                     *                 "id": "demo-emberfall",
+                     *                 "name": "Emberfall",
+                     *                 "startAt": "2026-09-04T19:00:00Z",
+                     *                 "endAt": null,
+                     *                 "rules": []
+                     *               },
+                     *               "tracking": {
+                     *                 "status": "active",
+                     *                 "reason": null,
+                     *                 "firstSeenAt": "2026-09-18T21:00:00Z"
+                     *               },
+                     *               "observedAt": "2026-09-20T08:00:00Z",
+                     *               "buildAvailable": true
+                     *             }
+                     *           ]
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["PoeRoster"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    getPoeLatestBuild: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PoeLatest"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    listPoeSnapshots: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-cache";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PoeSnapshots"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    getPoeSnapshot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+                snapshotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-cache";
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "snapshot": {
+                     *         "id": "demo-snapshot",
+                     *         "league": {
+                     *           "id": "demo-emberfall",
+                     *           "name": "Emberfall",
+                     *           "startAt": "2026-09-04T19:00:00Z",
+                     *           "endAt": null,
+                     *           "rules": []
+                     *         },
+                     *         "scheduledAt": "2026-09-20T08:00:00Z",
+                     *         "historyDate": "2026-09-20",
+                     *         "observedAt": "2026-09-20T08:00:00Z",
+                     *         "level": 18
+                     *       },
+                     *       "build": {
+                     *         "game": "poe",
+                     *         "character": {
+                     *           "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                     *           "name": "Ashwarden",
+                     *           "class": "Witch",
+                     *           "ascendancy": {
+                     *             "status": "none",
+                     *             "name": null
+                     *           },
+                     *           "level": 18
+                     *         },
+                     *         "league": {
+                     *           "id": "demo-emberfall",
+                     *           "name": "Emberfall",
+                     *           "startAt": "2026-09-04T19:00:00Z",
+                     *           "endAt": null,
+                     *           "rules": []
+                     *         },
+                     *         "observedAt": "2026-09-20T08:00:00Z",
+                     *         "definitionVersion": null,
+                     *         "equipment": {
+                     *           "availability": "available",
+                     *           "entries": [
+                     *             {
+                     *               "name": "Ember Ward",
+                     *               "typeLine": "Example Robe",
+                     *               "baseType": "Example Robe",
+                     *               "identified": true,
+                     *               "ilvl": 18,
+                     *               "frameTypeId": "rare",
+                     *               "inventoryId": "BodyArmour",
+                     *               "properties": [
+                     *                 {
+                     *                   "name": "Energy Shield",
+                     *                   "values": [
+                     *                     [
+                     *                       "42",
+                     *                       0
+                     *                     ]
+                     *                   ],
+                     *                   "displayMode": 0
+                     *                 }
+                     *               ],
+                     *               "explicitMods": [
+                     *                 {
+                     *                   "description": "+20 to maximum Life"
+                     *                 }
+                     *               ]
+                     *             }
+                     *           ]
+                     *         },
+                     *         "skills": {
+                     *           "availability": "available",
+                     *           "entries": [
+                     *             {
+                     *               "id": "group-1",
+                     *               "skills": [
+                     *                 {
+                     *                   "name": "Example Skill",
+                     *                   "level": 3,
+                     *                   "quality": 0
+                     *                 }
+                     *               ],
+                     *               "supports": [
+                     *                 {
+                     *                   "name": "Example Support",
+                     *                   "level": 3,
+                     *                   "quality": 0
+                     *                 }
+                     *               ]
+                     *             }
+                     *           ]
+                     *         },
+                     *         "ascendancySkills": {
+                     *           "availability": "notApplicable",
+                     *           "entries": []
+                     *         },
+                     *         "passiveSkills": {
+                     *           "availability": "unavailable",
+                     *           "entries": []
+                     *         }
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["PoeSnapshot"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    refreshPoeCharacter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            202: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Relative operation-status URL. */
+                    Location?: string;
+                    /** @description Suggested polling delay in whole seconds; present only while pending/running. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "id": "demo-operation",
+                     *       "characterId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                     *       "leagueId": "demo-emberfall",
+                     *       "status": "pending",
+                     *       "acceptedAt": "2026-09-20T14:00:00Z",
+                     *       "completedAt": null,
+                     *       "nextAllowedAt": "2026-09-20T14:05:00Z",
+                     *       "error": null
+                     *     }
+                     */
+                    "application/json": components["schemas"]["PoeRefreshOperation"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "type": "about:blank",
+                     *       "title": "Refresh cooldown active",
+                     *       "status": 429,
+                     *       "code": "cooldown_active",
+                     *       "traceId": "example-trace",
+                     *       "nextAllowedAt": "2026-09-20T14:05:00Z"
+                     *     }
+                     */
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    getPoeRefreshOperation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                operationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Suggested polling delay in whole seconds; present only while pending/running. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PoeRefreshOperation"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    listPoe2Characters: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-cache";
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "game": "poe2",
+                     *       "groups": [
+                     *         {
+                     *           "id": "demo-family",
+                     *           "name": "Emberfall",
+                     *           "startAt": "2026-09-04T19:00:00Z",
+                     *           "characters": [
+                     *             {
+                     *               "character": {
+                     *                 "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                     *                 "name": "Ashwarden",
+                     *                 "class": "Witch",
+                     *                 "ascendancy": {
+                     *                   "status": "none",
+                     *                   "name": null
+                     *                 },
+                     *                 "level": 18
+                     *               },
+                     *               "league": {
+                     *                 "id": "demo-emberfall",
+                     *                 "name": "Emberfall",
+                     *                 "startAt": "2026-09-04T19:00:00Z",
+                     *                 "endAt": null,
+                     *                 "rules": []
+                     *               },
+                     *               "tracking": {
+                     *                 "status": "active",
+                     *                 "reason": null,
+                     *                 "firstSeenAt": "2026-09-18T21:00:00Z"
+                     *               },
+                     *               "observedAt": "2026-09-20T08:00:00Z",
+                     *               "buildAvailable": true
+                     *             }
+                     *           ]
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": components["schemas"]["PoeRoster"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    getPoe2LatestBuild: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Poe2Latest"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    listPoe2Snapshots: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-cache";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PoeSnapshots"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    getPoe2Snapshot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+                snapshotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-cache";
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "snapshot": {
+                     *         "id": "demo-snapshot",
+                     *         "league": {
+                     *           "id": "demo-emberfall",
+                     *           "name": "Emberfall",
+                     *           "startAt": "2026-09-04T19:00:00Z",
+                     *           "endAt": null,
+                     *           "rules": []
+                     *         },
+                     *         "scheduledAt": "2026-09-20T08:00:00Z",
+                     *         "historyDate": "2026-09-20",
+                     *         "observedAt": "2026-09-20T08:00:00Z",
+                     *         "level": 18
+                     *       },
+                     *       "build": {
+                     *         "game": "poe2",
+                     *         "character": {
+                     *           "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                     *           "name": "Ashwarden",
+                     *           "class": "Witch",
+                     *           "ascendancy": {
+                     *             "status": "none",
+                     *             "name": null
+                     *           },
+                     *           "level": 18
+                     *         },
+                     *         "league": {
+                     *           "id": "demo-emberfall",
+                     *           "name": "Emberfall",
+                     *           "startAt": "2026-09-04T19:00:00Z",
+                     *           "endAt": null,
+                     *           "rules": []
+                     *         },
+                     *         "observedAt": "2026-09-20T08:00:00Z",
+                     *         "definitionVersion": null,
+                     *         "equipment": {
+                     *           "availability": "available",
+                     *           "entries": [
+                     *             {
+                     *               "name": "Ember Ward",
+                     *               "typeLine": "Example Robe",
+                     *               "baseType": "Example Robe",
+                     *               "identified": true,
+                     *               "ilvl": 18,
+                     *               "frameTypeId": "rare",
+                     *               "inventoryId": "BodyArmour",
+                     *               "properties": [
+                     *                 {
+                     *                   "name": "Energy Shield",
+                     *                   "values": [
+                     *                     [
+                     *                       "42",
+                     *                       0
+                     *                     ]
+                     *                   ],
+                     *                   "displayMode": 0
+                     *                 }
+                     *               ],
+                     *               "explicitMods": [
+                     *                 {
+                     *                   "description": "+20 to maximum Life"
+                     *                 }
+                     *               ]
+                     *             }
+                     *           ]
+                     *         },
+                     *         "skills": {
+                     *           "availability": "available",
+                     *           "entries": [
+                     *             {
+                     *               "id": "group-1",
+                     *               "skills": [
+                     *                 {
+                     *                   "name": "Example Skill",
+                     *                   "level": 3,
+                     *                   "quality": 0
+                     *                 }
+                     *               ],
+                     *               "supports": [
+                     *                 {
+                     *                   "name": "Example Support"
+                     *                 }
+                     *               ]
+                     *             }
+                     *           ]
+                     *         },
+                     *         "ascendancySkills": {
+                     *           "availability": "notApplicable",
+                     *           "entries": []
+                     *         },
+                     *         "passiveSkills": {
+                     *           "availability": "unavailable",
+                     *           "entries": []
+                     *         }
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["Poe2Snapshot"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    refreshPoe2Character: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            202: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Relative operation-status URL. */
+                    Location?: string;
+                    /** @description Suggested polling delay in whole seconds; present only while pending/running. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "id": "demo-operation",
+                     *       "characterId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                     *       "leagueId": "demo-emberfall",
+                     *       "status": "pending",
+                     *       "acceptedAt": "2026-09-20T14:00:00Z",
+                     *       "completedAt": null,
+                     *       "nextAllowedAt": "2026-09-20T14:05:00Z",
+                     *       "error": null
+                     *     }
+                     */
+                    "application/json": components["schemas"]["PoeRefreshOperation"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "type": "about:blank",
+                     *       "title": "Refresh cooldown active",
+                     *       "status": 429,
+                     *       "code": "cooldown_active",
+                     *       "traceId": "example-trace",
+                     *       "nextAllowedAt": "2026-09-20T14:05:00Z"
+                     *     }
+                     */
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+        };
+    };
+    getPoe2RefreshOperation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                operationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Suggested polling delay in whole seconds; present only while pending/running. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PoeRefreshOperation"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    /** @description Delay in whole seconds when retryable; absent for archived/ineligible. */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            500: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
+                };
+            };
+            /** @description Problem Details; inspect code. */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["PoeProblem"];
                 };
             };
         };

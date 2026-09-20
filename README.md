@@ -12,7 +12,7 @@ Mantine Charts and its required Recharts dependency are installed; the approved 
 
 ## Contract boundary
 
-`contracts/v1/openapi.json` is a pinned copy of API-owned OpenAPI 3.1.0, version 0.3.0-review. `npm run generate:types` generates only declarations using openapi-typescript. `src/api/types.ts` provides stable handwritten aliases, so a future move to manually maintained types need not change consumers. Axios requests and Query configuration remain handwritten.
+`contracts/v1/openapi.json` is a pinned copy of API-owned OpenAPI 3.1.0, version 0.4.0-review. `npm run generate:types` generates only declarations using openapi-typescript. `src/api/types.ts` provides stable handwritten aliases, so a future move to manually maintained types need not change consumers. Axios requests and Query configuration remain handwritten.
 
 `npm run check:generated` checks regeneration drift, and `npm run typecheck` verifies nullable scores and all three weekly discriminated states. Generated TypeScript does not validate HTTP bodies at runtime. Update the pinned contract/fixtures together through coordinated API/UI review.
 
