@@ -6,7 +6,7 @@ React/TypeScript application with the approved shared layout and landing page. G
 
 Use Node 24 (`nvm use`, installing Node 24 yourself if necessary), then `npm ci` and `npm run start`. Vite serves http://localhost:5173 and proxies `/api` and `/health` to the API at http://localhost:5080. Start the API independently using its README.
 
-For independent mock development, copy `.env.example` to `.env.local` and set `VITE_ENABLE_MOCKS=true`. Browser MSW is opt-in and development-only. The scaffold handlers currently support the populated roster and Aeloria detail; expand scenario coverage with the vertical slice. Mock responses use the fixed fictional September 15, 2026 fixture clock and must not be represented as today's data.
+For independent mock development, copy `.env.example` to `.env.local` and set `VITE_ENABLE_MOCKS=true`. Browser MSW is opt-in and development-only. The development handlers support the populated roster, all four current scores, and Aeloria detail. Mock responses use the fixed fictional September 15, 2026 fixture clock and must not be represented as today's data.
 
 Mantine Charts and its required Recharts dependency are installed; the approved chart prototype is deferred to the next checkpoint. The shared layout provides dark mode by default, a persisted light theme, active navigation, a keyboard skip link, and a mobile drawer below Mantine’s `md` breakpoint (992px). The landing page introduces all three games and identifies PoE and PoE2 as under construction. No authentication, persistence, collection, AWS resources or deployment are implemented here.
 
@@ -18,7 +18,7 @@ Mantine Charts and its required Recharts dependency are installed; the approved 
 
 The generator declares a TypeScript 5 peer dependency; TypeScript 5.9.3 is pinned intentionally. Compatible versions and all transitive packages are captured in `package-lock.json`. Runtime packages have exact versions. Revisit upgrades together with the generator and lint tooling.
 
-Current and weekly data remain separate. Do not use a blanket 30-minute Query staleTime: freshness must account for provider fetch timestamps and HTTP Age/cache headers, and season mismatches must never merge. Those behaviors are not yet implemented by this scaffold.
+The WoW roster fetches identities on entry and requests current scores independently with a maximum of three concurrent requests. Queries are keyed by character and season, revalidate on entry, and reject mismatched character/season responses. The API owns the bounded 30-minute reuse; the UI adds no second freshness timer and does not poll or refresh on focus. Individual score failures are retryable without losing other rows. Previous results retained after a failed refresh are explicitly labeled with their observation time. Scores sort descending, then character name, realm, and ID; null is distinct from zero. Between seasons, identities remain visible without current-score requests. Rows are intentionally non-clickable until character history is implemented.
 
 ## Checks
 
@@ -30,7 +30,7 @@ Current and weekly data remain separate. Do not use a blanket 30-minute Query st
 
 Coverage includes untested runtime source files under `src`. It excludes the `main.tsx` bootstrap entry point, tests, test setup, development mocks, generated declarations, and the compile-only type compatibility checks. Component tests use React Testing Library with jsdom and real Mantine/Router components; browser tests remain responsible for responsive layout.
 
-CI installs the locked dependencies and checks generation, formatting, lint, tests with the same coverage thresholds, build and the layout/landing browser checks. The real-API integration test is opt-in until cross-repository CI orchestration is designed. UI deployment will target existing API-provisioned infrastructure in a later checkpoint; no deployment workflow is included yet.
+CI installs the locked dependencies and checks generation, formatting, lint, tests with the same coverage thresholds, build and the layout/landing and WoW roster browser checks. The real-API integration test is opt-in until cross-repository CI orchestration is designed. UI deployment will target existing API-provisioned infrastructure in a later checkpoint; no deployment workflow is included yet.
 
 Vitest settings live in `vitest.config.ts`, separately from Vite development/build settings. Vitest globals are enabled, so React Testing Library automatically cleans up rendered components after each test. Keep explicit teardown hooks only for other resources, such as resetting MSW handlers or closing its server.
 

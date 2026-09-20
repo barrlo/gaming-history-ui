@@ -1,0 +1,127 @@
+.backLink {
+  align-items: center;
+  color: var(--site-muted);
+  display: inline-flex;
+  gap: 8px;
+  width: fit-content;
+}
+
+.title {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.description {
+  color: var(--site-description);
+  font-size: 17px;
+  margin-top: 16px;
+}
+
+.season {
+  color: var(--site-accent);
+}
+
+.roster {
+  background: var(--site-surface);
+  border-radius: 12px;
+  padding: 0 24px;
+}
+
+.columnHeadings,
+.row {
+  align-items: center;
+  column-gap: 20px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.8fr 1fr;
+}
+
+.columnHeadings {
+  color: var(--site-muted);
+  padding: 24px 0;
+  text-transform: uppercase;
+}
+
+.columnHeadings p {
+  font-size: 12px;
+}
+
+.row {
+  border-top: 1px solid var(--site-border);
+  min-height: 80px;
+  padding: 16px 0;
+}
+
+.characterName {
+  font-size: 18px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.className {
+  color: var(--site-muted);
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.realm {
+  color: var(--site-description);
+  overflow-wrap: anywhere;
+}
+
+.scoreValue {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.increase {
+  color: var(--site-available);
+}
+
+.mobileLabel {
+  display: none;
+}
+
+.empty {
+  background: var(--site-surface);
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+@media (max-width: 61.99375em) {
+  .title {
+    font-size: 30px;
+  }
+
+  .columnHeadings {
+    display: none;
+  }
+
+  .roster {
+    background: none;
+    display: grid;
+    gap: 16px;
+    padding: 0;
+  }
+
+  .row {
+    background: var(--site-surface);
+    border: none;
+    border-radius: 12px;
+    grid-template-columns: 1fr 1fr;
+    padding: 20px;
+    row-gap: 20px;
+  }
+
+  .realm {
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .mobileLabel {
+    color: var(--site-muted);
+    display: block;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+}
