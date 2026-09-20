@@ -38,7 +38,8 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
       <Box>
         <Title order={1}>{'My characters'}</Title>
         <Text className={styles.subtitle}>{`${title} · League archive`}</Text>
-        <Text className={styles.note}>{'Latest scheduled collections. All times shown in Central time.'}</Text>
+        <Text className={styles.note}>{'Latest collected builds. All times shown in Central time.'}</Text>
+        <Text className={styles.note}>{'Character build pages are coming next.'}</Text>
       </Box>
       {roster.isPending && (
         <Stack aria-label="Loading characters" role="status">
