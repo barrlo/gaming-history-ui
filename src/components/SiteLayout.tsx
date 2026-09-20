@@ -6,10 +6,10 @@ import { useNavigation } from '../state/navigation';
 import styles from './SiteLayout.module.css';
 
 const links = [
-  { label: 'Home', path: '/', shortLabel: 'Home' },
-  { label: 'World of Warcraft', path: '/wow', shortLabel: 'World of Warcraft' },
-  { label: 'Path of Exile', path: '/poe', shortLabel: 'PoE' },
-  { label: 'Path of Exile 2', path: '/poe2', shortLabel: 'PoE2' },
+  { label: 'Home', path: '/' },
+  { label: 'World of Warcraft', path: '/wow' },
+  { label: 'Path of Exile', path: '/poe' },
+  { label: 'Path of Exile 2', path: '/poe2' },
 ];
 
 export const SiteLayout = ({ children }: { children: ReactNode }) => {
@@ -43,9 +43,9 @@ export const SiteLayout = ({ children }: { children: ReactNode }) => {
           visibleFrom="md"
           wrap="nowrap"
         >
-          {links.map(({ label, path, shortLabel }) => (
+          {links.map(({ label, path }) => (
             <NavLink aria-label={label} className={styles.navigationLink} end={path === '/'} key={path} to={path}>
-              {shortLabel}
+              {label}
             </NavLink>
           ))}
         </Group>
