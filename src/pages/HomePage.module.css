@@ -65,10 +65,6 @@
   margin-bottom: 28px;
 }
 
-.trackingNote {
-  display: block;
-}
-
 .gameAction {
   background: var(--site-action);
   color: var(--site-description);
@@ -145,10 +141,6 @@
   .gameDescription {
     font-size: 13px;
     margin-bottom: 24px;
-  }
-
-  .trackingNote {
-    display: none;
   }
 
   .gameAction {
