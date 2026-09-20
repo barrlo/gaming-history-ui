@@ -5,7 +5,6 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { MantineProvider } from '@mantine/core';
-import { handlers } from './mocks/handlers';
 import { createQueryClient } from './api/query-client';
 import { routes } from './routes';
 import { cssVariablesResolver, theme } from './theme';
@@ -59,7 +58,7 @@ describe('App', () => {
     expect(screen.getByText('Under construction.')).toBeInTheDocument();
   });
 
-  it('should describe available and upcoming games with working landing links', async () => {
+  it('should describe available games with working landing links', async () => {
     const user = userEvent.setup();
     renderApp();
     const warcraft = screen.getByRole('article', { name: 'World of Warcraft' });

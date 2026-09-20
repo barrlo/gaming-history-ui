@@ -6,21 +6,18 @@ import styles from './HomePage.module.css';
 const games = [
   {
     action: 'View characters',
-    available: true,
     description: 'Characters, Mythic+ scores, and a season of progress.',
     path: '/wow',
     title: 'World of Warcraft',
   },
   {
     action: 'View characters',
-    available: true,
     description: 'Characters, league archives, and collected builds.',
     path: '/poe',
     title: 'Path of Exile',
   },
   {
     action: 'View characters',
-    available: true,
     description: 'Characters and collected builds, grouped by league.',
     path: '/poe2',
     title: 'Path of Exile 2',
@@ -46,24 +43,19 @@ export const HomePage = () => {
           {'Explore the games'}
         </Title>
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing={{ base: 20, md: 24 }}>
-          {games.map(({ action, available, description, path, title }) => (
+          {games.map(({ action, description, path, title }) => (
             <Flex aria-label={title} className={styles.gameCard} component="article" direction="column" key={path}>
-              <Text className={`${styles.gameStatus} ${available ? styles.available : ''}`}>
-                {available ? 'Available' : 'Under construction'}
+              <Text className={`${styles.gameStatus} ${styles.available}`}>
+                {'Available'}
               </Text>
               <Title className={styles.gameTitle} order={3}>
                 {title}
               </Title>
               <Text className={styles.gameDescription}>
                 {description}
-                {!available && (
-                  <Box className={styles.trackingNote} component="span">
-                    {'Tracking details are still taking shape.'}
-                  </Box>
-                )}
               </Text>
               <Button
-                className={`${styles.gameAction} ${available ? styles.primaryAction : ''}`}
+                className={`${styles.gameAction} ${styles.primaryAction}`}
                 component={Link}
                 fullWidth
                 justify="space-between"
