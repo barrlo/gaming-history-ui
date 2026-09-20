@@ -93,6 +93,7 @@ test('landing page exposes all games and keyboard users can skip the header', as
 
 test('mobile drawer traps focus, restores the trigger, and returns home', async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });
+  await page.route('**/api/v1/poe/characters', (route) => route.fulfill({ json: { game: 'poe', groups: [] } }));
   await page.goto('/poe');
   const menu = page.getByRole('button', { name: 'Open navigation' });
   await menu.click();
