@@ -19,9 +19,9 @@ const games = [
     title: 'Path of Exile',
   },
   {
-    action: 'View page',
-    available: false,
-    description: 'Another adventure to follow.',
+    action: 'View characters',
+    available: true,
+    description: 'Characters and collected builds, grouped by league.',
     path: '/poe2',
     title: 'Path of Exile 2',
   },

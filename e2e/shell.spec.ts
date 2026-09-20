@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('navigation and theme remain usable on desktop and mobile', async ({ page }) => {
+  await page.route('**/api/v1/poe2/characters', (route) => route.fulfill({ json: { game: 'poe2', groups: [] } }));
   await page.goto('/');
 
   await expect(page.getByRole('heading', { name: 'Every character. Every season.' })).toBeVisible();
@@ -15,11 +16,11 @@ test('navigation and theme remain usable on desktop and mobile', async ({ page }
   await page.getByRole('button', { name: 'Open navigation' }).click();
   await page.getByRole('dialog').getByRole('link', { exact: true, name: 'Path of Exile 2' }).click();
 
-  await expect(page.getByRole('heading', { exact: true, name: 'Path of Exile 2' })).toBeVisible();
+  await expect(page.getByRole('heading', { exact: true, name: 'My characters' })).toBeVisible();
 
   await page.reload();
 
-  await expect(page.getByRole('heading', { exact: true, name: 'Path of Exile 2' })).toBeVisible();
+  await expect(page.getByRole('heading', { exact: true, name: 'My characters' })).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('data-mantine-color-scheme', 'light');
 });
 
