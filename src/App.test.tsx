@@ -42,8 +42,7 @@ describe('App', () => {
     renderApp();
     await user.click(screen.getByRole('link', { name: 'View characters' }));
 
-    expect(screen.getByRole('heading', { name: 'World of Warcraft' })).toBeInTheDocument();
-    expect(screen.getByText('Under construction.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
   });
 
   it('should describe available and upcoming games with working landing links', async () => {
@@ -79,7 +78,7 @@ describe('App', () => {
   });
 
   it.each([
-    ['/wow', 'World of Warcraft'],
+    ['/wow', 'My characters'],
     ['/wow/characters/char-aeloria', 'Character history'],
     ['/poe', 'Path of Exile'],
     ['/poe2', 'Path of Exile 2'],
