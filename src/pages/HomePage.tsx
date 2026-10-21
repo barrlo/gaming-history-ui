@@ -45,13 +45,13 @@ export const HomePage = () => {
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing={{ base: 20, md: 24 }}>
           {games.map(({ action, description, path, title }) => (
             <Flex aria-label={title} className={styles.gameCard} component="article" direction="column" key={path}>
-              <Text className={`${styles.gameStatus} ${styles.available}`}>{'Available'}</Text>
+              <Text className={styles.gameStatus}>{'Available'}</Text>
               <Title className={styles.gameTitle} order={3}>
                 {title}
               </Title>
               <Text className={styles.gameDescription}>{description}</Text>
               <Button
-                className={`${styles.gameAction} ${styles.primaryAction}`}
+                className={styles.gameAction}
                 component={Link}
                 fullWidth
                 justify="space-between"

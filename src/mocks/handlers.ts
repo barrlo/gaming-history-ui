@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { poeRoster } from './poe-roster';
-import poe2Roster from '../../contracts/v1/fixtures/poe-expansion/poe2-roster.json';
+import { poe2Roster } from './poe2-roster';
 import roster from '../../contracts/v1/fixtures/populated/roster.json';
 import history from '../../contracts/v1/fixtures/populated/char-aeloria.json';
 import current from '../../contracts/v1/fixtures/populated/char-aeloria-current.json';

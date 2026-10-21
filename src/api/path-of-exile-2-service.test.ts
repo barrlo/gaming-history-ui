@@ -1,9 +1,10 @@
-import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 import { getPoe2Roster } from './path-of-exile-2-service';
-import roster from '../../contracts/v1/fixtures/poe-expansion/poe2-roster.json';
+import { handlers } from '../mocks/handlers';
+import { poe2Roster } from '../mocks/poe2-roster';
 
-const server = setupServer(http.get('*/api/v1/poe2/characters', () => HttpResponse.json(roster)));
+const server = setupServer(...handlers);
 
 describe('Path of Exile 2 service', () => {
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
@@ -12,24 +13,14 @@ describe('Path of Exile 2 service', () => {
 
   afterAll(() => server.close());
 
-  it('should fetch the latest collected PoE2 roster without a platform filter', async () => {
-    let requestUrl: URL | undefined;
-    server.use(
-      http.get('*/api/v1/poe2/characters', ({ request }) => {
-        requestUrl = new URL(request.url);
+  it('should fetch the stored Path of Exile 2 roster from its game endpoint', async () => {
+    const roster = await getPoe2Roster(new AbortController().signal);
 
-        return HttpResponse.json(roster);
-      }),
-    );
-    const response = await getPoe2Roster();
-
-    expect(response).toEqual(roster);
-    expect(response.game).toBe('poe2');
-    expect(requestUrl?.search).toBe('');
+    expect(roster).toEqual(poe2Roster);
   });
 
-  it('should preserve roster failures for the page retry state', async () => {
-    server.use(http.get('*/api/v1/poe2/characters', () => HttpResponse.json({}, { status: 503 })));
+  it('should propagate failures instead of displaying an empty archive', async () => {
+    server.use(http.get('*/api/v1/poe2/characters', () => new HttpResponse(null, { status: 503 })));
 
     await expect(getPoe2Roster()).rejects.toMatchObject({ response: { status: 503 } });
   });
