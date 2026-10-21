@@ -19,6 +19,13 @@ describe('Path of Exile service', () => {
     expect(roster).toEqual(poeRoster);
   });
 
+  it('should cancel a request when its signal is aborted', async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    await expect(getPoeRoster(controller.signal)).rejects.toMatchObject({ code: 'ERR_CANCELED' });
+  });
+
   it('should propagate failures instead of displaying an empty archive', async () => {
     server.use(http.get('*/api/v1/poe/characters', () => new HttpResponse(null, { status: 503 })));
 

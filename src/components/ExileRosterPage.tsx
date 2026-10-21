@@ -12,14 +12,17 @@ type ExileRosterPageProps = {
 };
 
 const formatDate = (value: string) => {
-  return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'America/Chicago' }).format(new Date(value));
+  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value));
 };
 
 const formatObservation = (value: string) => {
-  return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: 'America/Chicago',
+  return new Intl.DateTimeFormat(undefined, {
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    month: 'short',
+    timeZoneName: 'short',
+    year: 'numeric',
   }).format(new Date(value));
 };
 
@@ -30,22 +33,24 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
   });
 
   return (
-    <Stack gap={32}>
+    <Stack gap="2rem">
       <Anchor className={styles.home} component={Link} to="/">
-        <IconArrowLeft aria-hidden="true" size={18} />
+        <IconArrowLeft aria-hidden="true" size="1.125rem" />
         {'Home'}
       </Anchor>
       <Box>
         <Title order={1}>{'My characters'}</Title>
         <Text className={styles.subtitle}>{`${title} · League archive`}</Text>
-        <Text className={styles.note}>{'Latest collected builds. All times shown in Central time.'}</Text>
+        <Text
+          className={styles.note}
+        >{`Latest collected builds. Times shown in ${Intl.DateTimeFormat().resolvedOptions().timeZone}.`}</Text>
         <Text className={styles.note}>{'Character build pages are coming next.'}</Text>
       </Box>
       {roster.isPending && (
         <Stack aria-label="Loading characters" role="status">
           <Text>{'Loading characters…'}</Text>
-          <Skeleton height={140} />
-          <Skeleton height={140} />
+          <Skeleton height="8.75rem" />
+          <Skeleton height="8.75rem" />
         </Stack>
       )}
       {roster.isError && (
@@ -95,7 +100,7 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
                         {league.rules.length ? league.rules.map((rule) => rule.name).join(' · ') : 'Regular'}
                         {tracking.status === 'archived' ? ' · Archived' : ''}
                       </Text>
-                      <Text className={styles.note}>{`Collected ${formatObservation(observedAt)} CT`}</Text>
+                      <Text className={styles.note}>{`Collected ${formatObservation(observedAt)}`}</Text>
                       {!buildAvailable && <Text className={styles.note}>{'Awaiting first build collection'}</Text>}
                     </Box>
                     <Text className={styles.level}>{`Lv ${character.level}`}</Text>
