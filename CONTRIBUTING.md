@@ -66,3 +66,15 @@ Follow the behavior-focused guidance in [Common mistakes with React Testing Libr
 - Use semantic HTML and appropriate accessible names. Do not add redundant or incorrect ARIA attributes just to make a test pass.
 
 Component tests (`src/**/*.{test,spec}.{tsx,jsx}`) use the recommended React Testing Library and jest-dom ESLint rules, plus explicit user-event and assertion rules. Direct `fireEvent` imports are prohibited. Query choice, semantic HTML, use of `userEvent.setup()`, and unsupported interactions also require review; lint does not enforce every convention. In particular, the installed side-effect rule does not catch every call through a `userEvent.setup()` instance, so review `waitFor` callbacks for these interactions too. These rules do not apply to Playwright or non-component unit tests.
+
+## Shared test providers and responsive coverage
+
+Use `renderWithProviders` from `src/test/render.tsx` for component tests. It supplies the application's Mantine theme and CSS variables resolver, dark default, and a fresh QueryClient for each render. The wrapper preserves that client across `rerender` calls. Pass `initialEntries` when a component needs MemoryRouter; omit it when rendering an existing RouterProvider. An explicit `queryClient` can be supplied for cache-specific tests.
+
+Service tests use the shared MSW handlers and typed game mocks for successful responses. Cover failures and AbortSignal cancellation without turning either into an empty successful result.
+
+Feature E2E layout checks use representative mobile (390px), tablet (900px), and desktop (1200px) widths in the default dark theme. Shared shell tests own light/dark switching and precise navigation-breakpoint checks, avoiding repetition in every feature.
+
+Use `rem` or theme tokens for component typography, spacing, sizing, and radii. Thin borders may stay in pixels and media breakpoints in `em`. Preserve the browser's root font-size preference; do not force a 16px root.
+
+Display collection timestamps and league dates in the browser's timezone. Generate timezone labels with Intl so daylight-saving offsets remain accurate. This display preference does not change Central-time job schedules or historical snapshot boundaries. Test timezone conversion deterministically, including daylight-saving changes.

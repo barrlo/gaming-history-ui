@@ -27,19 +27,15 @@ test.describe('Path of Exile roster', () => {
     await expect(page.getByText('Ashwarden')).toBeVisible();
   });
 
-  for (const width of [320, 390, 992]) {
-    test(`fits ${width}px in both themes`, async ({ page }) => {
+  for (const width of [390, 900, 1200]) {
+    test(`fits ${width}px in the default dark theme`, async ({ page }) => {
       await page.setViewportSize({ height: 900, width });
       await page.goto('/poe');
 
       await expect(page.getByText('Ashwarden')).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
 
-      await page.getByRole('button', { name: 'Switch to light theme' }).click();
-
-      await expect(page.locator('html')).toHaveAttribute('data-mantine-color-scheme', 'light');
-      await expect(page.getByText('Winterglass')).toBeVisible();
-      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+      await expect(page.locator('html')).toHaveAttribute('data-mantine-color-scheme', 'dark');
     });
   }
 
@@ -54,5 +50,25 @@ test.describe('Path of Exile roster', () => {
 
     await expect(page.getByRole('heading', { name: 'No characters collected yet' })).toBeVisible();
     await expect(page.getByRole('listitem')).toHaveCount(0);
+  });
+});
+
+test.describe('Browser-local roster dates', () => {
+  test.use({ locale: 'en-US', timezoneId: 'America/New_York' });
+
+  test('uses the browser timezone for dates and changes the timezone label with daylight saving time', async ({
+    page,
+  }) => {
+    const roster = structuredClone(poeRoster);
+    roster.groups[0].startAt = '2026-01-15T02:00:00Z';
+    roster.groups[0].characters[0].observedAt = '2026-01-15T08:00:00Z';
+    roster.groups[0].characters[1].observedAt = '2026-07-15T08:00:00Z';
+    await page.route('**/api/v1/poe/characters', (route) => route.fulfill({ json: roster }));
+    await page.goto('/poe');
+
+    await expect(page.getByText('Latest collected builds. Times shown in America/New_York.')).toBeVisible();
+    await expect(page.getByText('Started Jan 14, 2026')).toBeVisible();
+    await expect(page.getByText('Collected Jan 15, 2026, 3:00 AM EST')).toBeVisible();
+    await expect(page.getByText('Collected Jul 15, 2026, 4:00 AM EDT')).toBeVisible();
   });
 });

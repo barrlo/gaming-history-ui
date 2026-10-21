@@ -1,25 +1,15 @@
 // @vitest-environment jsdom
-import { MemoryRouter } from 'react-router-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MantineProvider } from '@mantine/core';
 import { ExileRosterPage } from './ExileRosterPage';
 import type { ExileRoster } from '../api/exile-types';
-import { createQueryClient } from '../api/query-client';
 import { poeRoster } from '../mocks/poe-roster';
-import '../test/setup';
+import { renderWithProviders } from '../test/render';
 
 const renderRoster = (fetchRoster: (signal?: AbortSignal) => Promise<ExileRoster>) => {
-  return render(
-    <MantineProvider env="test">
-      <QueryClientProvider client={createQueryClient()}>
-        <MemoryRouter>
-          <ExileRosterPage fetchRoster={fetchRoster} game="poe" title="Path of Exile" />
-        </MemoryRouter>
-      </QueryClientProvider>
-    </MantineProvider>,
-  );
+  return renderWithProviders(<ExileRosterPage fetchRoster={fetchRoster} game="poe" title="Path of Exile" />, {
+    initialEntries: ['/'],
+  });
 };
 
 describe('ExileRosterPage', () => {
@@ -40,7 +30,9 @@ describe('ExileRosterPage', () => {
     expect(screen.getByText('Witch · Elementalist')).toBeInTheDocument();
     expect(screen.getByText('Hardcore · SSF')).toBeInTheDocument();
     expect(screen.getByText('Regular · Archived')).toBeInTheDocument();
-    expect(screen.getByText('Collected Aug 31, 2026, 3:00 AM CT')).toBeInTheDocument();
+    expect(screen.getByText(/Latest collected builds. Times shown in /)).toHaveTextContent(
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+    );
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
     expect(screen.queryByRole('link', { name: /Ashwarden/ })).not.toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledWith(expect.any(AbortSignal));
@@ -76,25 +68,18 @@ describe('ExileRosterPage', () => {
   });
 
   it('should isolate each game query so a pending sequel never displays the first game roster', async () => {
-    const client = createQueryClient();
     const fetchRoster = vi
       .fn()
       .mockResolvedValueOnce(poeRoster)
       .mockImplementationOnce(() => new Promise<ExileRoster>(() => {}));
     const renderGame = (game: ExileRoster['game']) => (
-      <MantineProvider env="test">
-        <QueryClientProvider client={client}>
-          <MemoryRouter>
-            <ExileRosterPage
-              fetchRoster={fetchRoster}
-              game={game}
-              title={game === 'poe' ? 'Path of Exile' : 'Path of Exile 2'}
-            />
-          </MemoryRouter>
-        </QueryClientProvider>
-      </MantineProvider>
+      <ExileRosterPage
+        fetchRoster={fetchRoster}
+        game={game}
+        title={game === 'poe' ? 'Path of Exile' : 'Path of Exile 2'}
+      />
     );
-    const view = render(renderGame('poe'));
+    const view = renderWithProviders(renderGame('poe'), { initialEntries: ['/'] });
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
 
