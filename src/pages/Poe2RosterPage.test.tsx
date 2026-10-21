@@ -7,7 +7,6 @@ import { Poe2RosterPage } from './Poe2RosterPage';
 import { renderWithProviders } from '../test/render';
 import { handlers } from '../mocks/handlers';
 import { poe2Roster } from '../mocks/poe2-roster';
-import '../test/setup';
 
 const server = setupServer(...handlers);
 
