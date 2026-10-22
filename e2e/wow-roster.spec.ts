@@ -24,19 +24,20 @@ test.describe('World of Warcraft roster', () => {
   }
 
   test('roster keeps independent errors retryable', async ({ page }) => {
-    let fail = true;
     await page.route('**/api/v1/wow/characters', (route) => route.fulfill({ json: wowRoster }));
     await page.route('**/api/v1/wow/characters/*/current-score?*', (route) => {
       const score = wowCurrentScores.find((current) => route.request().url().includes(current.characterId));
 
-      return route.fulfill(fail && score?.characterId === 'char-aeloria' ? { status: 503 } : { json: score });
+      return route.fulfill(score?.characterId === 'char-aeloria' ? { status: 503 } : { json: score });
     });
     await page.goto('/wow');
 
     await expect(page.getByRole('button', { name: 'Retry score for Aeloria' })).toBeVisible();
     await expect(page.getByText('2,112', { exact: true })).toBeVisible();
 
-    fail = false;
+    await page.route('**/api/v1/wow/characters/char-aeloria/current-score?*', (route) =>
+      route.fulfill({ json: wowCurrentScores[0] }),
+    );
     await page.getByRole('button', { name: 'Retry score for Aeloria' }).click();
 
     await expect(page.getByText('2,540', { exact: true })).toBeVisible();

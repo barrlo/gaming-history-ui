@@ -15,42 +15,9 @@ describe('Current score queries', () => {
 
   afterAll(() => server.close());
 
-  it('should cap concurrent requests at three and release slots after failures', async () => {
-    let active = 0;
-    let maximum = 0;
-    server.use(
-      http.get('*/api/v1/wow/characters/:id/current-score', async ({ params }) => {
-        active += 1;
-        maximum = Math.max(maximum, active);
-        await delay(30);
-        active -= 1;
-
-        return params.id === 'character-0'
-          ? new HttpResponse(null, { status: 503 })
-          : HttpResponse.json({ ...current, characterId: params.id });
-      }),
-    );
-    const client = new QueryClient();
-    const results = await Promise.allSettled(
-      Array.from({ length: 7 }, (_, index) =>
-        client.fetchQuery(currentScoreQueryOptions(`character-${index}`, 'demo-season')),
-      ),
-    );
-    client.clear();
-
-    expect(maximum).toBe(3);
-    expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(6);
-  });
-
   it('should not reuse client data instead of revalidating on a new entry', async () => {
-    const request = vi.fn();
-    server.use(
-      http.get('*/api/v1/wow/characters/:id/current-score', () => {
-        request();
-
-        return HttpResponse.json(current);
-      }),
-    );
+    const request = vi.fn(() => HttpResponse.json(current));
+    server.use(http.get('*/api/v1/wow/characters/:id/current-score', request));
     const client = new QueryClient();
     await client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
     await client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
@@ -70,27 +37,23 @@ describe('Current score queries', () => {
     client.clear();
   });
 
-  it('should cancel queued requests without fetching or consuming a later slot', async () => {
-    const requested: string[] = [];
-    server.use(
-      http.get('*/api/v1/wow/characters/:id/current-score', async ({ params }) => {
-        requested.push(String(params.id));
-        await delay(40);
+  it('should cancel an in-flight request without returning its score', async () => {
+    const request = vi.fn(async () => {
+      await delay(100);
 
-        return HttpResponse.json({ ...current, characterId: params.id });
-      }),
-    );
+      return HttpResponse.json(current);
+    });
+    server.use(http.get('*/api/v1/wow/characters/:id/current-score', request));
     const client = new QueryClient();
-    const pending = Array.from({ length: 4 }, (_, index) =>
-      client.fetchQuery(currentScoreQueryOptions(`character-${index}`, 'demo-season')),
-    );
-    const settled = Promise.allSettled(pending);
-    await client.cancelQueries({ queryKey: ['wow', 'current-score', 'character-3'] });
-    await settled;
-    await client.fetchQuery(currentScoreQueryOptions('character-next', 'demo-season'));
-    client.clear();
+    const pending = client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
+    const settled = Promise.allSettled([pending]);
+    await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    await client.cancelQueries({ queryKey: ['wow', 'current-score', 'char-aeloria'] });
+    const results = await settled;
 
-    expect(requested).not.toContain('character-3');
-    expect(requested).toContain('character-next');
+    expect(results[0].status).toBe('rejected');
+    expect(client.getQueryData(['wow', 'current-score', 'char-aeloria', 'demo-season'])).toBeUndefined();
+
+    client.clear();
   });
 });

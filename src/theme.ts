@@ -36,6 +36,10 @@ export const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--site-text': 'var(--mantine-color-text)',
   },
   variables: {
+    '--site-font-size-caption': '0.8125rem',
+    '--site-radius-roster': '0.75rem',
+    '--site-spacing-compact': '0.5rem',
+    '--site-spacing-roster': '1.5rem',
     '--wow-death-knight': '#c41e3a',
     '--wow-demon-hunter': '#a330c9',
     '--wow-druid': '#ff7c0a',

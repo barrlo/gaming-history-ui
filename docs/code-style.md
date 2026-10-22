@@ -29,7 +29,7 @@ Alphabetize configuration object properties (except in the ESLint configuration 
 
 Leave a blank line before a `return` statement when another statement precedes it in the same block. A return that is the first statement in a block does not need padding against the opening brace. UI ESLint enforces this convention; API Rider/ReSharper formatting supports it through the control-transfer spacing setting (which also applies to other control-transfer statements). The API CLI formatter does not enforce this specific rule.
 
-Use `rem` or theme tokens for component typography, spacing, sizing, and radii. Thin borders may stay in pixels and media breakpoints in `em`. Preserve the browser's root font-size preference; do not force a 16px root.
+Use Mantine font-size, spacing, and radius variables when their values match the design. Define recurring custom values in the shared theme and CSS variables resolver so roster styles can reuse them. Preserve approved dimensions rather than rounding to the nearest built-in token. Use `rem` or theme tokens for component typography, spacing, sizing, and radii. Thin borders may stay in pixels and media breakpoints in `em`. Preserve the browser's root font-size preference; do not force a 16px root.
 
 Display collection timestamps and league dates in the browser's timezone. Generate timezone labels with Intl so daylight-saving offsets remain accurate. This display preference does not change Central-time job schedules or historical snapshot boundaries. Test timezone conversion deterministically, including daylight-saving changes.
 

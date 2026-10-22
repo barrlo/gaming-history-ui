@@ -98,6 +98,7 @@ describe('ExileRosterPage', () => {
     renderRoster(fetchRoster);
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Characters could not be loaded');
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
 
     await user.click(screen.getByRole('button', { name: 'Try again' }));
 

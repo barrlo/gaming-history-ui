@@ -37,6 +37,8 @@ Follow the behavior-focused guidance in [Common mistakes with React Testing Libr
 
 Component tests (`src/**/*.{test,spec}.{tsx,jsx}`) use the recommended React Testing Library and jest-dom ESLint rules, plus explicit user-event and assertion rules. Direct `fireEvent` imports are prohibited. Query choice, semantic HTML, use of `userEvent.setup()`, and unsupported interactions also require review; lint does not enforce every convention. In particular, the installed side-effect rule does not catch every call through a `userEvent.setup()` instance, so review `waitFor` callbacks for these interactions too. These rules do not apply to Playwright or non-component unit tests.
 
+For roster load and retry tests, wrap MSW resolver callbacks in `vi.fn()` and assert request counts with `toHaveBeenCalledTimes`. Verify the initial load and the additional request after retry; for independent character requests, verify retry leaves other characters unchanged. Exercise the real service and HTTP client rather than replacing them with service mocks for these checks. Avoid manual request counters.
+
 Service tests use the shared MSW handlers and typed game mocks for successful responses. Cover failures and AbortSignal cancellation without turning either into an empty successful result.
 
 Feature E2E layout checks use representative mobile (390px), tablet (900px), and desktop (1200px) widths in the default dark theme. Shared shell tests own light/dark switching and precise navigation-breakpoint checks, avoiding repetition in every feature.
