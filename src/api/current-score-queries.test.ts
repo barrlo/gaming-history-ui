@@ -7,8 +7,7 @@ import { wowCurrentScores } from '../mocks/wow-roster';
 const server = setupServer();
 
 describe('Current score queries', () => {
-  let client: QueryClient;
-  let current: (typeof wowCurrentScores)[number];
+  let client: QueryClient, current: (typeof wowCurrentScores)[number];
 
   beforeEach(() => {
     client = new QueryClient();
