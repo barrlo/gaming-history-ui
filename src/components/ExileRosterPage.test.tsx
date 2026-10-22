@@ -1,13 +1,13 @@
 // @vitest-environment jsdom
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderWithRouter } from '../test/render';
 import { ExileRosterPage } from './ExileRosterPage';
 import type { ExileRoster } from '../api/exile-types';
 import { poeRoster } from '../mocks/poe-roster';
-import { renderWithProviders } from '../test/render';
 
 const renderRoster = (fetchRoster: (signal?: AbortSignal) => Promise<ExileRoster>) => {
-  return renderWithProviders(<ExileRosterPage fetchRoster={fetchRoster} game="poe" title="Path of Exile" />, {
+  return renderWithRouter(<ExileRosterPage fetchRoster={fetchRoster} game="poe" title="Path of Exile" />, {
     initialEntries: ['/'],
   });
 };
@@ -18,15 +18,17 @@ describe('ExileRosterPage', () => {
     renderRoster(fetchRoster);
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
-    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
-      'Demo league · Emberfall',
-      'Demo league · Firstlight',
-    ]);
-    expect(screen.getAllByRole('listitem').map((row) => within(row).getByText(/^Lv /).textContent)).toEqual([
-      'Lv 91',
-      'Lv 67',
-      'Lv 94',
-    ]);
+
+    const headings = screen.getAllByRole('heading', { level: 2 });
+    const rows = screen.getAllByRole('listitem');
+
+    expect(headings).toHaveLength(2);
+    expect(headings[0]).toHaveTextContent('Demo league · Emberfall');
+    expect(headings[1]).toHaveTextContent('Demo league · Firstlight');
+    expect(rows).toHaveLength(3);
+    expect(within(rows[0]).getByText(/^Lv /)).toHaveTextContent('Lv 91');
+    expect(within(rows[1]).getByText(/^Lv /)).toHaveTextContent('Lv 67');
+    expect(within(rows[2]).getByText(/^Lv /)).toHaveTextContent('Lv 94');
     expect(screen.getByText('Witch · Elementalist')).toBeInTheDocument();
     expect(screen.getByText('Hardcore · SSF')).toBeInTheDocument();
     expect(screen.getByText('Regular · Archived')).toBeInTheDocument();
@@ -67,7 +69,7 @@ describe('ExileRosterPage', () => {
     expect(screen.queryByRole('button', { name: /update|refresh/i })).not.toBeInTheDocument();
   });
 
-  it('should isolate each game query so a pending sequel never displays the first game roster', async () => {
+  it('should isolate PoE and PoE2 query caches when switching from PoE to PoE2', async () => {
     const fetchRoster = vi
       .fn()
       .mockResolvedValueOnce(poeRoster)
@@ -79,7 +81,7 @@ describe('ExileRosterPage', () => {
         title={game === 'poe' ? 'Path of Exile' : 'Path of Exile 2'}
       />
     );
-    const view = renderWithProviders(renderGame('poe'), { initialEntries: ['/'] });
+    const view = renderWithRouter(renderGame('poe'), { initialEntries: ['/'] });
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
 

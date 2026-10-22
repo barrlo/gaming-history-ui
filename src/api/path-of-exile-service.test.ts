@@ -16,7 +16,7 @@ describe('Path of Exile service', () => {
   it('should fetch the stored Path of Exile roster from its game endpoint', async () => {
     const roster = await getPoeRoster(new AbortController().signal);
 
-    expect(roster).toEqual(poeRoster);
+    expect(roster).toStrictEqual(poeRoster);
   });
 
   it('should cancel a request when its signal is aborted', async () => {

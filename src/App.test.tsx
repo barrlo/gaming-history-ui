@@ -2,11 +2,11 @@
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderWithProviders } from './test/render';
 import { setupServer } from 'msw/node';
 import { handlers } from './mocks/handlers';
 import { routes } from './routes';
 import { useNavigation } from './state/navigation';
-import { renderWithProviders } from './test/render';
 
 const server = setupServer(...handlers);
 

@@ -68,7 +68,8 @@ export default tseslint.config(
     languageOptions: { globals: vitest.environments.env.globals },
     rules: {
       ...vitest.configs.recommended.rules,
-      'vitest/require-top-level-describe': 'error',
+      'vitest/require-top-level-describe': ['error', { maxNumberOfTopLevelDescribes: 1 }],
+      'vitest/prefer-strict-equal': 'error',
       'vitest/consistent-test-it': ['error', { fn: 'it', withinDescribe: 'it' }],
       'vitest/valid-title': ['error', { mustMatch: { it: '^should \\S', test: '^should \\S' } }],
       'vitest/padding-around-before-each-blocks': 'error',
@@ -113,6 +114,8 @@ export default tseslint.config(
     plugins: { ...playwright.configs['flat/recommended'].plugins, vitest },
     rules: {
       ...playwright.configs['flat/recommended'].rules,
+      'playwright/require-top-level-describe': ['error', { maxTopLevelDescribes: 1 }],
+      'playwright/prefer-strict-equal': 'error',
       // This whitespace-only rule also handles Playwright's awaited assertions.
       'vitest/padding-around-expect-groups': 'error',
     },

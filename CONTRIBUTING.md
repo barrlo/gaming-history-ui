@@ -69,7 +69,7 @@ Component tests (`src/**/*.{test,spec}.{tsx,jsx}`) use the recommended React Tes
 
 ## Shared test providers and responsive coverage
 
-Use `renderWithProviders` from `src/test/render.tsx` for component tests. It supplies the application's Mantine theme and CSS variables resolver, dark default, and a fresh QueryClient for each render. The wrapper preserves that client across `rerender` calls. Pass `initialEntries` when a component needs MemoryRouter; omit it when rendering an existing RouterProvider. An explicit `queryClient` can be supplied for cache-specific tests.
+Use the helpers from `src/test/render.tsx` for component tests. It supplies the application's Mantine theme and CSS variables resolver, dark default, and a fresh QueryClient for each render. The wrapper preserves that client across `rerender` calls. Use `renderWithRouter` for components that need MemoryRouter, optionally passing `initialEntries`. Use `renderWithProviders` for components without routing or when rendering an existing RouterProvider; it never adds a router. An explicit `queryClient` can be supplied for cache-specific tests.
 
 Service tests use the shared MSW handlers and typed game mocks for successful responses. Cover failures and AbortSignal cancellation without turning either into an empty successful result.
 
@@ -78,3 +78,5 @@ Feature E2E layout checks use representative mobile (390px), tablet (900px), and
 Use `rem` or theme tokens for component typography, spacing, sizing, and radii. Thin borders may stay in pixels and media breakpoints in `em`. Preserve the browser's root font-size preference; do not force a 16px root.
 
 Display collection timestamps and league dates in the browser's timezone. Generate timezone labels with Intl so daylight-saving offsets remain accurate. This display preference does not change Central-time job schedules or historical snapshot boundaries. Test timezone conversion deterministically, including daylight-saving changes.
+
+See [unit-test conventions](docs/unit-test-conventions.md) for suite structure, assertions, fixture mutation, and test helper imports.
