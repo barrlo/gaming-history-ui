@@ -18,9 +18,12 @@ describe('PoE2 roster page', () => {
   afterAll(() => server.close());
 
   it('should render the scheduled PoE2 roster with a class-only new character', async () => {
+    const rosterRequest = vi.fn(() => HttpResponse.json(poe2Roster));
+    server.use(http.get('*/api/v1/poe2/characters', rosterRequest));
     renderWithRouter(<Poe2RosterPage />, { initialEntries: ['/poe2'] });
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
+    expect(rosterRequest).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
     expect(screen.getByText(/Path of Exile 2/)).toBeInTheDocument();
     expect(screen.getByText('Witch')).toBeInTheDocument();
@@ -33,12 +36,18 @@ describe('PoE2 roster page', () => {
 
   it('should retry the PoE2 roster endpoint after a failure', async () => {
     const user = userEvent.setup();
-    server.use(http.get('*/api/v1/poe2/characters', () => HttpResponse.json({}, { status: 503 })));
+    const rosterRequest = vi
+      .fn(() => HttpResponse.json(poe2Roster))
+      .mockImplementationOnce(() => new HttpResponse(null, { status: 503 }));
+    server.use(http.get('*/api/v1/poe2/characters', rosterRequest));
     renderWithRouter(<Poe2RosterPage />, { initialEntries: ['/poe2'] });
     const retry = await screen.findByRole('button', { name: 'Try again' });
-    server.use(http.get('*/api/v1/poe2/characters', () => HttpResponse.json(poe2Roster)));
+
+    expect(rosterRequest).toHaveBeenCalledTimes(1);
+
     await user.click(retry);
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
+    expect(rosterRequest).toHaveBeenCalledTimes(2);
   });
 });

@@ -2,6 +2,7 @@ import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { getRoster, getCurrentScore, getHistory } from './world-of-warcraft-service';
 import { handlers } from '../mocks/handlers';
+import { wowRoster } from '../mocks/wow-roster';
 
 const server = setupServer(...handlers);
 
@@ -33,5 +34,24 @@ describe('World of Warcraft service', () => {
     await expect(getCurrentScore('char-aeloria')).rejects.toMatchObject({
       response: { status: 503 },
     });
+  });
+
+  it('should fetch the roster from its game endpoint', async () => {
+    const roster = await getRoster(new AbortController().signal);
+
+    expect(roster).toStrictEqual(wowRoster);
+  });
+
+  it('should cancel a roster request when its signal is aborted', async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    await expect(getRoster(controller.signal)).rejects.toMatchObject({ code: 'ERR_CANCELED' });
+  });
+
+  it('should propagate roster failures instead of displaying an empty roster', async () => {
+    server.use(http.get('*/api/v1/wow/characters', () => new HttpResponse(null, { status: 503 })));
+
+    await expect(getRoster()).rejects.toMatchObject({ response: { status: 503 } });
   });
 });

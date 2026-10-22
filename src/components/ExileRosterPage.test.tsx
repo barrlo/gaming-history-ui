@@ -38,6 +38,7 @@ describe('ExileRosterPage', () => {
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
     expect(screen.queryByRole('link', { name: /Ashwarden/ })).not.toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledWith(expect.any(AbortSignal));
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
   });
 
   it('should distinguish no ascendancy from unavailable data and awaiting a first build', async () => {
@@ -55,11 +56,22 @@ describe('ExileRosterPage', () => {
     expect(screen.getByText('League start date unavailable')).toBeInTheDocument();
   });
 
-  it('should show a loading state until the scheduled collection is available', () => {
-    renderRoster(() => new Promise<ExileRoster>(() => {}));
+  it('should show a loading state until the scheduled collection is available', async () => {
+    let release!: (roster: ExileRoster) => void;
+    const gate = new Promise<ExileRoster>((resolve) => {
+      release = resolve;
+    });
+    const fetchRoster = vi.fn(() => gate);
+    renderRoster(fetchRoster);
 
     expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
     expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
+
+    release(poeRoster);
+
+    expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
   });
 
   it('should explain an empty roster without offering an on-demand refresh', async () => {
@@ -70,10 +82,8 @@ describe('ExileRosterPage', () => {
   });
 
   it('should isolate PoE and PoE2 query caches when switching from PoE to PoE2', async () => {
-    const fetchRoster = vi
-      .fn()
-      .mockResolvedValueOnce(poeRoster)
-      .mockImplementationOnce(() => new Promise<ExileRoster>(() => {}));
+    const gate = new Promise<ExileRoster>(() => {});
+    const fetchRoster = vi.fn().mockResolvedValueOnce(poeRoster).mockReturnValueOnce(gate);
     const renderGame = (game: ExileRoster['game']) => (
       <ExileRosterPage
         fetchRoster={fetchRoster}
@@ -81,15 +91,17 @@ describe('ExileRosterPage', () => {
         title={game === 'poe' ? 'Path of Exile' : 'Path of Exile 2'}
       />
     );
-    const view = renderWithRouter(renderGame('poe'), { initialEntries: ['/'] });
+    const { rerender } = renderWithRouter(renderGame('poe'), { initialEntries: ['/'] });
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
 
-    view.rerender(renderGame('poe2'));
+    rerender(renderGame('poe2'));
 
     expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
     expect(screen.queryByText('Ashwarden')).not.toBeInTheDocument();
     expect(screen.getByText('Path of Exile 2 · League archive')).toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(2);
   });
 
   it('should retry a failed roster request without losing the page context', async () => {
@@ -98,6 +110,7 @@ describe('ExileRosterPage', () => {
     renderRoster(fetchRoster);
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Characters could not be loaded');
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
 
     await user.click(screen.getByRole('button', { name: 'Try again' }));
 
