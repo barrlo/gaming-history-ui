@@ -5,17 +5,11 @@ import { renderWithRouter } from '../test/render';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { WorldOfWarcraftRosterPage } from './WorldOfWarcraftRosterPage';
-import { createQueryClient } from '../api/query-client';
 import { handlers } from '../mocks/handlers';
 import { wowRoster as roster } from '../mocks/wow-roster';
 
 const server = setupServer(...handlers);
-const renderRoster = () => {
-  const client = createQueryClient();
-  const view = renderWithRouter(<WorldOfWarcraftRosterPage />, { queryClient: client });
-
-  return { client, ...view };
-};
+const renderRoster = () => renderWithRouter(<WorldOfWarcraftRosterPage />);
 
 describe('World of Warcraft roster', () => {
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));

@@ -42,31 +42,18 @@ describe('Current score queries', () => {
   });
 
   it('should cancel an in-flight request without returning its score', async () => {
-    let release!: () => void;
-    const gate = new Promise<void>((resolve) => {
-      release = resolve;
-    });
-    const request = vi.fn(async () => {
-      await gate;
-
-      return HttpResponse.json(current);
-    });
+    const request = vi.fn(() => new Promise<Response>(() => {}));
     server.use(http.get('*/api/v1/wow/characters/:id/current-score', request));
     const client = new QueryClient();
     const pending = client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
     const settled = Promise.allSettled([pending]);
-    try {
-      await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
-      await client.cancelQueries({ queryKey: ['wow', 'current-score', 'char-aeloria'] });
-      const results = await settled;
+    await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    await client.cancelQueries({ queryKey: ['wow', 'current-score', 'char-aeloria'] });
+    const results = await settled;
 
-      expect(results[0].status).toBe('rejected');
-      expect(client.getQueryData(['wow', 'current-score', 'char-aeloria', 'demo-season'])).toBeUndefined();
-    } finally {
-      client.clear();
-      release();
-      await settled;
-      await Promise.allSettled(request.mock.results.map((result) => result.value));
-    }
+    expect(results[0].status).toBe('rejected');
+    expect(client.getQueryData(['wow', 'current-score', 'char-aeloria', 'demo-season'])).toBeUndefined();
+
+    client.clear();
   });
 });

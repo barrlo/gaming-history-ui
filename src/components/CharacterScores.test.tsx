@@ -20,11 +20,11 @@ describe('CharacterScores', () => {
 
   const renderRoster = (characters = roster.characters) => {
     const client = createQueryClient();
-    const view = renderWithProviders(<CharacterScores characters={characters} seasonId="demo-season" />, {
+    renderWithProviders(<CharacterScores characters={characters} seasonId="demo-season" />, {
       queryClient: client,
     });
 
-    return { client, ...view };
+    return { client };
   };
 
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
@@ -102,23 +102,16 @@ describe('CharacterScores', () => {
       return HttpResponse.json({ ...current, characterId: params.id });
     });
     server.use(http.get('*/api/v1/wow/characters/:id/current-score', request));
-    const view = renderRoster();
+    renderRoster();
 
-    try {
-      await waitFor(() => expect(request).toHaveBeenCalledTimes(4));
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(4));
 
-      expect(screen.getByRole('article', { name: 'Aeloria' })).toHaveTextContent('Loading score…');
+    expect(screen.getByRole('article', { name: 'Aeloria' })).toHaveTextContent('Loading score…');
 
-      release();
+    release();
 
-      expect(await screen.findAllByText('2,540')).toHaveLength(4);
-      expect(request).toHaveBeenCalledTimes(4);
-    } finally {
-      view.unmount();
-      view.client.clear();
-      release();
-      await Promise.allSettled(request.mock.results.map((result) => result.value));
-    }
+    expect(await screen.findAllByText('2,540')).toHaveLength(4);
+    expect(request).toHaveBeenCalledTimes(4);
   });
 
   it('should distinguish a zero score from a missing weekly baseline and a negative change', async () => {

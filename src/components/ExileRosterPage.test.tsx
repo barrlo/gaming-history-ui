@@ -62,22 +62,16 @@ describe('ExileRosterPage', () => {
       release = resolve;
     });
     const fetchRoster = vi.fn(() => gate);
-    const view = renderRoster(fetchRoster);
+    renderRoster(fetchRoster);
 
-    try {
-      expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
-      expect(screen.queryByRole('list')).not.toBeInTheDocument();
-      expect(fetchRoster).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
 
-      release(poeRoster);
+    release(poeRoster);
 
-      expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
-      expect(fetchRoster).toHaveBeenCalledTimes(1);
-    } finally {
-      view.unmount();
-      release(poeRoster);
-      await gate;
-    }
+    expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
   });
 
   it('should explain an empty roster without offering an on-demand refresh', async () => {
@@ -88,10 +82,7 @@ describe('ExileRosterPage', () => {
   });
 
   it('should isolate PoE and PoE2 query caches when switching from PoE to PoE2', async () => {
-    let release!: (roster: ExileRoster) => void;
-    const gate = new Promise<ExileRoster>((resolve) => {
-      release = resolve;
-    });
+    const gate = new Promise<ExileRoster>(() => {});
     const fetchRoster = vi.fn().mockResolvedValueOnce(poeRoster).mockReturnValueOnce(gate);
     const renderGame = (game: ExileRoster['game']) => (
       <ExileRosterPage
@@ -102,21 +93,15 @@ describe('ExileRosterPage', () => {
     );
     const view = renderWithRouter(renderGame('poe'), { initialEntries: ['/'] });
 
-    try {
-      expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
-      expect(fetchRoster).toHaveBeenCalledTimes(1);
+    expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(1);
 
-      view.rerender(renderGame('poe2'));
+    view.rerender(renderGame('poe2'));
 
-      expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
-      expect(screen.queryByText('Ashwarden')).not.toBeInTheDocument();
-      expect(screen.getByText('Path of Exile 2 · League archive')).toBeInTheDocument();
-      expect(fetchRoster).toHaveBeenCalledTimes(2);
-    } finally {
-      view.unmount();
-      release({ game: 'poe2', groups: [] });
-      await gate;
-    }
+    expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
+    expect(screen.queryByText('Ashwarden')).not.toBeInTheDocument();
+    expect(screen.getByText('Path of Exile 2 · League archive')).toBeInTheDocument();
+    expect(fetchRoster).toHaveBeenCalledTimes(2);
   });
 
   it('should retry a failed roster request without losing the page context', async () => {

@@ -45,4 +45,6 @@ Feature E2E layout checks use representative mobile (390px), tablet (900px), and
 
 Each application component file must have a corresponding unit test file. Keep component-specific behavior in those tests and retain cross-component routing/integration behavior in App tests instead of duplicating it. The `main.tsx` bootstrap exclusion remains; configuration, route definitions, and test utilities are not application components.
 
-Use test-controlled promises for pending-request/loading and cancellation tests instead of fixed sleeps. Release gates and settle pending handler work in `finally` so failed assertions cannot leave unresolved requests.
+Use test-controlled promises for deterministic pending-request/loading and cancellation tests instead of fixed sleeps. Release a gate when request completion is part of the behavior under test. Avoid cleanup-only `try/finally` blocks and gate-release machinery: Vitest and MSW do not resolve arbitrary promises, but a pending promise alone does not keep the process alive. Retain teardown for real resources such as timers, subscriptions, or servers, and coordination needed to observe cancellation safely.
+
+Rely on React Testing Library automatic unmount cleanup. Capture a render result only when the test needs it, such as rerendering or deliberately unmounting/remounting to test persisted state. Do not capture it or call `unmount` solely for cleanup.
