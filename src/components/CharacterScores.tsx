@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
-import { Box, Button, Stack, Text, Title } from '@mantine/core';
+import { Anchor, Box, Button, Stack, Text, Title } from '@mantine/core';
 import { currentScoreQueryOptions } from '../api/current-score-queries';
 import type { Character, CurrentScore } from '../api/types';
 import styles from './CharacterScores.module.css';
@@ -53,7 +54,9 @@ export const CharacterScores = ({ characters, seasonId }: { characters: Characte
         <Box aria-label={character.name} className={styles.row} component="article" key={character.id}>
           <Box>
             <Title className={styles.characterName} order={2} style={{ color: `var(--wow-${character.classKey})` }}>
-              {character.name}
+              <Anchor c="inherit" component={Link} inherit to={`/wow/characters/${encodeURIComponent(character.id)}`}>
+                {character.name}
+              </Anchor>
             </Title>
             <Text className={styles.className}>{character.classKey.replaceAll('-', ' ')}</Text>
           </Box>

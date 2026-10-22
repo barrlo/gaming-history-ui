@@ -1,0 +1,35 @@
+.panel {
+  background: var(--site-surface);
+  border-radius: var(--site-radius-roster);
+  min-width: 0;
+  padding: var(--mantine-spacing-md);
+}
+
+.empty {
+  color: var(--site-muted);
+  padding: 4rem 0;
+}
+
+.legend {
+  align-items: center;
+  color: var(--site-muted);
+  display: flex;
+  gap: var(--site-spacing-compact);
+}
+
+.savedDot,
+.currentDot {
+  background: var(--site-accent);
+  border: 2px solid var(--site-accent);
+  border-radius: 50%;
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+.currentDot {
+  background: var(--site-surface);
+}
+
+.chart {
+  --chart-text-color: var(--site-muted);
+}

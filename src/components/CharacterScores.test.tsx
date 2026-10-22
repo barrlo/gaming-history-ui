@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '../test/render';
+import { renderWithRouter } from '../test/render';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { CharacterScores } from './CharacterScores';
@@ -13,7 +13,7 @@ const server = setupServer(...handlers);
 
 const renderRoster = (characters = roster.characters) => {
   const client = createQueryClient();
-  renderWithProviders(<CharacterScores characters={characters} seasonId="demo-season" />, {
+  renderWithRouter(<CharacterScores characters={characters} seasonId="demo-season" />, {
     queryClient: client,
   });
 
@@ -60,7 +60,7 @@ describe('CharacterScores', () => {
     expect(requests[1]).toHaveBeenCalledTimes(1);
     expect(requests[2]).toHaveBeenCalledTimes(1);
     expect(requests[3]).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('link', { name: /Aeloria/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Aeloria' })).toHaveAttribute('href', '/wow/characters/char-aeloria');
   });
 
   it('should retry only a failed character while preserving other scores', async () => {
