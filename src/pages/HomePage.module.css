@@ -41,15 +41,11 @@
 }
 
 .gameStatus {
-  color: var(--site-muted);
+  color: var(--site-available);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-}
-
-.gameStatus.available {
-  color: var(--site-available);
 }
 
 .gameTitle {
@@ -65,23 +61,14 @@
   margin-bottom: 28px;
 }
 
-.trackingNote {
-  display: block;
-}
-
 .gameAction {
-  background: var(--site-action);
-  color: var(--site-description);
+  background: var(--site-primary-action);
+  color: var(--site-primary-text);
   font-size: 15px;
   font-weight: 500;
   height: 48px;
   margin-top: auto;
   border-radius: 8px;
-}
-
-.gameAction.primaryAction {
-  background: var(--site-primary-action);
-  color: var(--site-primary-text);
 }
 
 .gameAction:hover {
@@ -145,10 +132,6 @@
   .gameDescription {
     font-size: 13px;
     margin-bottom: 24px;
-  }
-
-  .trackingNote {
-    display: none;
   }
 
   .gameAction {

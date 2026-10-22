@@ -48,7 +48,7 @@ describe('App', () => {
     expect(screen.getByText('Under construction.')).toBeInTheDocument();
   });
 
-  it('should describe available and upcoming games with working landing links', async () => {
+  it('should describe available games with working landing links', async () => {
     const user = userEvent.setup();
     renderApp();
     const warcraft = screen.getByRole('article', { name: 'World of Warcraft' });
@@ -58,8 +58,8 @@ describe('App', () => {
     expect(within(warcraft).getByText('Available')).toBeInTheDocument();
     expect(within(warcraft).getByRole('link', { name: 'View characters' })).toHaveAttribute('href', '/wow');
     expect(within(exile).getByText('Available')).toBeInTheDocument();
-    expect(within(sequel).getByText('Under construction')).toBeInTheDocument();
-    expect(within(sequel).getByRole('link', { name: 'View page' })).toHaveAttribute('href', '/poe2');
+    expect(within(sequel).getByText('Available')).toBeInTheDocument();
+    expect(within(sequel).getByRole('link', { name: 'View characters' })).toHaveAttribute('href', '/poe2');
 
     await user.click(within(exile).getByRole('link', { name: 'View characters' }));
 
@@ -84,7 +84,7 @@ describe('App', () => {
     ['/wow', 'World of Warcraft'],
     ['/wow/characters/char-aeloria', 'Character history'],
     ['/poe', 'My characters'],
-    ['/poe2', 'Path of Exile 2'],
+    ['/poe2', 'My characters'],
     ['/unknown', 'Page not found'],
   ])('should render %s as %s', (path, heading) => {
     renderApp(path);
@@ -119,7 +119,7 @@ describe('App', () => {
 
     await user.click(within(drawer).getByRole('link', { name: 'Path of Exile 2' }));
 
-    expect(screen.getByRole('heading', { name: 'Path of Exile 2' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
