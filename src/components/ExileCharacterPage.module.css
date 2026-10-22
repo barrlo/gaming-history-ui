@@ -1,0 +1,11 @@
+.back {
+  align-items: center;
+  color: var(--site-muted);
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  width: fit-content;
+}
+
+.selector {
+  max-width: 29.375rem;
+}

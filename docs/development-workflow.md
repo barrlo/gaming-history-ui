@@ -15,3 +15,5 @@ Routine dependency synchronization, such as merging a parent feature branch into
 Do not start a preview server just because work is finished or a PR is opened. Jacob will request one or start it himself. Stop temporary servers used for automated verification when checks finish.
 
 Keep setup instructions and available check commands in [README.md](../README.md). Run checks appropriate to the changes and report their results in the PR. Documentation-only changes require formatting and link checks rather than rerunning application tests.
+
+The current Exile character-detail milestone is read-only: latest stored builds, paginated snapshot dates, and immutable historical selections. Manual Update/refresh operations and cooldown controls belong to a later PR; opening a build page does not request an upstream refresh. Development roster and build mocks mirror the API's runtime examples; canonical contract fixtures remain unchanged.

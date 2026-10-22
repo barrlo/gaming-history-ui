@@ -1,0 +1,22 @@
+.section {
+  background: var(--site-surface);
+  border-radius: var(--mantine-radius-md);
+  padding: var(--mantine-spacing-lg);
+}
+
+.section h2 {
+  font-size: var(--mantine-font-size-xl);
+}
+
+.sectionButton {
+  color: var(--site-text);
+  font-size: var(--mantine-font-size-xl);
+  height: auto;
+  min-height: 2.75rem;
+  padding: 0;
+  white-space: normal;
+}
+
+.skill {
+  color: var(--site-accent);
+}

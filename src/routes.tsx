@@ -1,5 +1,6 @@
 import type { RouteObject } from 'react-router-dom';
 import { Stack, Text, Title } from '@mantine/core';
+import { ExileCharacterPage } from './components/ExileCharacterPage';
 import { App } from './App';
 import { HomePage } from './pages/HomePage';
 import { WorldOfWarcraftRosterPage } from './pages/WorldOfWarcraftRosterPage';
@@ -22,7 +23,9 @@ export const routes: RouteObject[] = [
       { element: <WorldOfWarcraftRosterPage />, path: 'wow' },
       { element: <Placeholder title="Character history" />, path: 'wow/characters/:characterId' },
       { element: <PoeRosterPage />, path: 'poe' },
+      { element: <ExileCharacterPage game="poe" />, path: 'poe/characters/:characterId' },
       { element: <Poe2RosterPage />, path: 'poe2' },
+      { element: <ExileCharacterPage game="poe2" />, path: 'poe2/characters/:characterId' },
       { element: <Placeholder title="Page not found" />, path: '*' },
     ],
     element: <App />,

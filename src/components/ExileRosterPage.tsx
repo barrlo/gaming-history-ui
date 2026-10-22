@@ -44,7 +44,6 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
         <Text
           className={styles.note}
         >{`Latest collected builds. Times shown in ${Intl.DateTimeFormat().resolvedOptions().timeZone}.`}</Text>
-        <Text className={styles.note}>{'Character build pages are coming next.'}</Text>
       </Box>
       {roster.isPending && (
         <Stack aria-label="Loading characters" role="status">
@@ -87,7 +86,9 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
                     key={`${character.id}-${league.id}`}
                   >
                     <Box>
-                      <Text className={styles.name}>{character.name}</Text>
+                      <Anchor className={styles.name} component={Link} to={`/${game}/characters/${character.id}`}>
+                        {character.name}
+                      </Anchor>
                       <Text className={styles.identity}>
                         {character.ascendancy.status === 'known'
                           ? `${character.class} · ${character.ascendancy.name}`

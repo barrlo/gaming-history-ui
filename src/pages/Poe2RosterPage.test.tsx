@@ -26,12 +26,12 @@ describe('PoE2 roster page', () => {
     expect(rosterRequest).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
     expect(screen.getByText(/Path of Exile 2/)).toBeInTheDocument();
-    expect(screen.getByText('Witch')).toBeInTheDocument();
-    expect(screen.getByText('Warrior · Titan')).toBeInTheDocument();
+    expect(screen.getAllByText('Witch')).toHaveLength(2);
+    expect(screen.getByText('Witch · Infernalist')).toBeInTheDocument();
     expect(screen.getByText('Sorceress · Stormweaver')).toBeInTheDocument();
-    expect(screen.getByText('Regular · Archived')).toBeInTheDocument();
+    expect(screen.getAllByText('Regular · Archived')).toHaveLength(2);
     expect(screen.queryByRole('button', { name: /update/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /Ashwarden/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Ashwarden/i })).toBeInTheDocument();
   });
 
   it('should retry the PoE2 roster endpoint after a failure', async () => {
