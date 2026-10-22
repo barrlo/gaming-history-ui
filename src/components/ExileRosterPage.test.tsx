@@ -13,7 +13,7 @@ const renderRoster = (fetchRoster: (signal?: AbortSignal) => Promise<ExileRoster
 };
 
 describe('ExileRosterPage', () => {
-  it('should display stored league groups and levels in contract order with archived characters', async () => {
+  it('should display stored league leagues and levels in contract order with archived characters', async () => {
     const fetchRoster = vi.fn().mockResolvedValue(poeRoster);
     renderRoster(fetchRoster);
 
@@ -42,10 +42,10 @@ describe('ExileRosterPage', () => {
 
   it('should distinguish no ascendancy from unavailable data and awaiting a first build', async () => {
     const roster = structuredClone(poeRoster);
-    roster.groups[0].startAt = null;
-    roster.groups[0].characters[0].character.ascendancy = { name: null, status: 'none' };
-    roster.groups[0].characters[0].buildAvailable = false;
-    roster.groups[0].characters[1].character.ascendancy = { name: null, status: 'unavailable' };
+    roster.leagues[0].startAt = null;
+    roster.leagues[0].characters[0].character.ascendancy = { name: null, status: 'none' };
+    roster.leagues[0].characters[0].buildAvailable = false;
+    roster.leagues[0].characters[1].character.ascendancy = { name: null, status: 'unavailable' };
     renderRoster(vi.fn().mockResolvedValue(roster));
 
     expect(await screen.findByText('Witch')).toBeInTheDocument();
@@ -63,7 +63,7 @@ describe('ExileRosterPage', () => {
   });
 
   it('should explain an empty roster without offering an on-demand refresh', async () => {
-    renderRoster(vi.fn().mockResolvedValue({ game: 'poe', groups: [] }));
+    renderRoster(vi.fn().mockResolvedValue({ game: 'poe', leagues: [] }));
 
     expect(await screen.findByRole('heading', { name: 'No characters collected yet' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /update|refresh/i })).not.toBeInTheDocument();

@@ -461,11 +461,11 @@ export interface components {
             observedAt: string;
             buildAvailable: boolean;
         };
-        /** @description Stored data only, including archived participation. Groups by league family, start descending (unknown last), then ID. Characters level descending, case-insensitive name then character ID then league ID. Empty groups omitted. */
+        /** @description Stored data only, including archived participation. Groups by league family, start descending (unknown last), then ID. Characters level descending, case-insensitive name then character ID then league ID. Empty league families omitted. */
         PoeRoster: {
             /** @enum {string} */
             game: "poe" | "poe2";
-            groups: {
+            leagues: {
                 id: string;
                 name: string;
                 /** Format: date-time */
@@ -1016,7 +1016,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "game": "poe",
-                     *       "groups": [
+                     *       "leagues": [
                      *         {
                      *           "id": "demo-family",
                      *           "name": "Emberfall",
@@ -1649,7 +1649,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "game": "poe2",
-                     *       "groups": [
+                     *       "leagues": [
                      *         {
                      *           "id": "demo-family",
                      *           "name": "Emberfall",
