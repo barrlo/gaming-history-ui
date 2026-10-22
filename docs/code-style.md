@@ -29,8 +29,10 @@ Alphabetize configuration object properties (except in the ESLint configuration 
 
 Leave a blank line before a `return` statement when another statement precedes it in the same block. A return that is the first statement in a block does not need padding against the opening brace. UI ESLint enforces this convention; API Rider/ReSharper formatting supports it through the control-transfer spacing setting (which also applies to other control-transfer statements). The API CLI formatter does not enforce this specific rule.
 
-Use `rem` or theme tokens for component typography, spacing, sizing, and radii. Thin borders may stay in pixels and media breakpoints in `em`. Preserve the browser's root font-size preference; do not force a 16px root.
+Use Mantine font-size, spacing, and radius variables when their values match the design. Define recurring custom values in the shared theme and CSS variables resolver so roster styles can reuse them. Preserve approved dimensions rather than rounding to the nearest built-in token. Use `rem` or theme tokens for component typography, spacing, sizing, and radii. Thin borders may stay in pixels and media breakpoints in `em`. Preserve the browser's root font-size preference; do not force a 16px root.
 
 Display collection timestamps and league dates in the browser's timezone. Generate timezone labels with Intl so daylight-saving offsets remain accurate. This display preference does not change Central-time job schedules or historical snapshot boundaries. Test timezone conversion deterministically, including daylight-saving changes.
 
 Use Prettier with `printWidth: 120`. For test-specific import ordering, follow [unit-test conventions](unit-test-conventions.md).
+
+Combine consecutive uninitialized `let` declarations in the same scope into one declaration statement, for example `let client: QueryClient, current: CurrentScore;`. Prettier may wrap the declarators across multiple lines; keep them in one statement. This convention is reviewed manually.

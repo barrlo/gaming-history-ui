@@ -1,0 +1,35 @@
+.backLink {
+  align-items: center;
+  color: var(--site-muted);
+  display: inline-flex;
+  gap: var(--site-spacing-compact);
+  width: fit-content;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.description {
+  color: var(--site-description);
+  font-size: 1.0625rem;
+  margin-top: var(--mantine-spacing-md);
+}
+
+.season {
+  color: var(--site-accent);
+}
+
+.empty {
+  background: var(--site-surface);
+  border-radius: var(--site-radius-roster);
+  padding: 3rem var(--site-spacing-roster);
+  text-align: center;
+}
+
+@media (max-width: 61.99375em) {
+  .title {
+    font-size: 1.875rem;
+  }
+}

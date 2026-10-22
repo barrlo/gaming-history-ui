@@ -90,7 +90,7 @@ test.describe('Site shell', () => {
       .getByRole('link', { name: 'View characters' })
       .click();
 
-    await expect(page.getByRole('heading', { name: 'World of Warcraft' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'My characters' })).toBeVisible();
     await expect(
       page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'World of Warcraft' }),
     ).toHaveAttribute('aria-current', 'page');
