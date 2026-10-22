@@ -7,44 +7,43 @@ import { wowCurrentScores } from '../mocks/wow-roster';
 const server = setupServer();
 
 describe('Current score queries', () => {
+  let client: QueryClient;
   let current: (typeof wowCurrentScores)[number];
 
   beforeEach(() => {
+    client = new QueryClient();
     current = wowCurrentScores[0];
   });
 
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    client.clear();
+    server.resetHandlers();
+  });
 
   afterAll(() => server.close());
 
   it('should not reuse client data instead of revalidating on a new entry', async () => {
     const request = vi.fn(() => HttpResponse.json(current));
     server.use(http.get('*/api/v1/wow/characters/:id/current-score', request));
-    const client = new QueryClient();
     await client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
     await client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
-    client.clear();
 
     expect(request).toHaveBeenCalledTimes(2);
   });
 
   it('should reject a response for another character', async () => {
     server.use(http.get('*/api/v1/wow/characters/:id/current-score', () => HttpResponse.json(current)));
-    const client = new QueryClient();
 
     await expect(client.fetchQuery(currentScoreQueryOptions('char-other', 'demo-season'))).rejects.toThrow(
       'does not match',
     );
-
-    client.clear();
   });
 
   it('should cancel an in-flight request without returning its score', async () => {
     const request = vi.fn(() => new Promise<Response>(() => {}));
     server.use(http.get('*/api/v1/wow/characters/:id/current-score', request));
-    const client = new QueryClient();
     const pending = client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
     const settled = Promise.allSettled([pending]);
     await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
@@ -53,7 +52,5 @@ describe('Current score queries', () => {
 
     expect(results[0].status).toBe('rejected');
     expect(client.getQueryData(['wow', 'current-score', 'char-aeloria', 'demo-season'])).toBeUndefined();
-
-    client.clear();
   });
 });

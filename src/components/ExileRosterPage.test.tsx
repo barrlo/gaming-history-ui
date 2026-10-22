@@ -91,12 +91,12 @@ describe('ExileRosterPage', () => {
         title={game === 'poe' ? 'Path of Exile' : 'Path of Exile 2'}
       />
     );
-    const view = renderWithRouter(renderGame('poe'), { initialEntries: ['/'] });
+    const { rerender } = renderWithRouter(renderGame('poe'), { initialEntries: ['/'] });
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(1);
 
-    view.rerender(renderGame('poe2'));
+    rerender(renderGame('poe2'));
 
     expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
     expect(screen.queryByText('Ashwarden')).not.toBeInTheDocument();

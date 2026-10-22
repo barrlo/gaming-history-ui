@@ -44,12 +44,12 @@ describe('SiteLayout', () => {
 
   it('should switch themes in both directions and retain the saved preference', async () => {
     const user = userEvent.setup();
-    const view = renderLayout();
+    const { unmount } = renderLayout();
     await user.click(screen.getByRole('button', { name: 'Switch to light theme' }));
 
     expect(document.documentElement).toHaveAttribute('data-mantine-color-scheme', 'light');
 
-    view.unmount();
+    unmount();
     renderLayout();
 
     expect(screen.getByRole('button', { name: 'Switch to dark theme' })).toBeInTheDocument();

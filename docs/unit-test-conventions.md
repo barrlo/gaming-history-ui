@@ -48,3 +48,7 @@ Each application component file must have a corresponding unit test file. Keep c
 Use test-controlled promises for deterministic pending-request/loading and cancellation tests instead of fixed sleeps. Release a gate when request completion is part of the behavior under test. Avoid cleanup-only `try/finally` blocks and gate-release machinery: Vitest and MSW do not resolve arbitrary promises, but a pending promise alone does not keep the process alive. Retain teardown for real resources such as timers, subscriptions, or servers, and coordination needed to observe cancellation safely.
 
 Rely on React Testing Library automatic unmount cleanup. Capture a render result only when the test needs it, such as rerendering or deliberately unmounting/remounting to test persisted state. Do not capture it or call `unmount` solely for cleanup.
+
+Keep reusable render helpers at file scope when they do not depend on suite-local state; pass test-specific inputs as arguments. When render utilities are needed, destructure only those used, such as `const { rerender } = renderWithRouter(...)`.
+
+When a suite repeatedly creates and clears its own QueryClient, declare it inside `describe`, create a fresh instance in `beforeEach`, and clear it in `afterEach`. This keeps tests isolated and ensures teardown runs after failed assertions. Do not add explicit clients to component tests that can use the shared render helpers’ default client.

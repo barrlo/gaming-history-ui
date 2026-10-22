@@ -11,21 +11,21 @@ import { wowCurrentScores, wowRoster as roster } from '../mocks/wow-roster';
 
 const server = setupServer(...handlers);
 
+const renderRoster = (characters = roster.characters) => {
+  const client = createQueryClient();
+  renderWithProviders(<CharacterScores characters={characters} seasonId="demo-season" />, {
+    queryClient: client,
+  });
+
+  return { client };
+};
+
 describe('CharacterScores', () => {
   let current: (typeof wowCurrentScores)[number];
 
   beforeEach(() => {
     current = wowCurrentScores[0];
   });
-
-  const renderRoster = (characters = roster.characters) => {
-    const client = createQueryClient();
-    renderWithProviders(<CharacterScores characters={characters} seasonId="demo-season" />, {
-      queryClient: client,
-    });
-
-    return { client };
-  };
 
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
