@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Site shell', () => {
   test('navigation and theme remain usable on desktop and mobile', async ({ page }) => {
-    await page.route('**/api/v1/poe2/characters', (route) => route.fulfill({ json: { game: 'poe2', groups: [] } }));
+    await page.route('**/api/v1/poe2/characters', (route) => route.fulfill({ json: { game: 'poe2', leagues: [] } }));
     await page.goto('/');
 
     await expect(page.getByRole('heading', { name: 'Every character. Every season.' })).toBeVisible();
@@ -98,7 +98,7 @@ test.describe('Site shell', () => {
 
   test('mobile drawer traps focus, restores the trigger, and returns home', async ({ page }) => {
     await page.setViewportSize({ height: 844, width: 390 });
-    await page.route('**/api/v1/poe/characters', (route) => route.fulfill({ json: { game: 'poe', groups: [] } }));
+    await page.route('**/api/v1/poe/characters', (route) => route.fulfill({ json: { game: 'poe', leagues: [] } }));
     await page.goto('/poe');
     const menu = page.getByRole('button', { name: 'Open navigation' });
     await menu.click();

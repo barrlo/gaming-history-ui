@@ -45,7 +45,7 @@ test.describe('Path of Exile roster', () => {
 
     await expect(page.getByRole('alert')).toContainText('Characters could not be loaded');
 
-    await page.route('**/api/v1/poe/characters', (route) => route.fulfill({ json: { game: 'poe', groups: [] } }));
+    await page.route('**/api/v1/poe/characters', (route) => route.fulfill({ json: { game: 'poe', leagues: [] } }));
     await page.getByRole('button', { name: 'Try again' }).click();
 
     await expect(page.getByRole('heading', { name: 'No characters collected yet' })).toBeVisible();
@@ -59,9 +59,9 @@ test.describe('Path of Exile roster', () => {
       page,
     }) => {
       const roster = structuredClone(poeRoster);
-      roster.groups[0].startAt = '2026-01-15T02:00:00Z';
-      roster.groups[0].characters[0].observedAt = '2026-01-15T08:00:00Z';
-      roster.groups[0].characters[1].observedAt = '2026-07-15T08:00:00Z';
+      roster.leagues[0].startAt = '2026-01-15T02:00:00Z';
+      roster.leagues[0].characters[0].observedAt = '2026-01-15T08:00:00Z';
+      roster.leagues[0].characters[1].observedAt = '2026-07-15T08:00:00Z';
       await page.route('**/api/v1/poe/characters', (route) => route.fulfill({ json: roster }));
       await page.goto('/poe');
 

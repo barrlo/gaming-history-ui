@@ -64,22 +64,22 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
       )}
       {roster.data && (
         <>
-          {roster.data.groups.length === 0 && (
+          {roster.data.leagues.length === 0 && (
             <Stack>
               <Title order={2}>{'No characters collected yet'}</Title>
               <Text>{'Characters from public temporary leagues will appear after the next collection.'}</Text>
             </Stack>
           )}
-          {roster.data.groups.map((group) => (
-            <Box aria-labelledby={`league-${group.id}`} component="section" key={group.id}>
-              <Title id={`league-${group.id}`} order={2}>
-                {group.name}
+          {roster.data.leagues.map((league) => (
+            <Box aria-labelledby={`league-${league.id}`} component="section" key={league.id}>
+              <Title id={`league-${league.id}`} order={2}>
+                {league.name}
               </Title>
               <Text className={styles.note}>
-                {group.startAt ? `Started ${formatDate(group.startAt)}` : 'League start date unavailable'}
+                {league.startAt ? `Started ${formatDate(league.startAt)}` : 'League start date unavailable'}
               </Text>
               <Stack className={styles.characters} component="ul" gap={0}>
-                {group.characters.map(({ buildAvailable, character, league, observedAt, tracking }) => (
+                {league.characters.map(({ buildAvailable, character, league, observedAt, tracking }) => (
                   <Flex
                     className={styles.character}
                     component="li"

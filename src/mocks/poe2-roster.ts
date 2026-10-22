@@ -2,7 +2,7 @@ import type { ExileRoster } from '../api/exile-types';
 
 export const poe2Roster: ExileRoster = {
   game: 'poe2',
-  groups: [
+  leagues: [
     {
       characters: [
         {

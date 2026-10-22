@@ -13,3 +13,7 @@ The contract adds PoE and PoE2 roster, latest-build, snapshot, and asynchronous 
 The candidate passed hosted Swagger validation with zero issues. Generate declarations with `npm run generate:types` and verify they remain reproducible with `npm run check:generated`. The fixture manifest does not install runtime response validation.
 
 Physical build storage remains undecided. These public models do not prescribe DynamoDB or S3 payload storage.
+
+## Roster field naming revision
+
+The PoE and PoE2 roster responses use `leagues` (replacing `groups`). Each entry remains a league family; character entries retain their specific league variant. This reviewed contract rename requires matching UI and API versions. Coordinate API PR #5 with the companion UI rename PR; the prior hosted Swagger validation predates this revision.
