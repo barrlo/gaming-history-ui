@@ -12,9 +12,9 @@ const games = [
     title: 'World of Warcraft',
   },
   {
-    action: 'View page',
-    available: false,
-    description: 'A new chapter is on its way.',
+    action: 'View characters',
+    available: true,
+    description: 'Characters, league archives, and collected builds.',
     path: '/poe',
     title: 'Path of Exile',
   },

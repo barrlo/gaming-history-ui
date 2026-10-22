@@ -35,3 +35,7 @@ CI installs the locked dependencies and checks generation, formatting, lint, tes
 Vitest settings live in `vitest.config.ts`, separately from Vite development/build settings. Vitest globals are enabled, so React Testing Library automatically cleans up rendered components after each test. Keep explicit teardown hooks only for other resources, such as resetting MSW handlers or closing its server.
 
 Routing uses React Router Data Mode: `src/routes.tsx` defines the shared route tree, `main.tsx` creates one browser router outside React rendering, and `App` renders child routes through an `Outlet`. Component tests use the same route tree with `createMemoryRouter`. TanStack Query continues to own API fetching/caching; loaders and actions are not needed for the current landing-page scope.
+
+## Development guidance
+
+See [AGENTS.md](AGENTS.md) for the code style, testing, and development workflow guidance.
