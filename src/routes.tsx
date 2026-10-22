@@ -3,6 +3,8 @@ import { Stack, Text, Title } from '@mantine/core';
 import { App } from './App';
 import { HomePage } from './pages/HomePage';
 import { WorldOfWarcraftRosterPage } from './pages/WorldOfWarcraftRosterPage';
+import { PoeRosterPage } from './pages/PoeRosterPage';
+import { Poe2RosterPage } from './pages/Poe2RosterPage';
 
 const Placeholder = ({ title }: { title: string }) => {
   return (
@@ -19,8 +21,8 @@ export const routes: RouteObject[] = [
       { element: <HomePage />, index: true },
       { element: <WorldOfWarcraftRosterPage />, path: 'wow' },
       { element: <Placeholder title="Character history" />, path: 'wow/characters/:characterId' },
-      { element: <Placeholder title="Path of Exile" />, path: 'poe' },
-      { element: <Placeholder title="Path of Exile 2" />, path: 'poe2' },
+      { element: <PoeRosterPage />, path: 'poe' },
+      { element: <Poe2RosterPage />, path: 'poe2' },
       { element: <Placeholder title="Page not found" />, path: '*' },
     ],
     element: <App />,

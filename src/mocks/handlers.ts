@@ -1,4 +1,6 @@
 import { http, HttpResponse } from 'msw';
+import { poeRoster } from './poe-roster';
+import { poe2Roster } from './poe2-roster';
 import roster from '../../contracts/v1/fixtures/populated/roster.json';
 import history from '../../contracts/v1/fixtures/populated/char-aeloria.json';
 import aeloria from '../../contracts/v1/fixtures/populated/char-aeloria-current.json';
@@ -8,6 +10,8 @@ import vaelis from '../../contracts/v1/fixtures/populated/char-vaelis-current.js
 
 const currentScores = [aeloria, korren, thalren, vaelis];
 export const handlers = [
+  http.get('*/api/v1/poe/characters', () => HttpResponse.json(poeRoster)),
+  http.get('*/api/v1/poe2/characters', () => HttpResponse.json(poe2Roster)),
   http.get('*/api/v1/wow/characters', () => HttpResponse.json(roster)),
   http.get('*/api/v1/wow/characters/:id/history', ({ params }) =>
     params.id === history.character.id
