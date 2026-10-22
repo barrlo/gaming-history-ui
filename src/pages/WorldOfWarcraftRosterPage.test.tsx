@@ -7,7 +7,7 @@ import { setupServer } from 'msw/node';
 import { WorldOfWarcraftRosterPage } from './WorldOfWarcraftRosterPage';
 import { createQueryClient } from '../api/query-client';
 import { handlers } from '../mocks/handlers';
-import { wowRoster as rosterFixture } from '../mocks/wow-roster';
+import { wowRoster as roster } from '../mocks/wow-roster';
 
 const server = setupServer(...handlers);
 const renderRoster = () => {
@@ -18,12 +18,6 @@ const renderRoster = () => {
 };
 
 describe('World of Warcraft roster', () => {
-  let roster: typeof rosterFixture;
-
-  beforeEach(() => {
-    roster = structuredClone(rosterFixture);
-  });
-
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
   afterEach(() => server.resetHandlers());

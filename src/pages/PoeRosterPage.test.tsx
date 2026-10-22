@@ -6,17 +6,11 @@ import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { PoeRosterPage } from './PoeRosterPage';
 import { handlers } from '../mocks/handlers';
-import { poeRoster as poeRosterFixture } from '../mocks/poe-roster';
+import { poeRoster } from '../mocks/poe-roster';
 
 const server = setupServer(...handlers);
 
 describe('PoE roster page', () => {
-  let poeRoster: typeof poeRosterFixture;
-
-  beforeEach(() => {
-    poeRoster = structuredClone(poeRosterFixture);
-  });
-
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
   afterEach(() => server.resetHandlers());

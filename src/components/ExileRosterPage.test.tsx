@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '../test/render';
 import { ExileRosterPage } from './ExileRosterPage';
 import type { ExileRoster } from '../api/exile-types';
-import { poeRoster as poeRosterFixture } from '../mocks/poe-roster';
+import { poeRoster } from '../mocks/poe-roster';
 
 const renderRoster = (fetchRoster: (signal?: AbortSignal) => Promise<ExileRoster>) => {
   return renderWithRouter(<ExileRosterPage fetchRoster={fetchRoster} game="poe" title="Path of Exile" />, {
@@ -13,12 +13,6 @@ const renderRoster = (fetchRoster: (signal?: AbortSignal) => Promise<ExileRoster
 };
 
 describe('ExileRosterPage', () => {
-  let poeRoster: typeof poeRosterFixture;
-
-  beforeEach(() => {
-    poeRoster = structuredClone(poeRosterFixture);
-  });
-
   it('should display stored league groups and levels in contract order with archived characters', async () => {
     const fetchRoster = vi.fn().mockResolvedValue(poeRoster);
     renderRoster(fetchRoster);
@@ -48,11 +42,12 @@ describe('ExileRosterPage', () => {
   });
 
   it('should distinguish no ascendancy from unavailable data and awaiting a first build', async () => {
-    poeRoster.groups[0].startAt = null;
-    poeRoster.groups[0].characters[0].character.ascendancy = { name: null, status: 'none' };
-    poeRoster.groups[0].characters[0].buildAvailable = false;
-    poeRoster.groups[0].characters[1].character.ascendancy = { name: null, status: 'unavailable' };
-    renderRoster(vi.fn().mockResolvedValue(poeRoster));
+    const roster = structuredClone(poeRoster);
+    roster.groups[0].startAt = null;
+    roster.groups[0].characters[0].character.ascendancy = { name: null, status: 'none' };
+    roster.groups[0].characters[0].buildAvailable = false;
+    roster.groups[0].characters[1].character.ascendancy = { name: null, status: 'unavailable' };
+    renderRoster(vi.fn().mockResolvedValue(roster));
 
     expect(await screen.findByText('Witch')).toBeInTheDocument();
     expect(screen.getByText('Marauder')).toBeInTheDocument();

@@ -2,17 +2,11 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { getPoe2Roster } from './path-of-exile-2-service';
 import { handlers } from '../mocks/handlers';
-import { poe2Roster as poe2RosterFixture } from '../mocks/poe2-roster';
+import { poe2Roster } from '../mocks/poe2-roster';
 
 const server = setupServer(...handlers);
 
 describe('Path of Exile 2 service', () => {
-  let poe2Roster: typeof poe2RosterFixture;
-
-  beforeEach(() => {
-    poe2Roster = structuredClone(poe2RosterFixture);
-  });
-
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
   afterEach(() => server.resetHandlers());

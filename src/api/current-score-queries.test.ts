@@ -10,7 +10,7 @@ describe('Current score queries', () => {
   let current: (typeof wowCurrentScores)[number];
 
   beforeEach(() => {
-    current = structuredClone(wowCurrentScores[0]);
+    current = wowCurrentScores[0];
   });
 
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));

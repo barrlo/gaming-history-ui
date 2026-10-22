@@ -7,19 +7,15 @@ import { setupServer } from 'msw/node';
 import { CharacterScores } from './CharacterScores';
 import { createQueryClient } from '../api/query-client';
 import { handlers } from '../mocks/handlers';
-import { wowCurrentScores as scoresFixture, wowRoster as rosterFixture } from '../mocks/wow-roster';
+import { wowCurrentScores, wowRoster as roster } from '../mocks/wow-roster';
 
 const server = setupServer(...handlers);
 
 describe('CharacterScores', () => {
-  let wowCurrentScores: typeof scoresFixture;
-  let roster: typeof rosterFixture;
-  let current: (typeof scoresFixture)[number];
+  let current: (typeof wowCurrentScores)[number];
 
   beforeEach(() => {
-    wowCurrentScores = structuredClone(scoresFixture);
-    roster = structuredClone(rosterFixture);
-    current = structuredClone(scoresFixture[0]);
+    current = wowCurrentScores[0];
   });
 
   const renderRoster = (characters = roster.characters) => {

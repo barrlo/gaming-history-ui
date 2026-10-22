@@ -6,7 +6,7 @@
 - Import shared render helpers immediately after Testing Library imports. This is an explicit exception to the normal repository-helper import group.
 - Use `renderWithProviders` for non-routing components or an existing `RouterProvider`. It never adds a router. Use `renderWithRouter` for components that require `MemoryRouter`; it always supplies one, with optional initial entries.
 - Both render helpers supply the real Mantine theme and a fresh QueryClient per call, preserved across rerenders. Pass an explicit client only when a test needs to inspect or seed its cache.
-- Declare test fixture variables inside the top-level `describe` and initialize fresh `structuredClone` copies in `beforeEach`. Servers and reusable render helpers may stay outside the suite; only variables required by those outside helpers may remain outside. Do not mutate shared imported fixtures.
+- Use imported fixtures directly when tests only read them; do not introduce suite variables or `beforeEach` clones merely to wrap imports. Declare suite-level variables created by the test file inside the top-level `describe` and initialize them in `beforeEach`. Clone imported data with `structuredClone` only when a test needs to modify it; a copy used by one test can be created within that test. Never mutate shared imported fixtures. Servers and reusable render helpers may stay outside the suite; variables required by those outside helpers may remain outside as well.
 - Name cache-isolation tests after the games exercised, such as switching from PoE to PoE2. Do not imply coverage of hypothetical games.
 
 ## Test structure and validation

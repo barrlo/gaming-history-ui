@@ -2,17 +2,11 @@ import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { getRoster, getCurrentScore, getHistory } from './world-of-warcraft-service';
 import { handlers } from '../mocks/handlers';
-import { wowRoster as wowRosterFixture } from '../mocks/wow-roster';
+import { wowRoster } from '../mocks/wow-roster';
 
 const server = setupServer(...handlers);
 
 describe('World of Warcraft service', () => {
-  let wowRoster: typeof wowRosterFixture;
-
-  beforeEach(() => {
-    wowRoster = structuredClone(wowRosterFixture);
-  });
-
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
   afterEach(() => server.resetHandlers());
