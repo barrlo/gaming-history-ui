@@ -8,22 +8,34 @@ import { cssVariablesResolver, theme } from '../theme';
 import './setup';
 
 type RenderOptions = {
-  initialEntries?: string[];
   queryClient?: QueryClient;
 };
+
+type RouterRenderOptions = RenderOptions & {
+  initialEntries?: string[];
+};
+
+const TestProviders = ({ children, queryClient }: { children: ReactNode; queryClient: QueryClient }) => (
+  <MantineProvider cssVariablesResolver={cssVariablesResolver} defaultColorScheme="dark" env="test" theme={theme}>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  </MantineProvider>
+);
 
 export const renderWithProviders = (element: ReactElement, options: RenderOptions = {}) => {
   const queryClient = options.queryClient ?? createQueryClient();
   const Wrapper = ({ children }: { children: ReactNode }) => (
-    <MantineProvider cssVariablesResolver={cssVariablesResolver} defaultColorScheme="dark" env="test" theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        {options.initialEntries ? (
-          <MemoryRouter initialEntries={options.initialEntries}>{children}</MemoryRouter>
-        ) : (
-          children
-        )}
-      </QueryClientProvider>
-    </MantineProvider>
+    <TestProviders queryClient={queryClient}>{children}</TestProviders>
+  );
+
+  return render(element, { wrapper: Wrapper });
+};
+
+export const renderWithRouter = (element: ReactElement, options: RouterRenderOptions = {}) => {
+  const queryClient = options.queryClient ?? createQueryClient();
+  const Wrapper = ({ children }: { children: ReactNode }) => (
+    <TestProviders queryClient={queryClient}>
+      <MemoryRouter initialEntries={options.initialEntries ?? ['/']}>{children}</MemoryRouter>
+    </TestProviders>
   );
 
   return render(element, { wrapper: Wrapper });
