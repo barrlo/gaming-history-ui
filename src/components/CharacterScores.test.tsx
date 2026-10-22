@@ -2,26 +2,35 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '../test/render';
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { CharacterScores } from './CharacterScores';
 import { createQueryClient } from '../api/query-client';
 import { handlers } from '../mocks/handlers';
-import { wowCurrentScores, wowRoster as roster } from '../mocks/wow-roster';
-
-const current = wowCurrentScores[0];
+import { wowCurrentScores as scoresFixture, wowRoster as rosterFixture } from '../mocks/wow-roster';
 
 const server = setupServer(...handlers);
-const renderRoster = (characters = roster.characters) => {
-  const client = createQueryClient();
-  const view = renderWithProviders(<CharacterScores characters={characters} seasonId="demo-season" />, {
-    queryClient: client,
-  });
-
-  return { client, ...view };
-};
 
 describe('CharacterScores', () => {
+  let wowCurrentScores: typeof scoresFixture;
+  let roster: typeof rosterFixture;
+  let current: (typeof scoresFixture)[number];
+
+  beforeEach(() => {
+    wowCurrentScores = structuredClone(scoresFixture);
+    roster = structuredClone(rosterFixture);
+    current = structuredClone(scoresFixture[0]);
+  });
+
+  const renderRoster = (characters = roster.characters) => {
+    const client = createQueryClient();
+    const view = renderWithProviders(<CharacterScores characters={characters} seasonId="demo-season" />, {
+      queryClient: client,
+    });
+
+    return { client, ...view };
+  };
+
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
   afterEach(() => server.resetHandlers());
@@ -29,6 +38,12 @@ describe('CharacterScores', () => {
   afterAll(() => server.close());
 
   it('should display current scores in descending order, separate null from zero, and explain weekly change', async () => {
+    const requests = wowCurrentScores.map((score) => vi.fn(() => HttpResponse.json(score)));
+    server.use(
+      ...wowCurrentScores.map((score, index) =>
+        http.get(`*/api/v1/wow/characters/${score.characterId}/current-score`, requests[index]),
+      ),
+    );
     renderRoster();
 
     expect(await screen.findByText('2,540')).toBeInTheDocument();
@@ -45,6 +60,10 @@ describe('CharacterScores', () => {
     expect(within(screen.getByRole('article', { name: 'Korren' })).getByText('No score yet')).toBeInTheDocument();
     expect(within(screen.getByRole('article', { name: 'Vaelis' })).getByText('0')).toBeInTheDocument();
     expect(screen.getByText('+178')).toBeInTheDocument();
+    expect(requests[0]).toHaveBeenCalledTimes(1);
+    expect(requests[1]).toHaveBeenCalledTimes(1);
+    expect(requests[2]).toHaveBeenCalledTimes(1);
+    expect(requests[3]).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('link', { name: /Aeloria/ })).not.toBeInTheDocument();
   });
 
@@ -77,18 +96,33 @@ describe('CharacterScores', () => {
   });
 
   it('should show identities while their scores are loading', async () => {
-    server.use(
-      http.get('*/api/v1/wow/characters/:id/current-score', async ({ params }) => {
-        await delay(100);
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const request = vi.fn(async ({ params }: { params: Record<string, string | readonly string[]> }) => {
+      await gate;
 
-        return HttpResponse.json({ ...current, characterId: params.id });
-      }),
-    );
-    renderRoster();
+      return HttpResponse.json({ ...current, characterId: params.id });
+    });
+    server.use(http.get('*/api/v1/wow/characters/:id/current-score', request));
+    const view = renderRoster();
 
-    expect(await screen.findByRole('article', { name: 'Aeloria' })).toHaveTextContent('Loading score…');
+    try {
+      await waitFor(() => expect(request).toHaveBeenCalledTimes(4));
 
-    await waitFor(() => expect(screen.getAllByText('2,540')).toHaveLength(4));
+      expect(screen.getByRole('article', { name: 'Aeloria' })).toHaveTextContent('Loading score…');
+
+      release();
+
+      expect(await screen.findAllByText('2,540')).toHaveLength(4);
+      expect(request).toHaveBeenCalledTimes(4);
+    } finally {
+      view.unmount();
+      view.client.clear();
+      release();
+      await Promise.allSettled(request.mock.results.map((result) => result.value));
+    }
   });
 
   it('should distinguish a zero score from a missing weekly baseline and a negative change', async () => {

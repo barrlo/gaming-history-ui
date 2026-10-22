@@ -6,7 +6,7 @@
 - Import shared render helpers immediately after Testing Library imports. This is an explicit exception to the normal repository-helper import group.
 - Use `renderWithProviders` for non-routing components or an existing `RouterProvider`. It never adds a router. Use `renderWithRouter` for components that require `MemoryRouter`; it always supplies one, with optional initial entries.
 - Both render helpers supply the real Mantine theme and a fresh QueryClient per call, preserved across rerenders. Pass an explicit client only when a test needs to inspect or seed its cache.
-- Keep `structuredClone` when modifying nested fixture data so tests cannot mutate a shared fixture.
+- Declare test fixture variables inside the top-level `describe` and initialize fresh `structuredClone` copies in `beforeEach`. Servers and reusable render helpers may stay outside the suite; only variables required by those outside helpers may remain outside. Do not mutate shared imported fixtures.
 - Name cache-isolation tests after the games exercised, such as switching from PoE to PoE2. Do not imply coverage of hypothetical games.
 
 ## Test structure and validation
@@ -37,8 +37,12 @@ Follow the behavior-focused guidance in [Common mistakes with React Testing Libr
 
 Component tests (`src/**/*.{test,spec}.{tsx,jsx}`) use the recommended React Testing Library and jest-dom ESLint rules, plus explicit user-event and assertion rules. Direct `fireEvent` imports are prohibited. Query choice, semantic HTML, use of `userEvent.setup()`, and unsupported interactions also require review; lint does not enforce every convention. In particular, the installed side-effect rule does not catch every call through a `userEvent.setup()` instance, so review `waitFor` callbacks for these interactions too. These rules do not apply to Playwright or non-component unit tests.
 
-For roster load and retry tests, wrap MSW resolver callbacks in `vi.fn()` and assert request counts with `toHaveBeenCalledTimes`. Verify the initial load and the additional request after retry; for independent character requests, verify retry leaves other characters unchanged. Exercise the real service and HTTP client rather than replacing them with service mocks for these checks. Avoid manual request counters.
+For component data-loading and button-triggered request tests, wrap MSW resolver callbacks in `vi.fn()` and assert request counts with `toHaveBeenCalledTimes`. Verify the initial load and additional requests caused by button actions (including retry); for independent character requests, verify retry leaves other characters unchanged. Exercise the real service and HTTP client rather than replacing them with service mocks for these checks. Avoid manual request counters.
 
 Service tests use the shared MSW handlers and typed game mocks for successful responses. Cover failures and AbortSignal cancellation without turning either into an empty successful result.
 
 Feature E2E layout checks use representative mobile (390px), tablet (900px), and desktop (1200px) widths in the default dark theme. Shared shell tests own light/dark switching and precise navigation-breakpoint checks, avoiding repetition in every feature.
+
+Each application component file must have a corresponding unit test file. Keep component-specific behavior in those tests and retain cross-component routing/integration behavior in App tests instead of duplicating it. The `main.tsx` bootstrap exclusion remains; configuration, route definitions, and test utilities are not application components.
+
+Use test-controlled promises for pending-request/loading and cancellation tests instead of fixed sleeps. Release gates and settle pending handler work in `finally` so failed assertions cannot leave unresolved requests.
