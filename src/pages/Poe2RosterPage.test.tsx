@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderWithRouter } from '../test/render';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { Poe2RosterPage } from './Poe2RosterPage';
-import { renderWithProviders } from '../test/render';
 import { handlers } from '../mocks/handlers';
 import { poe2Roster } from '../mocks/poe2-roster';
 
@@ -18,7 +18,7 @@ describe('PoE2 roster page', () => {
   afterAll(() => server.close());
 
   it('should render the scheduled PoE2 roster with a class-only new character', async () => {
-    renderWithProviders(<Poe2RosterPage />, { initialEntries: ['/poe2'] });
+    renderWithRouter(<Poe2RosterPage />, { initialEntries: ['/poe2'] });
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
@@ -34,7 +34,7 @@ describe('PoE2 roster page', () => {
   it('should retry the PoE2 roster endpoint after a failure', async () => {
     const user = userEvent.setup();
     server.use(http.get('*/api/v1/poe2/characters', () => HttpResponse.json({}, { status: 503 })));
-    renderWithProviders(<Poe2RosterPage />, { initialEntries: ['/poe2'] });
+    renderWithRouter(<Poe2RosterPage />, { initialEntries: ['/poe2'] });
     const retry = await screen.findByRole('button', { name: 'Try again' });
     server.use(http.get('*/api/v1/poe2/characters', () => HttpResponse.json(poe2Roster)));
     await user.click(retry);

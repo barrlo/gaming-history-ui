@@ -16,7 +16,7 @@ describe('Path of Exile 2 service', () => {
   it('should fetch the stored Path of Exile 2 roster from its game endpoint', async () => {
     const roster = await getPoe2Roster(new AbortController().signal);
 
-    expect(roster).toEqual(poe2Roster);
+    expect(roster).toStrictEqual(poe2Roster);
   });
 
   it('should propagate failures instead of displaying an empty archive', async () => {
