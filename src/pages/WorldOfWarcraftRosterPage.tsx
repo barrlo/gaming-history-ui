@@ -85,12 +85,12 @@ const CharacterScores = ({ characters, seasonId }: { characters: Character[]; se
               </Text>
             )}
             {query.isError && (
-              <Stack gap={4}>
+              <Stack gap="0.25rem">
                 {query.data && (
                   <Text size="xs">
                     {'Could not update score. Showing last fetched score'}
                     {query.data.fetchedAt
-                      ? ` · ${new Date(query.data.fetchedAt).toLocaleString('en-US', { timeZone: 'America/Chicago', timeZoneName: 'short' })}`
+                      ? ` · ${new Date(query.data.fetchedAt).toLocaleString('en-US', { timeZoneName: 'short' })}`
                       : ''}
                     {'.'}
                   </Text>
@@ -117,9 +117,9 @@ export const WorldOfWarcraftRosterPage = () => {
   const roster = useQuery({ queryFn: ({ signal }) => getRoster(signal), queryKey: ['wow', 'roster'] });
 
   return (
-    <Stack gap={28}>
+    <Stack gap="1.75rem">
       <Anchor className={styles.backLink} component={Link} to="/">
-        <IconArrowLeft aria-hidden="true" size={16} />
+        <IconArrowLeft aria-hidden="true" size="1rem" />
         {'Home'}
       </Anchor>
       <Box>
@@ -131,7 +131,7 @@ export const WorldOfWarcraftRosterPage = () => {
       {roster.isPending && (
         <Stack>
           <Text role="status">{'Loading characters…'}</Text>
-          <Skeleton aria-hidden="true" height={280} radius="md" />
+          <Skeleton aria-hidden="true" height="17.5rem" radius="md" />
         </Stack>
       )}
       {roster.isError && (
@@ -160,7 +160,7 @@ export const WorldOfWarcraftRosterPage = () => {
               seasonId={roster.data.season?.id ?? null}
             />
           )}
-          <Stack gap={8}>
+          <Stack gap="0.5rem">
             <Text c="var(--site-muted)" size="sm">
               {'History snapshots · Tuesdays at 6:00 a.m. Central'}
             </Text>

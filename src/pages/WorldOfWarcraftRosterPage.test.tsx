@@ -1,30 +1,20 @@
 // @vitest-environment jsdom
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderWithRouter } from '../test/render';
 import { delay, http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { MantineProvider } from '@mantine/core';
 import { WorldOfWarcraftRosterPage } from './WorldOfWarcraftRosterPage';
 import { createQueryClient } from '../api/query-client';
 import { handlers } from '../mocks/handlers';
-import { cssVariablesResolver, theme } from '../theme';
-import roster from '../../contracts/v1/fixtures/populated/roster.json';
-import current from '../../contracts/v1/fixtures/populated/char-aeloria-current.json';
-import '../test/setup';
+import { wowCurrentScores, wowRoster as roster } from '../mocks/wow-roster';
+
+const current = wowCurrentScores[0];
 
 const server = setupServer(...handlers);
 const renderRoster = () => {
   const client = createQueryClient();
-  const router = createMemoryRouter([{ element: <WorldOfWarcraftRosterPage />, path: '/' }]);
-  const view = render(
-    <MantineProvider cssVariablesResolver={cssVariablesResolver} env="test" theme={theme}>
-      <QueryClientProvider client={client}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </MantineProvider>,
-  );
+  const view = renderWithRouter(<WorldOfWarcraftRosterPage />, { queryClient: client });
 
   return { client, ...view };
 };
@@ -43,12 +33,14 @@ describe('World of Warcraft roster', () => {
     expect(await screen.findByText('2,540')).toBeInTheDocument();
     expect(await screen.findByText('2,112')).toBeInTheDocument();
     expect(await screen.findByText('1,764')).toBeInTheDocument();
-    expect(screen.getAllByRole('article').map((element) => element.getAttribute('aria-label'))).toEqual([
-      'Aeloria',
-      'Thalren',
-      'Vaelis',
-      'Korren',
-    ]);
+
+    const characters = screen.getAllByRole('article');
+
+    expect(characters).toHaveLength(4);
+    expect(characters[0]).toHaveAttribute('aria-label', 'Aeloria');
+    expect(characters[1]).toHaveAttribute('aria-label', 'Thalren');
+    expect(characters[2]).toHaveAttribute('aria-label', 'Vaelis');
+    expect(characters[3]).toHaveAttribute('aria-label', 'Korren');
     expect(within(screen.getByRole('article', { name: 'Korren' })).getByText('No score yet')).toBeInTheDocument();
     expect(within(screen.getByRole('article', { name: 'Vaelis' })).getByText('0')).toBeInTheDocument();
     expect(screen.getByText('+178')).toBeInTheDocument();
@@ -95,7 +87,7 @@ describe('World of Warcraft roster', () => {
     await user.click(retry);
 
     expect(await screen.findByText('2,540')).toBeInTheDocument();
-    expect(attempts.slice(beforeRetry)).toEqual(['char-aeloria']);
+    expect(attempts.slice(beforeRetry)).toStrictEqual(['char-aeloria']);
   });
 
   it('should show identities while their scores are loading', async () => {
@@ -153,12 +145,14 @@ describe('World of Warcraft roster', () => {
     expect(await screen.findByText('No baseline yet')).toBeInTheDocument();
     expect(await screen.findAllByText('-10')).toHaveLength(3);
     expect(screen.getAllByText('0')).toHaveLength(4);
-    expect(screen.getAllByRole('article').map((element) => element.getAttribute('aria-label'))).toEqual([
-      'Aeloria',
-      'Korren',
-      'Thalren',
-      'Vaelis',
-    ]);
+
+    const characters = screen.getAllByRole('article');
+
+    expect(characters).toHaveLength(4);
+    expect(characters[0]).toHaveAttribute('aria-label', 'Aeloria');
+    expect(characters[1]).toHaveAttribute('aria-label', 'Korren');
+    expect(characters[2]).toHaveAttribute('aria-label', 'Thalren');
+    expect(characters[3]).toHaveAttribute('aria-label', 'Vaelis');
   });
 
   it('should retain successful data during a failed background refresh', async () => {

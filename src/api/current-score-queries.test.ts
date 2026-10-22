@@ -2,7 +2,9 @@ import { QueryClient } from '@tanstack/react-query';
 import { delay, http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { currentScoreQueryOptions } from './current-score-queries';
-import current from '../../contracts/v1/fixtures/populated/char-aeloria-current.json';
+import { wowCurrentScores } from '../mocks/wow-roster';
+
+const current = wowCurrentScores[0];
 
 const server = setupServer();
 
