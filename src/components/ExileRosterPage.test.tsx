@@ -13,7 +13,7 @@ const renderRoster = (fetchRoster: (signal?: AbortSignal) => Promise<ExileRoster
 };
 
 describe('ExileRosterPage', () => {
-  it('should display stored league leagues and levels in contract order with archived characters', async () => {
+  it('should display stored leagues and levels in contract order with archived characters', async () => {
     const fetchRoster = vi.fn().mockResolvedValue(poeRoster);
     renderRoster(fetchRoster);
 
