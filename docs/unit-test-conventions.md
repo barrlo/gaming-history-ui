@@ -37,7 +37,7 @@ Follow the behavior-focused guidance in [Common mistakes with React Testing Libr
 
 Component tests (`src/**/*.{test,spec}.{tsx,jsx}`) use the recommended React Testing Library and jest-dom ESLint rules, plus explicit user-event and assertion rules. Direct `fireEvent` imports are prohibited. Query choice, semantic HTML, use of `userEvent.setup()`, and unsupported interactions also require review; lint does not enforce every convention. In particular, the installed side-effect rule does not catch every call through a `userEvent.setup()` instance, so review `waitFor` callbacks for these interactions too. These rules do not apply to Playwright or non-component unit tests.
 
-For component data-loading and button-triggered request tests, wrap MSW resolver callbacks in `vi.fn()` and assert request counts with `toHaveBeenCalledTimes`. Verify the initial load and additional requests caused by button actions (including retry); for independent character requests, verify retry leaves other characters unchanged. Exercise the real service and HTTP client rather than replacing them with service mocks for these checks. Avoid manual request counters.
+For component data-loading and button-triggered request tests, assert counts and newly made call arguments on the same named real-service spy. Use `vi.mock(module, { spy: true })` to preserve real service and HTTP behavior. MSW handles responses; avoid resolver spies or manual counters when service spies already verify the requests. Verify retry leaves unrelated requests unchanged.
 
 Service tests use the shared MSW handlers and typed game mocks for successful responses. Cover failures and AbortSignal cancellation without turning either into an empty successful result.
 

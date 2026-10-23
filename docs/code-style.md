@@ -40,3 +40,5 @@ Combine consecutive uninitialized `let` declarations in the same scope into one 
 Prettier controls JSX layout, including closing-tag placement. Extract lengthy JSX expressions into readable local values or functions when it improves readability, without imposing formatting that overrides Prettier. Do not add a JSX formatting plugin for this convention; ESLint Stylistic may be revisited separately in the future.
 
 Declare local functions and components above the code that uses them. Keep each React component in its own file, with a corresponding focused test file; import shared components rather than colocating component definitions inside a larger feature file.
+
+Prefer semantic `is`, `has`, or `can` prefixes for boolean variables and props, such as `isMobile`, `isOpen`, and `isEmpty`. Preserve externally defined API and library property names.

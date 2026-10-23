@@ -32,15 +32,14 @@ describe('CharacterBuild', () => {
     const snapshots = poeBuilds.snapshots
       .filter((entry) => entry.build.character.id === characterId)
       .sort((first, second) => second.snapshot.scheduledAt.localeCompare(first.snapshot.scheduledAt));
-    const buildRequest = vi.fn(() => HttpResponse.json(latest));
-    const historyRequest = vi.fn(({ request }: { request: Request }) =>
+    const buildRequest = () => HttpResponse.json(latest);
+    const historyRequest = ({ request }: { request: Request }) =>
       HttpResponse.json(
         new URL(request.url).searchParams.has('cursor')
           ? { nextCursor: null, snapshots: [snapshots[1].snapshot] }
           : { nextCursor: 'older', snapshots: [snapshots[0].snapshot] },
-      ),
-    );
-    const snapshotRequest = vi.fn(() => HttpResponse.json(snapshots[1]));
+      );
+    const snapshotRequest = () => HttpResponse.json(snapshots[1]);
     server.use(
       http.get(`*/api/v1/poe/characters/:characterId/build`, buildRequest),
       http.get(`*/api/v1/poe/characters/:characterId/snapshots`, historyRequest),
@@ -49,8 +48,8 @@ describe('CharacterBuild', () => {
     renderBuild('poe', characterId);
 
     expect(await screen.findByRole('heading', { level: 1, name: latest.build.character.name })).toBeInTheDocument();
-    expect(buildRequest).toHaveBeenCalledTimes(1);
-    expect(historyRequest).toHaveBeenCalledTimes(1);
+    expect(getPoeBuild).toHaveBeenCalledTimes(1);
+    expect(getPoeSnapshots).toHaveBeenCalledTimes(1);
     expect(getPoeBuild).toHaveBeenNthCalledWith(1, characterId, expect.any(AbortSignal));
     expect(getPoeSnapshots).toHaveBeenNthCalledWith(1, characterId, undefined, expect.any(AbortSignal));
     expect(screen.getByRole('region', { name: 'Ascendancy skills' })).toBeInTheDocument();
@@ -75,16 +74,16 @@ describe('CharacterBuild', () => {
       await screen.findByText(`Level ${snapshots[1].build.character.level} · ${snapshots[1].build.character.class}`),
     ).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: 'Ascendancy skills' })).not.toBeInTheDocument();
-    expect(historyRequest).toHaveBeenCalledTimes(2);
-    expect(snapshotRequest).toHaveBeenCalledTimes(1);
+    expect(getPoeSnapshots).toHaveBeenCalledTimes(2);
+    expect(getPoeSnapshot).toHaveBeenCalledTimes(1);
     expect(getPoeSnapshots).toHaveBeenNthCalledWith(2, characterId, 'older', expect.any(AbortSignal));
     expect(getPoeSnapshot).toHaveBeenNthCalledWith(1, characterId, snapshots[1].snapshot.id, expect.any(AbortSignal));
-    expect(buildRequest).toHaveBeenCalledTimes(1);
+    expect(getPoeBuild).toHaveBeenCalledTimes(1);
 
     await user.click(screen.getByRole('button', { name: 'Back to Latest' }));
 
     expect(screen.getByRole('region', { name: 'Ascendancy skills' })).toBeInTheDocument();
-    expect(buildRequest).toHaveBeenCalledTimes(1);
+    expect(getPoeBuild).toHaveBeenCalledTimes(1);
   });
 
   it('should load poe2 latest and paginated history and switch the complete build atomically', async () => {
@@ -94,15 +93,14 @@ describe('CharacterBuild', () => {
     const snapshots = poe2Builds.snapshots
       .filter((entry) => entry.build.character.id === characterId)
       .sort((first, second) => second.snapshot.scheduledAt.localeCompare(first.snapshot.scheduledAt));
-    const buildRequest = vi.fn(() => HttpResponse.json(latest));
-    const historyRequest = vi.fn(({ request }: { request: Request }) =>
+    const buildRequest = () => HttpResponse.json(latest);
+    const historyRequest = ({ request }: { request: Request }) =>
       HttpResponse.json(
         new URL(request.url).searchParams.has('cursor')
           ? { nextCursor: null, snapshots: [snapshots[1].snapshot] }
           : { nextCursor: 'older', snapshots: [snapshots[0].snapshot] },
-      ),
-    );
-    const snapshotRequest = vi.fn(() => HttpResponse.json(snapshots[1]));
+      );
+    const snapshotRequest = () => HttpResponse.json(snapshots[1]);
     server.use(
       http.get(`*/api/v1/poe2/characters/:characterId/build`, buildRequest),
       http.get(`*/api/v1/poe2/characters/:characterId/snapshots`, historyRequest),
@@ -111,8 +109,8 @@ describe('CharacterBuild', () => {
     renderBuild('poe2', characterId);
 
     expect(await screen.findByRole('heading', { level: 1, name: latest.build.character.name })).toBeInTheDocument();
-    expect(buildRequest).toHaveBeenCalledTimes(1);
-    expect(historyRequest).toHaveBeenCalledTimes(1);
+    expect(getPoe2Build).toHaveBeenCalledTimes(1);
+    expect(getPoe2Snapshots).toHaveBeenCalledTimes(1);
     expect(getPoe2Build).toHaveBeenNthCalledWith(1, characterId, expect.any(AbortSignal));
     expect(getPoe2Snapshots).toHaveBeenNthCalledWith(1, characterId, undefined, expect.any(AbortSignal));
     expect(screen.getByRole('region', { name: 'Ascendancy skills' })).toBeInTheDocument();
@@ -137,16 +135,16 @@ describe('CharacterBuild', () => {
       await screen.findByText(`Level ${snapshots[1].build.character.level} · ${snapshots[1].build.character.class}`),
     ).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: 'Ascendancy skills' })).not.toBeInTheDocument();
-    expect(historyRequest).toHaveBeenCalledTimes(2);
-    expect(snapshotRequest).toHaveBeenCalledTimes(1);
+    expect(getPoe2Snapshots).toHaveBeenCalledTimes(2);
+    expect(getPoe2Snapshot).toHaveBeenCalledTimes(1);
     expect(getPoe2Snapshots).toHaveBeenNthCalledWith(2, characterId, 'older', expect.any(AbortSignal));
     expect(getPoe2Snapshot).toHaveBeenNthCalledWith(1, characterId, snapshots[1].snapshot.id, expect.any(AbortSignal));
-    expect(buildRequest).toHaveBeenCalledTimes(1);
+    expect(getPoe2Build).toHaveBeenCalledTimes(1);
 
     await user.click(screen.getByRole('button', { name: 'Back to Latest' }));
 
     expect(screen.getByRole('region', { name: 'Ascendancy skills' })).toBeInTheDocument();
-    expect(buildRequest).toHaveBeenCalledTimes(1);
+    expect(getPoe2Build).toHaveBeenCalledTimes(1);
   });
 
   it('should show independent loading states without inventing a build', () => {
@@ -169,38 +167,40 @@ describe('CharacterBuild', () => {
   it('should retry failed build and history requests independently', async () => {
     const user = userEvent.setup();
     const latest = poeBuilds.latest[0];
-    const buildRequest = vi
-      .fn(() => HttpResponse.json(latest))
-      .mockImplementationOnce(() => new HttpResponse(null, { status: 503 }));
-    const historyRequest = vi
-      .fn(() => HttpResponse.json({ nextCursor: null, snapshots: [] }))
-      .mockImplementationOnce(() => new HttpResponse(null, { status: 503 }));
     server.use(
-      http.get('*/api/v1/poe/characters/:characterId/build', buildRequest),
-      http.get('*/api/v1/poe/characters/:characterId/snapshots', historyRequest),
+      http.get('*/api/v1/poe/characters/:characterId/build', () => new HttpResponse(null, { status: 503 }), {
+        once: true,
+      }),
+      http.get('*/api/v1/poe/characters/:characterId/snapshots', () => new HttpResponse(null, { status: 503 }), {
+        once: true,
+      }),
+      http.get('*/api/v1/poe/characters/:characterId/build', () => HttpResponse.json(latest)),
+      http.get('*/api/v1/poe/characters/:characterId/snapshots', () =>
+        HttpResponse.json({ nextCursor: null, snapshots: [] }),
+      ),
     );
     renderBuild('poe', latest.build.character.id);
     const retry = await screen.findByRole('button', { name: 'Retry build' });
 
-    expect(buildRequest).toHaveBeenCalledTimes(1);
+    expect(getPoeBuild).toHaveBeenCalledTimes(1);
     expect(getPoeBuild).toHaveBeenNthCalledWith(1, 'f'.repeat(64), expect.any(AbortSignal));
-    expect(historyRequest).toHaveBeenCalledTimes(1);
+    expect(getPoeSnapshots).toHaveBeenCalledTimes(1);
     expect(getPoeSnapshots).toHaveBeenNthCalledWith(1, 'f'.repeat(64), undefined, expect.any(AbortSignal));
 
     await user.click(retry);
 
     expect(await screen.findByRole('heading', { name: latest.build.character.name })).toBeInTheDocument();
-    expect(buildRequest).toHaveBeenCalledTimes(2);
+    expect(getPoeBuild).toHaveBeenCalledTimes(2);
     expect(getPoeBuild).toHaveBeenNthCalledWith(2, 'f'.repeat(64), expect.any(AbortSignal));
-    expect(historyRequest).toHaveBeenCalledTimes(1);
+    expect(getPoeSnapshots).toHaveBeenCalledTimes(1);
     expect(screen.getByText('Archived character · Saved builds remain available.')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Retry history' }));
 
     expect(await screen.findByText('No historical snapshots saved yet.')).toBeInTheDocument();
-    expect(historyRequest).toHaveBeenCalledTimes(2);
+    expect(getPoeSnapshots).toHaveBeenCalledTimes(2);
     expect(getPoeSnapshots).toHaveBeenNthCalledWith(2, 'f'.repeat(64), undefined, expect.any(AbortSignal));
-    expect(buildRequest).toHaveBeenCalledTimes(2);
+    expect(getPoeBuild).toHaveBeenCalledTimes(2);
   });
 
   it('should not show latest identity or equipment under a failed historical selection', async () => {

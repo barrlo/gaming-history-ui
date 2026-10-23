@@ -4,7 +4,7 @@ import type { ExileItem } from '../api/exile-types';
 export const ItemDetails = ({ item }: { item: ExileItem }) => {
   return (
     <Stack gap="xs">
-      <Text>{`${item.baseType} · Item level ${item.ilvl} · ${item.identified ? 'Identified' : 'Unidentified'}`}</Text>
+      <Text>{`${item.baseType} · Item level ${item.ilvl}`}</Text>
       {item.rarity && <Text>{item.rarity}</Text>}
       {item.corrupted && <Text>{'Corrupted'}</Text>}
       {[...(item.properties ?? []), ...(item.requirements ?? [])].map((property, index) => {

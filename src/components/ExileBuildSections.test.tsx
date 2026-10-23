@@ -39,18 +39,18 @@ describe('ExileBuildSections', () => {
     expect(weapon).toHaveAttribute('aria-expanded', 'true');
     expect(shield).toHaveAttribute('aria-expanded', 'false');
 
-    await waitFor(() => expect(screen.getByText('Wand · Item level 80 · Identified')).toBeVisible());
+    await waitFor(() => expect(screen.getByText('Wand · Item level 80')).toBeVisible());
 
-    expect(screen.getByText('Shield · Item level 12 · Unidentified')).not.toBeVisible();
+    expect(screen.getByText('Shield · Item level 12')).not.toBeVisible();
 
     await user.click(shield);
 
-    await waitFor(() => expect(screen.getByText('Wand · Item level 80 · Identified')).toBeVisible());
-    await waitFor(() => expect(screen.getByText('Shield · Item level 12 · Unidentified')).toBeVisible());
+    await waitFor(() => expect(screen.getByText('Wand · Item level 80')).toBeVisible());
+    await waitFor(() => expect(screen.getByText('Shield · Item level 12')).toBeVisible());
 
     expect(weapon).toHaveAttribute('aria-expanded', 'true');
     expect(shield).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByText('Shield · Item level 12 · Unidentified')).toBeInTheDocument();
+    expect(screen.getByText('Shield · Item level 12')).toBeInTheDocument();
   });
 
   it('should distinguish partial, unavailable and confirmed empty sections', () => {

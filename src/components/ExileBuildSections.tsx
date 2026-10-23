@@ -13,8 +13,8 @@ export const ExileBuildSections = ({ build }: { build: ExileBuild }) => {
     <Stack gap="lg">
       <BuildSection
         availability={build.equipment.availability}
-        empty={!build.equipment.entries.length}
-        initiallyOpen
+        isEmpty={!build.equipment.entries.length}
+        isInitiallyOpen
         title="Equipped items"
       >
         <Text c="dimmed" size="sm">
@@ -40,7 +40,7 @@ export const ExileBuildSections = ({ build }: { build: ExileBuild }) => {
       </BuildSection>
       <BuildSection
         availability={build.skills.availability}
-        empty={!build.skills.entries.length}
+        isEmpty={!build.skills.entries.length}
         title="Skills & linked supports"
       >
         <Text c="dimmed" size="sm">
@@ -77,7 +77,7 @@ export const ExileBuildSections = ({ build }: { build: ExileBuild }) => {
       {build.character.ascendancy.status !== 'none' && (
         <BuildSection
           availability={build.ascendancySkills.availability}
-          empty={!build.ascendancySkills.entries.length}
+          isEmpty={!build.ascendancySkills.entries.length}
           title="Ascendancy skills"
         >
           <Text c="dimmed" size="sm">
@@ -98,7 +98,7 @@ export const ExileBuildSections = ({ build }: { build: ExileBuild }) => {
       )}
       <BuildSection
         availability={build.passiveSkills.availability}
-        empty={!build.passiveSkills.entries.length}
+        isEmpty={!build.passiveSkills.entries.length}
         title="Passive skills"
       >
         <Text c="dimmed" size="sm">

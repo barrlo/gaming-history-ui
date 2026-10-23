@@ -23,10 +23,10 @@ describe('BuildSection', () => {
     );
     renderWithProviders(
       <>
-        <BuildSection availability="available" empty={false} initiallyOpen title="Equipped items">
+        <BuildSection availability="available" isEmpty={false} isInitiallyOpen title="Equipped items">
           {'Equipment content'}
         </BuildSection>
-        <BuildSection availability="available" empty={false} title="Skills & linked supports">
+        <BuildSection availability="available" isEmpty={false} title="Skills & linked supports">
           {'Skills content'}
         </BuildSection>
       </>,
@@ -50,7 +50,7 @@ describe('BuildSection', () => {
 
   it('should show confirmed empty content separately from unavailable collection data', () => {
     const { rerender } = renderWithProviders(
-      <BuildSection availability="available" empty title="Skills">
+      <BuildSection availability="available" isEmpty title="Skills">
         {'Unused content'}
       </BuildSection>,
     );
@@ -60,7 +60,7 @@ describe('BuildSection', () => {
     expect(screen.queryByText('Unused content')).not.toBeInTheDocument();
 
     rerender(
-      <BuildSection availability="unavailable" empty title="Skills">
+      <BuildSection availability="unavailable" isEmpty title="Skills">
         {'Unused content'}
       </BuildSection>,
     );
@@ -71,7 +71,7 @@ describe('BuildSection', () => {
 
   it('should retain known partial content without treating missing entries as confirmed empty', () => {
     const { rerender } = renderWithProviders(
-      <BuildSection availability="partial" empty={false} title="Skills">
+      <BuildSection availability="partial" isEmpty={false} title="Skills">
         {'Recorded skill'}
       </BuildSection>,
     );
@@ -80,7 +80,7 @@ describe('BuildSection', () => {
     expect(screen.getByText('Recorded skill')).toBeInTheDocument();
 
     rerender(
-      <BuildSection availability="partial" empty title="Skills">
+      <BuildSection availability="partial" isEmpty title="Skills">
         {'Recorded skill'}
       </BuildSection>,
     );

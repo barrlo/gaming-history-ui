@@ -8,27 +8,31 @@ import styles from './BuildSection.module.css';
 type SectionProps = {
   availability: string;
   children: ReactNode;
-  empty: boolean;
-  initiallyOpen?: boolean;
+  isEmpty: boolean;
+  isInitiallyOpen?: boolean;
   title: string;
 };
 
-export const BuildSection = ({ availability, children, empty, initiallyOpen = false, title }: SectionProps) => {
+export const BuildSection = ({ availability, children, isEmpty, isInitiallyOpen = false, title }: SectionProps) => {
   const contentId = useId();
-  const mobile = useMediaQuery('(max-width: 61.99em)');
-  const [opened, setOpened] = useState(initiallyOpen);
+  const isMobile = useMediaQuery('(max-width: 61.99em)');
+  const [isOpen, setIsOpen] = useState(isInitiallyOpen);
+
+  const isUnavailable = availability === 'unavailable';
+  const isConfirmedEmpty = isEmpty && availability === 'available';
+  const hasContent = !isUnavailable && !isEmpty;
 
   return (
     <Box aria-label={title} className={styles.section} component="section">
-      {mobile ? (
+      {isMobile ? (
         <Button
           aria-controls={contentId}
-          aria-expanded={opened}
+          aria-expanded={isOpen}
           className={styles.sectionButton}
           fullWidth
           justify="space-between"
-          onClick={() => setOpened(!opened)}
-          rightSection={opened ? <IconChevronDown aria-hidden="true" /> : <IconChevronRight aria-hidden="true" />}
+          onClick={() => setIsOpen(!isOpen)}
+          rightSection={isOpen ? <IconChevronDown aria-hidden="true" /> : <IconChevronRight aria-hidden="true" />}
           variant="transparent"
         >
           {title}
@@ -36,18 +40,14 @@ export const BuildSection = ({ availability, children, empty, initiallyOpen = fa
       ) : (
         <Title order={2}>{title}</Title>
       )}
-      {(!mobile || opened) && (
+      {(!isMobile || isOpen) && (
         <Stack gap="md" id={contentId} mt="md">
           {availability === 'partial' && (
             <Text c="dimmed">{'Some data was unavailable during this collection. Only recorded data is shown.'}</Text>
           )}
-          {availability === 'unavailable' ? (
-            <Text c="dimmed">{'Unavailable for this collection.'}</Text>
-          ) : empty && availability === 'available' ? (
-            <Text c="dimmed">{'None recorded for this collection.'}</Text>
-          ) : (
-            !empty && children
-          )}
+          {isUnavailable && <Text c="dimmed">{'Unavailable for this collection.'}</Text>}
+          {isConfirmedEmpty && <Text c="dimmed">{'None recorded for this collection.'}</Text>}
+          {hasContent && children}
         </Stack>
       )}
     </Box>

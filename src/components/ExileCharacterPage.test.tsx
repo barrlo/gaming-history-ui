@@ -47,6 +47,7 @@ describe('ExileCharacterPage', () => {
     renderPage();
 
     expect(await screen.findByRole('heading', { name: 'Emberwitch' })).toBeInTheDocument();
+    expect(getPoeBuild).toHaveBeenCalledTimes(1);
     expect(getPoeBuild).toHaveBeenNthCalledWith(1, 'c'.repeat(64), expect.any(AbortSignal));
 
     await user.click(screen.getByRole('combobox', { name: 'Build history' }));
@@ -60,6 +61,7 @@ describe('ExileCharacterPage', () => {
 
     expect(await screen.findByRole('heading', { name: 'Ashwarden' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'Build history' })).toHaveValue('Latest collection');
+    expect(getPoeBuild).toHaveBeenCalledTimes(2);
     expect(getPoeBuild).toHaveBeenNthCalledWith(2, 'a'.repeat(64), expect.any(AbortSignal));
     expect(getPoeSnapshot).toHaveBeenCalledTimes(1);
   });
@@ -69,6 +71,8 @@ describe('ExileCharacterPage', () => {
     renderPage();
 
     expect(await screen.findByRole('heading', { name: 'Emberwitch' })).toBeInTheDocument();
+    expect(getPoeBuild).toHaveBeenCalledTimes(1);
+    expect(getPoeBuild).toHaveBeenNthCalledWith(1, 'c'.repeat(64), expect.any(AbortSignal));
 
     await user.click(screen.getByRole('combobox', { name: 'Build history' }));
     await user.click(await screen.findByRole('option', { name: /Level 83$/ }));
