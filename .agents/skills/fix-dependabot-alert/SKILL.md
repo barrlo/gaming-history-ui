@@ -24,9 +24,10 @@ only without changing dependencies.
 1. **Identify the package.** Use the name from the request, including scoped names. If missing or ambiguous,
    ask for it before continuing. Treat it as a literal package name in commands.
 2. **Snapshot dependencies.** In the UI repository, read `package.json` and retain all direct dependency names,
-   exact pinned versions, majors, and sections before uninstalling anything. This covers packages discovered
-   later in the removal loop. If a dependency is not pinned to an ordinary exact version, resolve its original
-   major before removing it; stop if it cannot safely be restored with `name@major`.
+   original ranges, majors, and sections before uninstalling anything. Retain the original lockfile for reporting
+   resolved versions afterward. This covers packages discovered later in the removal loop. A range such as
+   `^1.20.0` identifies major 1; stop before removing a dependency whose specification cannot safely be restored
+   with `name@major`.
 3. **Trace parents.** Run `npm ls "<package>" --all`. Identify every declared direct dependency at the root of
    a matching path, including development dependencies and deduplicated paths. Include the target itself if
    directly declared. If no matches exist initially, skip removal and reinstall and proceed to verification.
@@ -36,9 +37,9 @@ only without changing dependencies.
    must remove at least one previously unremoved direct dependency; otherwise stop and report the blocker.
    The project header and `(empty)` are not matches. Inspect diagnostics as well as exit status: an empty
    result can have a nonzero exit status, and dependency errors do not establish absence.
-5. **Reinstall at original majors.** Reinstall every removed package in its original section, keeping exact
-   version saving. For example, `axios` pinned at `1.20.0` becomes `npm install --save-exact axios@1`;
-   development packages use `npm install --save-dev --save-exact <name>@<major> ...`. Use `--save-optional`
+5. **Reinstall at original majors.** Reinstall every removed package in its original section, saving caret ranges.
+   For example, `axios` at `^1.20.0` becomes `npm install axios@1`;
+   development packages use `npm install --save-dev <name>@<major> ...`. Use `--save-optional`
    for optional dependencies. Batch packages by section where appropriate. No package may jump majors.
 6. **Verify once.** After reinstalling everything, run `npm ls "<package>" --all`, then `npm audit` once.
    The target may remain installed at a patched version. Use the audit to determine whether the exact named
@@ -48,7 +49,9 @@ only without changing dependencies.
    errors mean verification is blocked, not successful. Repeat verification only if a command fails or the
    dependencies change.
 7. **Report.** Read `package.json` again to confirm all removed packages are restored in their original sections
-   and majors. Summarize their before/after pinned versions and the target's final tree and audit results.
+   and majors with caret ranges. Read the original and updated lockfiles only to report the removed packages'
+   before/after resolved versions; do not treat manifest ranges as installed versions. Summarize those versions,
+   the saved ranges, and the target's final tree and audit results.
    If a known vulnerable version remains or audit still flags the target, say:
    **"The issue was not fixed by reinstalling current versions."** Otherwise report that audit no longer flags
    the specified package, without claiming GitHub has closed its alert or that the entire audit is clean.
