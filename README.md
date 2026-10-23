@@ -16,7 +16,7 @@ The WoW history chart uses Mantine Charts with Recharts. The shared layout provi
 
 `npm run check:generated` checks regeneration drift, and `npm run typecheck` verifies nullable scores and all three weekly discriminated states. Generated TypeScript does not validate HTTP bodies at runtime. Update the pinned contract/fixtures together through coordinated API/UI review.
 
-The generator declares a TypeScript 5 peer dependency; TypeScript 5.9.3 is pinned intentionally. Compatible versions and all transitive packages are captured in `package-lock.json`. Runtime packages have exact versions. Revisit upgrades together with the generator and lint tooling.
+The generator requires TypeScript 5. Commit `package-lock.json` with dependency changes and use `npm ci` to install the locked versions.
 
 The WoW roster fetches identities on entry and requests current scores independently. Queries are keyed by character and season, revalidate on entry, and reject mismatched character/season responses. The API owns the bounded 30-minute reuse; the UI adds no second freshness timer and does not poll or refresh on focus. Individual score failures are retryable without losing other rows. Previous results retained after a failed refresh are explicitly labeled with their observation time. Scores sort descending, then character name, realm, and ID; null is distinct from zero. Between seasons, identities remain visible without current-score requests. Character names link to their history; retry controls remain independent.
 
