@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '../test/render';
@@ -46,9 +45,15 @@ describe('ExileBuildSections', () => {
       },
     ];
     renderWithProviders(<ExileBuildSections build={build} />);
+    const headings = screen.getAllByRole('heading', { level: 2 });
     const weapon = screen.getByRole('button', { name: 'Weapon Ember branch' });
     const shield = screen.getByRole('button', { name: 'Equipment Shield' });
 
+    expect(headings).toHaveLength(4);
+    expect(headings[0]).toHaveTextContent('Equipped items');
+    expect(headings[1]).toHaveTextContent('Skills & linked supports');
+    expect(headings[2]).toHaveTextContent('Ascendancy skills');
+    expect(headings[3]).toHaveTextContent('Passive skills');
     expect(weapon).toHaveAttribute('aria-expanded', 'false');
     expect(shield).toHaveAttribute('aria-expanded', 'false');
 

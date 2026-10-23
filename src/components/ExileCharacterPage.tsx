@@ -4,7 +4,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { Anchor, Button, Group, NativeSelect, Skeleton, Stack, Text, Title } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { ExileBuildSections } from './ExileBuildSections';
-import type { ExileRoster, ExileSnapshots } from '../api/exile-types';
+import type { ExileBuild, ExileRoster, ExileSnapshots } from '../api/exile-types';
 import { getPoeBuild, getPoeSnapshot, getPoeSnapshots } from '../api/path-of-exile-service';
 import { getPoe2Build, getPoe2Snapshot, getPoe2Snapshots } from '../api/path-of-exile-2-service';
 import styles from './ExileCharacterPage.module.css';
@@ -18,6 +18,18 @@ const formatObservation = (value: string) => {
     timeZoneName: 'short',
     year: 'numeric',
   }).format(new Date(value));
+};
+
+const formatIdentity = (character: ExileBuild['character']) => {
+  const ascendancy = character.ascendancy.status === 'known' ? ` · ${character.ascendancy.name}` : '';
+
+  return `Level ${character.level} · ${character.class}${ascendancy}`;
+};
+
+const formatLeague = (league: ExileBuild['league']) => {
+  const rules = league.rules.map((rule) => rule.name).join(' · ') || 'Regular';
+
+  return `${league.name} · ${rules}`;
 };
 
 export const ExileCharacterPage = ({ game }: { game: ExileRoster['game'] }) => {
@@ -62,12 +74,11 @@ const CharacterBuild = ({ characterId, game }: { characterId: string; game: Exil
       {build && (
         <Stack gap="xs">
           <Title order={1}>{build.character.name}</Title>
-          <Text c="dimmed">{`Level ${build.character.level} · ${build.character.class}${build.character.ascendancy.status === 'known' ? ` · ${build.character.ascendancy.name}` : ''}`}</Text>
+          <Text c="dimmed">{formatIdentity(build.character)}</Text>
           {build.character.ascendancy.status === 'unavailable' && <Text c="dimmed">{'Ascendancy unavailable'}</Text>}
-          <Text
-            c="dimmed"
-            size="sm"
-          >{`${build.league.name} · ${build.league.rules.map((rule) => rule.name).join(' · ') || 'Regular'}`}</Text>
+          <Text c="dimmed" size="sm">
+            {formatLeague(build.league)}
+          </Text>
           <Text c="dimmed" size="sm">{`Collected ${formatObservation(build.observedAt)}`}</Text>
         </Stack>
       )}

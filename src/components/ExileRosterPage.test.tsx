@@ -24,10 +24,18 @@ describe('ExileRosterPage', () => {
     expect(headings).toHaveLength(3);
     expect(headings[0]).toHaveTextContent('Emberfall');
     expect(headings[1]).toHaveTextContent('Tidefall');
+    expect(headings[2]).toHaveTextContent('Uncharted');
     expect(rows).toHaveLength(5);
+    expect(rows[0]).toHaveTextContent('Emberwitch');
     expect(within(rows[0]).getByText(/^Lv /)).toHaveTextContent('Lv 93');
+    expect(rows[1]).toHaveTextContent('IronAsh');
     expect(within(rows[1]).getByText(/^Lv /)).toHaveTextContent('Lv 75');
+    expect(rows[2]).toHaveTextContent('Ashwarden');
     expect(within(rows[2]).getByText(/^Lv /)).toHaveTextContent('Lv 18');
+    expect(rows[3]).toHaveTextContent('OldFlame');
+    expect(within(rows[3]).getByText(/^Lv /)).toHaveTextContent('Lv 96');
+    expect(rows[4]).toHaveTextContent('FirstSteps');
+    expect(within(rows[4]).getByText(/^Lv /)).toHaveTextContent('Lv 8');
     expect(screen.getByText('Witch · Necromancer')).toBeInTheDocument();
     expect(screen.getByText('Hardcore')).toBeInTheDocument();
     expect(screen.getAllByText('Regular · Archived')).toHaveLength(2);
