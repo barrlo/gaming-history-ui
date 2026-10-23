@@ -11,8 +11,13 @@ only without changing dependencies.
 
 ## Constraints
 
-- Start locally. Do not research advisories, run an initial audit, query the registry, or predict whether
-  reinstalling will work. Read npm output directly; avoid throwaway parsing scripts and redundant diagnostics.
+- Run only the commands and file reads specified by the current step, in order. Do not add flags, preliminary
+  checks, extra document reads, research, or parsing scripts, even to "double-check" something. In particular,
+  do not run `git status`, `command -v npm`, `npm view`, or an initial audit, or read development-workflow,
+  code-style, or test guidance during remediation. Read npm output directly.
+- Troubleshoot only after an actual command failure, using only the additional commands or reads needed to
+  resolve that failure. An empty `npm ls` result or audit findings alone do not trigger troubleshooting.
+  Do not use recovery as a reason to investigate unrelated issues or repeat successful checks.
 - Preserve unrelated work, dependency sections, and original majors. Do not add overrides/resolutions, use
   `--force` or `--legacy-peer-deps`, run `npm audit fix`, or delete or hand-edit the lockfile.
 - Stop if removal makes no progress or a command fails. Restore this workflow's removals from the snapshot
@@ -24,7 +29,7 @@ only without changing dependencies.
 1. **Identify the package.** Use the name from the request, including scoped names. If missing or ambiguous,
    ask for it before continuing. Treat it as a literal package name in commands.
 2. **Snapshot dependencies.** In the UI repository, read `package.json` and retain all direct dependency names,
-   original ranges, majors, and sections before uninstalling anything. Retain the original lockfile for reporting
+   original ranges, majors, and sections before uninstalling anything. Read and retain `package-lock.json` for reporting
    resolved versions afterward. This covers packages discovered later in the removal loop. A range such as
    `^1.20.0` identifies major 1; stop before removing a dependency whose specification cannot safely be restored
    with `name@major`.
@@ -55,4 +60,8 @@ only without changing dependencies.
    If a known vulnerable version remains or audit still flags the target, say:
    **"The issue was not fixed by reinstalling current versions."** Otherwise report that audit no longer flags
    the specified package, without claiming GitHub has closed its alert or that the entire audit is clean.
-   Mention unrelated findings only as outside scope. Follow the repository's PR workflow for the resulting fix.
+   Mention unrelated findings only as outside scope.
+
+After the remediation report, read the development-workflow guidance and perform Git inspection and branch/PR
+preparation for the resulting fix, preserving existing work. Keep this housekeeping outside the steps above;
+do not commit or push remediation changes directly to `main`.
