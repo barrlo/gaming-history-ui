@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Anchor, Box, Button, Flex, Skeleton, Stack, Text, Title } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
 import type { ExileRoster } from '../api/exile-types';
+import { formatObservation } from '../helpers/format-observation';
 import styles from './ExileRosterPage.module.css';
 
 type ExileRosterPageProps = {
@@ -13,17 +14,6 @@ type ExileRosterPageProps = {
 
 const formatDate = (value: string) => {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value));
-};
-
-const formatObservation = (value: string) => {
-  return new Intl.DateTimeFormat(undefined, {
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    month: 'short',
-    timeZoneName: 'short',
-    year: 'numeric',
-  }).format(new Date(value));
 };
 
 export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPageProps) => {

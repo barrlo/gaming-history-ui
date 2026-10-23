@@ -25,7 +25,8 @@ test.describe('Exile character builds', () => {
       await expect(page.getByRole('region', { name: 'Ascendancy skills' })).toBeVisible();
       await expect(page.getByRole('button', { name: 'Update', exact: true })).toHaveCount(0);
 
-      await page.getByRole('combobox', { name: 'Build history' }).selectOption(snapshots[1].snapshot.id);
+      await page.getByRole('combobox', { name: 'Build history' }).click();
+      await page.getByRole('option', { name: new RegExp(`Level ${snapshots[1].build.character.level}$`) }).click();
 
       await expect(
         page.getByText(`Level ${snapshots[1].build.character.level} · ${snapshots[1].build.character.class}`, {
@@ -84,5 +85,52 @@ test.describe('Exile character builds', () => {
       'aria-expanded',
       'true',
     );
+  });
+
+  test('selects saved builds using the keyboard', async ({ page }) => {
+    const latest = poeBuilds.latest.find((entry) => entry.build.character.id === 'c'.repeat(64))!;
+    const snapshot = poeBuilds.snapshots.find((entry) => entry.snapshot.id === 'poe-c-2026-09-19')!;
+    await page.route('**/api/v1/poe/characters/*/build', (route) => route.fulfill({ json: latest }));
+    await page.route('**/api/v1/poe/characters/*/snapshots', (route) =>
+      route.fulfill({ json: { nextCursor: null, snapshots: [snapshot.snapshot] } }),
+    );
+    await page.route('**/api/v1/poe/characters/*/snapshots/*', (route) => route.fulfill({ json: snapshot }));
+    await page.goto(`/poe/characters/${latest.build.character.id}`);
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Emberwitch');
+
+    const selector = page.getByRole('combobox', { name: 'Build history' });
+    await selector.focus();
+    await selector.press('ArrowDown');
+    await selector.press('ArrowDown');
+    await selector.press('Enter');
+
+    await expect(page.getByText('Level 83 · Witch · Necromancer', { exact: true })).toBeVisible();
+    await expect(selector).toBeFocused();
+    await expect(page.getByRole('listbox')).toBeHidden();
+  });
+
+  test.describe('Touch history selection', () => {
+    test.use({ hasTouch: true, isMobile: true, viewport: { height: 844, width: 390 } });
+
+    test('opens the styled selector and picks a saved PoE2 build by touch', async ({ page }) => {
+      const latest = poe2Builds.latest.find((entry) => entry.build.character.id === 'd'.repeat(64))!;
+      const snapshot = poe2Builds.snapshots.find((entry) => entry.snapshot.id === 'poe2-d-2026-09-18')!;
+      await page.route('**/api/v1/poe2/characters/*/build', (route) => route.fulfill({ json: latest }));
+      await page.route('**/api/v1/poe2/characters/*/snapshots', (route) =>
+        route.fulfill({ json: { nextCursor: null, snapshots: [snapshot.snapshot] } }),
+      );
+      await page.route('**/api/v1/poe2/characters/*/snapshots/*', (route) => route.fulfill({ json: snapshot }));
+      await page.goto(`/poe2/characters/${latest.build.character.id}`);
+
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText('Stormwarden');
+
+      await page.getByRole('combobox', { name: 'Build history' }).tap();
+      await page.getByRole('option', { name: /Level 73$/ }).tap();
+
+      await expect(page.getByText('Level 73 · Sorceress', { exact: true })).toBeVisible();
+      await expect(page.getByRole('region', { name: 'Ascendancy skills' })).toHaveCount(0);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    });
   });
 });

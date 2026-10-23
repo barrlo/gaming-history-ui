@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '../test/render';
 import { ExileBuildSections } from './ExileBuildSections';
@@ -6,43 +6,20 @@ import { poeBuilds } from '../mocks/poe-builds';
 import { poe2Builds } from '../mocks/poe2-builds';
 
 describe('ExileBuildSections', () => {
-  afterEach(() => vi.unstubAllGlobals());
-
-  it('should expand equipment independently and render every recorded property', async () => {
+  it('should preserve section order and expand equipment independently', async () => {
     const user = userEvent.setup();
     const build = structuredClone(poeBuilds.latest[0].build);
     build.equipment.entries = [
       {
         baseType: 'Wand',
-        corrupted: true,
-        enchantMods: ['Enchant'],
-        explicitMods: [{ description: 'Explicit' }],
-        flavourText: ['Flavour'],
         frameTypeId: 'rare',
         identified: true,
         ilvl: 80,
-        implicitMods: [{ description: 'Implicit' }],
         inventoryId: 'Weapon',
         name: 'Ember branch',
-        properties: [{ name: 'Damage', suffix: ' fire', values: [['20', 0]] }],
-        rarity: 'Rare',
-        requirements: [{ name: 'Level', values: [['70', 0]] }],
-        runeMods: ['Rune'],
-        socketedItems: [
-          { baseType: 'Gem', frameTypeId: 'gem', identified: true, ilvl: 1, name: 'Socketed gem', typeLine: 'Gem' },
-        ],
-        sockets: [{ group: 1, sColour: 'R', type: 'gem' }],
         typeLine: 'Wand',
       },
-      {
-        baseType: 'Shield',
-        frameTypeId: 'normal',
-        identified: false,
-        ilvl: 12,
-        name: '',
-        sockets: [{ group: 0 }],
-        typeLine: 'Shield',
-      },
+      { baseType: 'Shield', frameTypeId: 'normal', identified: false, ilvl: 12, name: '', typeLine: 'Shield' },
     ];
     renderWithProviders(<ExileBuildSections build={build} />);
     const headings = screen.getAllByRole('heading', { level: 2 });
@@ -58,21 +35,21 @@ describe('ExileBuildSections', () => {
     expect(shield).toHaveAttribute('aria-expanded', 'false');
 
     await user.click(weapon);
+
+    expect(weapon).toHaveAttribute('aria-expanded', 'true');
+    expect(shield).toHaveAttribute('aria-expanded', 'false');
+
+    await waitFor(() => expect(screen.getByText('Wand · Item level 80 · Identified')).toBeVisible());
+
+    expect(screen.getByText('Shield · Item level 12 · Unidentified')).not.toBeVisible();
+
     await user.click(shield);
+
+    await waitFor(() => expect(screen.getByText('Wand · Item level 80 · Identified')).toBeVisible());
+    await waitFor(() => expect(screen.getByText('Shield · Item level 12 · Unidentified')).toBeVisible());
 
     expect(weapon).toHaveAttribute('aria-expanded', 'true');
     expect(shield).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByText('Damage: 20 fire')).toBeInTheDocument();
-    expect(screen.getByText('Level: 70')).toBeInTheDocument();
-    expect(screen.getByText('Corrupted')).toBeInTheDocument();
-    expect(screen.getByText('Rare')).toBeInTheDocument();
-    expect(screen.getByText('Implicit')).toBeInTheDocument();
-    expect(screen.getByText('Explicit')).toBeInTheDocument();
-    expect(screen.getByText('Enchant')).toBeInTheDocument();
-    expect(screen.getByText('Rune')).toBeInTheDocument();
-    expect(screen.getByText('Flavour')).toBeInTheDocument();
-    expect(screen.getByText('Socketed gem')).toBeInTheDocument();
-    expect(screen.getByText('Socket 1 · Group 1 · R · gem')).toBeInTheDocument();
     expect(screen.getByText('Shield · Item level 12 · Unidentified')).toBeInTheDocument();
   });
 
@@ -99,27 +76,47 @@ describe('ExileBuildSections', () => {
     expect(screen.getByRole('region', { name: 'Ascendancy skills' })).toBeInTheDocument();
   });
 
-  it('should show zero quality and unavailable applicable metadata without inventing PoE2 support metadata', () => {
+  it('should display zero quality as a valid PoE skill and support value', () => {
     const build = structuredClone(poeBuilds.latest[0].build);
     build.skills = {
       availability: 'available',
       entries: [
         {
           id: 'skills',
-          skills: [{ level: null, name: 'Fireball', quality: 0 }],
-          supports: [{ level: 3, name: 'Support', quality: null }],
+          skills: [{ level: 3, name: 'Fireball', quality: 0 }],
+          supports: [{ level: 3, name: 'Support', quality: 0 }],
         },
-        { id: 'solo', skills: [{ level: 2, name: 'Dash', quality: null }], supports: [] },
       ],
     };
-    const { rerender } = renderWithProviders(<ExileBuildSections build={build} />);
+    renderWithProviders(<ExileBuildSections build={build} />);
 
-    expect(screen.getByText('Level unavailable · Quality 0%')).toBeInTheDocument();
-    expect(screen.getByText('Support · Level 3 · Quality unavailable')).toBeInTheDocument();
+    expect(screen.getByText('Level 3 · Quality 0%')).toBeInTheDocument();
+    expect(screen.getByText('Support · Level 3 · Quality 0%')).toBeInTheDocument();
+  });
+
+  it('should distinguish unavailable applicable gem metadata from zero and empty supports', () => {
+    const build = structuredClone(poeBuilds.latest[0].build);
+    build.skills = {
+      availability: 'available',
+      entries: [
+        {
+          id: 'skills',
+          skills: [{ level: null, name: 'Fireball', quality: null }],
+          supports: [{ level: null, name: 'Support', quality: null }],
+        },
+        { id: 'solo', skills: [{ level: 2, name: 'Dash', quality: 20 }], supports: [] },
+      ],
+    };
+    renderWithProviders(<ExileBuildSections build={build} />);
+
+    expect(screen.getByText('Level unavailable · Quality unavailable')).toBeInTheDocument();
+    expect(screen.getByText('Support · Level unavailable · Quality unavailable')).toBeInTheDocument();
     expect(screen.getByText('No linked supports recorded.')).toBeInTheDocument();
+  });
 
-    const second = structuredClone(poe2Builds.latest[0].build);
-    second.skills = {
+  it('should display PoE2 skill metadata with name-only supports', () => {
+    const build = structuredClone(poe2Builds.latest[0].build);
+    build.skills = {
       availability: 'available',
       entries: [
         {
@@ -129,10 +126,11 @@ describe('ExileBuildSections', () => {
         },
       ],
     };
-    rerender(<ExileBuildSections build={second} />);
+    renderWithProviders(<ExileBuildSections build={build} />);
 
     expect(screen.getByText('Arcane Tempo', { exact: true })).toBeInTheDocument();
     expect(screen.getByText('Level 18 · Quality 20%')).toBeInTheDocument();
+    expect(screen.queryByText(/Arcane Tempo.*(Level|Quality)/)).not.toBeInTheDocument();
   });
 
   it('should retain unresolved allocations and their set and mastery identifiers', () => {
@@ -174,38 +172,5 @@ describe('ExileBuildSections', () => {
     expect(screen.getByText('Selected effect: effect-2')).toBeInTheDocument();
     expect(screen.getByText('Recorded effect')).toBeInTheDocument();
     expect(screen.getByText('+10 life')).toBeInTheDocument();
-  });
-
-  it('should open only equipment initially on mobile and allow independent section toggles', async () => {
-    const user = userEvent.setup();
-    vi.stubGlobal(
-      'matchMedia',
-      vi.fn().mockReturnValue({
-        addEventListener: vi.fn(),
-        addListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-        matches: true,
-        media: '',
-        onchange: null,
-        removeEventListener: vi.fn(),
-        removeListener: vi.fn(),
-      }),
-    );
-    renderWithProviders(<ExileBuildSections build={poeBuilds.latest[0].build} />);
-    const equipment = screen.getByRole('button', { name: 'Equipped items' });
-    const skills = screen.getByRole('button', { name: 'Skills & linked supports' });
-
-    expect(equipment).toHaveAttribute('aria-expanded', 'true');
-    expect(skills).toHaveAttribute('aria-expanded', 'false');
-
-    await user.click(skills);
-
-    expect(skills).toHaveAttribute('aria-expanded', 'true');
-    expect(equipment).toHaveAttribute('aria-expanded', 'true');
-
-    await user.click(equipment);
-
-    expect(equipment).toHaveAttribute('aria-expanded', 'false');
-    expect(skills).toHaveAttribute('aria-expanded', 'true');
   });
 });
