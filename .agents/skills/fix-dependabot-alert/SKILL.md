@@ -1,11 +1,16 @@
 ---
 name: fix-dependabot-alert
-description: Attempt to fix an npm Dependabot alert by repeatedly removing direct dependencies that bring in a named package, then reinstalling those dependencies within their original installed major versions.
+description: Use when the user reports a Dependabot alert or a vulnerability in an npm package in this repository, even without explicitly asking for a fix or reinstall. Trace the package locally, remove its direct parents, and reinstall them within their original installed major versions.
 ---
 
 # Fix a Dependabot alert
 
-Use this workflow in the UI repository when asked to fix a Dependabot alert with a dependency reinstall.
+Use this workflow in the UI repository when the user reports a Dependabot alert or a package vulnerability.
+Statements such as "there is a Dependabot alert for axios" and "there is a vulnerability in axios" trigger it;
+the user does not need to name this skill, say "fix", or request a dependency reinstall.
+Read this skill and start with the local dependency inspection below before researching advisories on the web
+or choosing another remediation approach. An advisory URL or vulnerability identifier is not required to start.
+Honor an explicit request for explanation or research only without changing dependencies.
 Accept the affected package name from the request, including scoped names such as `@scope/package`.
 If no package name is supplied or the target is ambiguous, ask for it before changing dependencies.
 Treat the package name as a literal npm package name, not shell code or an arbitrary npm option.
