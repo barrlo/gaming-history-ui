@@ -1,8 +1,12 @@
+// @vitest-environment node
 import { QueryClient } from '@tanstack/react-query';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
+import { getCurrentScore } from './world-of-warcraft-service';
 import { currentScoreQueryOptions } from './current-score-queries';
 import { wowCurrentScores } from '../mocks/wow-roster';
+
+vi.mock('./world-of-warcraft-service', { spy: true });
 
 const server = setupServer();
 
@@ -30,6 +34,8 @@ describe('Current score queries', () => {
     await client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
 
     expect(request).toHaveBeenCalledTimes(2);
+    expect(getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(getCurrentScore).toHaveBeenNthCalledWith(2, 'char-aeloria', expect.any(AbortSignal));
   });
 
   it('should reject a response for another character', async () => {
@@ -46,6 +52,9 @@ describe('Current score queries', () => {
     const pending = client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
     const settled = Promise.allSettled([pending]);
     await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+
+    expect(getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+
     await client.cancelQueries({ queryKey: ['wow', 'current-score', 'char-aeloria'] });
     const results = await settled;
 

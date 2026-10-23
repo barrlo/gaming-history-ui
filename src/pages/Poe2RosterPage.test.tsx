@@ -1,12 +1,14 @@
-// @vitest-environment jsdom
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '../test/render';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { Poe2RosterPage } from './Poe2RosterPage';
+import { getPoe2Roster } from '../api/path-of-exile-2-service';
 import { handlers } from '../mocks/handlers';
 import { poe2Roster } from '../mocks/poe2-roster';
+
+vi.mock('../api/path-of-exile-2-service', { spy: true });
 
 const server = setupServer(...handlers);
 
@@ -24,6 +26,7 @@ describe('PoE2 roster page', () => {
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(rosterRequest).toHaveBeenCalledTimes(1);
+    expect(getPoe2Roster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
     expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
     expect(screen.getByText(/Path of Exile 2/)).toBeInTheDocument();
     expect(screen.getByText('Witch')).toBeInTheDocument();
@@ -44,10 +47,12 @@ describe('PoE2 roster page', () => {
     const retry = await screen.findByRole('button', { name: 'Try again' });
 
     expect(rosterRequest).toHaveBeenCalledTimes(1);
+    expect(getPoe2Roster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
 
     await user.click(retry);
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(rosterRequest).toHaveBeenCalledTimes(2);
+    expect(getPoe2Roster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
   });
 });
