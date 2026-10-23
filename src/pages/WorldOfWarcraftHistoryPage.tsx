@@ -31,7 +31,11 @@ export const WorldOfWarcraftHistoryPage = () => {
   });
   const data = history.data;
   const score = current.data;
+  const identity = data ? `${data.character.classKey.replaceAll('-', ' ')} · ${data.character.realm.name}` : null;
   const baseline = score ? score.baselineScore : data?.weeklySummary.latestScore;
+  const fetchedAt = score?.fetchedAt
+    ? new Date(score.fetchedAt).toLocaleString('en-US', { timeZoneName: 'short' })
+    : null;
   const notFound = isAxiosError(history.error) && history.error.response?.status === 404;
 
   return (
@@ -48,11 +52,7 @@ export const WorldOfWarcraftHistoryPage = () => {
         >
           {data?.character.name ?? 'Character history'}
         </Title>
-        {data && (
-          <Text
-            className={styles.identity}
-          >{`${data.character.classKey.replaceAll('-', ' ')} · ${data.character.realm.name}`}</Text>
-        )}
+        {identity && <Text className={styles.identity}>{identity}</Text>}
         {data && (
           <Text c="var(--site-muted)" mt="sm" size="xs">
             {season?.name ?? 'Between seasons'}
@@ -111,11 +111,10 @@ export const WorldOfWarcraftHistoryPage = () => {
               )}
             </Box>
           </SimpleGrid>
-          {score?.fetchedAt && (
-            <Text
-              c="var(--site-muted)"
-              size="sm"
-            >{`Fetched ${new Date(score.fetchedAt).toLocaleString('en-US', { timeZoneName: 'short' })}`}</Text>
+          {fetchedAt && (
+            <Text c="var(--site-muted)" size="sm">
+              {`Fetched ${fetchedAt}`}
+            </Text>
           )}
           {current.isError && (
             <Text role="alert">
@@ -128,7 +127,7 @@ export const WorldOfWarcraftHistoryPage = () => {
           <Stack align="flex-start" gap="sm">
             <Text>{`Last completed week: ${baseline === null || baseline === undefined ? 'No baseline yet' : formatScore(baseline)}`}</Text>
             <Text c="var(--site-muted)" size="xs">
-              {'Current score may be cached for up to 30 minutes.'}
+              {'Current scores may be up to 30 minutes old.'}
             </Text>
             <Button loading={current.isFetching} onClick={() => void current.refetch()} variant="light">
               {current.isError ? 'Retry current score' : 'Refresh current score'}

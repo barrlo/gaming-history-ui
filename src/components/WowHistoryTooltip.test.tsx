@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../test/render';
 import { WowHistoryTooltip } from './WowHistoryTooltip';

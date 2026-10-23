@@ -36,3 +36,5 @@ Display collection timestamps and league dates in the browser's timezone. Genera
 Use Prettier with `printWidth: 120`. For test-specific import ordering, follow [unit-test conventions](unit-test-conventions.md).
 
 Combine consecutive uninitialized `let` declarations in the same scope into one declaration statement, for example `let client: QueryClient, current: CurrentScore;`. Prettier may wrap the declarators across multiple lines; keep them in one statement. This convention is reviewed manually.
+
+When a JSX element's opening and closing tags are on different lines, put the closing tag on its own line. Extract lengthy child expressions into readable local values or functions when needed to keep this stable under Prettier. This is a review convention for now; a compatible JSX lint rule/package remains pending discussion.

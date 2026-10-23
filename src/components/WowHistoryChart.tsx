@@ -10,6 +10,13 @@ type Props = {
   weeks: Week[];
 };
 
+const describeObservation = (week: Week) => {
+  const score = week.score === null ? 'not observed' : week.score.toLocaleString('en-US');
+  const observation = week.status === 'carriedForward' ? ', carried forward from the previous observation' : '';
+
+  return `Week ${week.index}: ${score}${observation}.`;
+};
+
 export const WowHistoryChart = ({ current, weeks }: Props) => {
   const latest = weeks.at(-1);
   const hasCurrent = current?.score !== null && current?.score !== undefined;
@@ -65,6 +72,7 @@ export const WowHistoryChart = ({ current, weeks }: Props) => {
         >
           {hasCurrent && (
             <ReferenceDot
+              data-testid="current-score-point"
               fill="var(--site-surface)"
               r={6}
               stroke="var(--site-accent)"
@@ -92,9 +100,7 @@ export const WowHistoryChart = ({ current, weeks }: Props) => {
       <VisuallyHidden>
         <ul aria-label="Score observations">
           {weeks.map((week) => (
-            <li key={week.index}>
-              {`Week ${week.index}: ${week.score === null ? 'not observed' : week.score.toLocaleString('en-US')}${week.status === 'carriedForward' ? ', carried forward from the previous observation' : ''}.`}
-            </li>
+            <li key={week.index}>{describeObservation(week)}</li>
           ))}
           {hasCurrent && <li>{`Current: ${current.score!.toLocaleString('en-US')}.`}</li>}
         </ul>

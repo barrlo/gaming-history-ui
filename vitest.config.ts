@@ -19,7 +19,7 @@ export default defineConfig({
       reporter: ['text', 'html', 'lcov', 'json-summary'],
       thresholds: { branches: 90, functions: 90, lines: 90, statements: 90 },
     },
-    environment: 'node',
+    environment: 'jsdom',
     globals: true,
     include: ['src/**/*.test.{ts,tsx}'],
   },

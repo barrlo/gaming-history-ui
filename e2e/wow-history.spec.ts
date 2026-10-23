@@ -51,8 +51,8 @@ test.describe('World of Warcraft history', () => {
 
     await expect(page.getByText('2,540', { exact: true })).toBeVisible();
 
-    // Recharts SVG markers have no individual accessible role; inspect the actual rendered point.
-    await page.getByRole('application').locator('.recharts-reference-dot-dot').tap();
+    // The SVG marker has no individual accessible role; use the application-owned marker ID.
+    await page.getByTestId('current-score-point').tap();
 
     await expect(page.getByRole('tooltip')).toContainText('Current');
     await expect(page.getByRole('tooltip')).toContainText('2,540');

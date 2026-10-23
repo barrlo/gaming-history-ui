@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { screen, within } from '@testing-library/react';
 import { renderWithProviders } from '../test/render';
 import { WowHistoryChart } from './WowHistoryChart';
@@ -12,7 +11,11 @@ describe('WoW history chart', () => {
 
     expect(observations).toHaveLength(8);
     expect(observations[0]).toHaveTextContent('Week 1: 820.');
+    expect(observations[1]).toHaveTextContent('Week 2: 1,320.');
+    expect(observations[2]).toHaveTextContent('Week 3: 1,650.');
+    expect(observations[3]).toHaveTextContent('Week 4: 1,920.');
     expect(observations[4]).toHaveTextContent('Week 5: 1,920, carried forward from the previous observation.');
+    expect(observations[5]).toHaveTextContent('Week 6: 2,260.');
     expect(observations[6]).toHaveTextContent('Week 7: 2,362.');
     expect(observations[7]).toHaveTextContent('Current: 2,540.');
   });

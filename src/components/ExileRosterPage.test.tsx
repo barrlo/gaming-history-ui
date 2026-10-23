@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '../test/render';
@@ -37,8 +36,8 @@ describe('ExileRosterPage', () => {
     );
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
     expect(screen.queryByRole('link', { name: /Ashwarden/ })).not.toBeInTheDocument();
-    expect(fetchRoster).toHaveBeenCalledWith(expect.any(AbortSignal));
     expect(fetchRoster).toHaveBeenCalledTimes(1);
+    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
   });
 
   it('should distinguish no ascendancy from unavailable data and awaiting a first build', async () => {
@@ -67,11 +66,13 @@ describe('ExileRosterPage', () => {
     expect(screen.getByRole('status', { name: 'Loading characters' })).toBeInTheDocument();
     expect(screen.queryByRole('list')).not.toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(1);
+    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
 
     release(poeRoster);
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(1);
+    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
   });
 
   it('should explain an empty roster without offering an on-demand refresh', async () => {
@@ -95,6 +96,7 @@ describe('ExileRosterPage', () => {
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(1);
+    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
 
     rerender(renderGame('poe2'));
 
@@ -102,6 +104,8 @@ describe('ExileRosterPage', () => {
     expect(screen.queryByText('Ashwarden')).not.toBeInTheDocument();
     expect(screen.getByText('Path of Exile 2 · League archive')).toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(2);
+    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
+    expect(fetchRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
   });
 
   it('should retry a failed roster request without losing the page context', async () => {
@@ -111,11 +115,14 @@ describe('ExileRosterPage', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Characters could not be loaded');
     expect(fetchRoster).toHaveBeenCalledTimes(1);
+    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
 
     await user.click(screen.getByRole('button', { name: 'Try again' }));
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(2);
+    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
+    expect(fetchRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
   });
 });

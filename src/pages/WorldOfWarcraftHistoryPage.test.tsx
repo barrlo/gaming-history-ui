@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { Route, Routes } from 'react-router-dom';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -6,6 +5,7 @@ import { renderWithRouter } from '../test/render';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { WorldOfWarcraftHistoryPage } from './WorldOfWarcraftHistoryPage';
+import * as service from '../api/world-of-warcraft-service';
 import { handlers } from '../mocks/handlers';
 import { wowHistories } from '../mocks/wow-history';
 import { wowCurrentScores } from '../mocks/wow-roster';
@@ -20,9 +20,17 @@ const renderHistory = (characterId = 'char-aeloria') =>
   );
 
 describe('World of Warcraft history', () => {
+  beforeEach(() => {
+    vi.spyOn(service, 'getHistory');
+    vi.spyOn(service, 'getCurrentScore');
+  });
+
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers();
+    vi.restoreAllMocks();
+  });
 
   afterAll(() => server.close());
 
@@ -42,12 +50,17 @@ describe('World of Warcraft history', () => {
     expect(screen.getByText('Last completed week: 2,362')).toBeInTheDocument();
     expect(screen.getByText(/Week 5: 1,920, carried forward/)).toBeInTheDocument();
     expect(historyRequest).toHaveBeenCalledTimes(1);
+    expect(service.getHistory).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
     expect(currentRequest).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
 
     await user.click(screen.getByRole('button', { name: 'Refresh current score' }));
     await waitFor(() => expect(currentRequest).toHaveBeenCalledTimes(2));
 
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-aeloria', expect.any(AbortSignal));
     expect(historyRequest).toHaveBeenCalledTimes(1);
+    expect(service.getHistory).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
   });
 
   it('should preserve weekly history while current is pending', async () => {
@@ -61,6 +74,8 @@ describe('World of Warcraft history', () => {
     expect(screen.queryByText('Current: 2,540.')).not.toBeInTheDocument();
 
     await waitFor(() => expect(currentRequest).toHaveBeenCalledTimes(1));
+
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
   });
 
   it('should retain weekly history and retry a failed current fetch without requesting history again', async () => {
@@ -78,12 +93,16 @@ describe('World of Warcraft history', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Saved weekly history is still available');
     expect(screen.getByRole('region', { name: 'Mythic+ score history' })).toBeInTheDocument();
     expect(currentRequest).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
 
     await user.click(screen.getByRole('button', { name: 'Retry current score' }));
 
     expect(await screen.findByText('+178')).toBeInTheDocument();
     expect(currentRequest).toHaveBeenCalledTimes(2);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-aeloria', expect.any(AbortSignal));
     expect(historyRequest).toHaveBeenCalledTimes(1);
+    expect(service.getHistory).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
   });
 
   it('should preserve the prior current score if a manual refresh fails', async () => {
@@ -102,6 +121,8 @@ describe('World of Warcraft history', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Showing the last fetched score');
     expect(screen.getByText('2,540')).toBeInTheDocument();
     expect(currentRequest).toHaveBeenCalledTimes(2);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-aeloria', expect.any(AbortSignal));
   });
 
   it('should retry history after a failure before requesting current', async () => {
@@ -123,7 +144,10 @@ describe('World of Warcraft history', () => {
 
     expect(await screen.findByText('2,540')).toBeInTheDocument();
     expect(historyRequest).toHaveBeenCalledTimes(2);
+    expect(service.getHistory).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(service.getHistory).toHaveBeenNthCalledWith(2, 'char-aeloria', expect.any(AbortSignal));
     expect(currentRequest).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
   });
 
   it('should show a not-found state for an unknown character', async () => {

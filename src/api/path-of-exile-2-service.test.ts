@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { getPoe2Roster } from './path-of-exile-2-service';

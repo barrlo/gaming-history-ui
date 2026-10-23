@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

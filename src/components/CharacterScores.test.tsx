@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '../test/render';
@@ -6,6 +5,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { CharacterScores } from './CharacterScores';
 import { createQueryClient } from '../api/query-client';
+import * as service from '../api/world-of-warcraft-service';
 import { handlers } from '../mocks/handlers';
 import { wowCurrentScores, wowRoster as roster } from '../mocks/wow-roster';
 
@@ -24,12 +24,16 @@ describe('CharacterScores', () => {
   let current: (typeof wowCurrentScores)[number];
 
   beforeEach(() => {
+    vi.spyOn(service, 'getCurrentScore');
     current = wowCurrentScores[0];
   });
 
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers();
+    vi.restoreAllMocks();
+  });
 
   afterAll(() => server.close());
 
@@ -57,9 +61,13 @@ describe('CharacterScores', () => {
     expect(within(screen.getByRole('article', { name: 'Vaelis' })).getByText('0')).toBeInTheDocument();
     expect(screen.getByText('+178')).toBeInTheDocument();
     expect(requests[0]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
     expect(requests[1]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-korren', expect.any(AbortSignal));
     expect(requests[2]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(3, 'char-thalren', expect.any(AbortSignal));
     expect(requests[3]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(4, 'char-vaelis', expect.any(AbortSignal));
     expect(screen.getByRole('link', { name: 'Aeloria' })).toHaveAttribute('href', '/wow/characters/char-aeloria');
   });
 
@@ -78,17 +86,26 @@ describe('CharacterScores', () => {
     expect(await screen.findByText('2,112')).toBeInTheDocument();
     expect(within(screen.getByRole('article', { name: 'Aeloria' })).getByText('Unavailable')).toBeInTheDocument();
     expect(scoreRequests[0]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
     expect(scoreRequests[1]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-korren', expect.any(AbortSignal));
     expect(scoreRequests[2]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(3, 'char-thalren', expect.any(AbortSignal));
     expect(scoreRequests[3]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(4, 'char-vaelis', expect.any(AbortSignal));
 
     await user.click(retry);
 
     expect(await screen.findByText('2,540')).toBeInTheDocument();
     expect(scoreRequests[0]).toHaveBeenCalledTimes(2);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(5, 'char-aeloria', expect.any(AbortSignal));
     expect(scoreRequests[1]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-korren', expect.any(AbortSignal));
     expect(scoreRequests[2]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(3, 'char-thalren', expect.any(AbortSignal));
     expect(scoreRequests[3]).toHaveBeenCalledTimes(1);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(4, 'char-vaelis', expect.any(AbortSignal));
   });
 
   it('should show identities while their scores are loading', async () => {
@@ -106,12 +123,21 @@ describe('CharacterScores', () => {
 
     await waitFor(() => expect(request).toHaveBeenCalledTimes(4));
 
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-korren', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(3, 'char-thalren', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(4, 'char-vaelis', expect.any(AbortSignal));
+
     expect(screen.getByRole('article', { name: 'Aeloria' })).toHaveTextContent('Loading score…');
 
     release();
 
     expect(await screen.findAllByText('2,540')).toHaveLength(4);
     expect(request).toHaveBeenCalledTimes(4);
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-korren', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(3, 'char-thalren', expect.any(AbortSignal));
+    expect(service.getCurrentScore).toHaveBeenNthCalledWith(4, 'char-vaelis', expect.any(AbortSignal));
   });
 
   it('should distinguish a zero score from a missing weekly baseline and a negative change', async () => {
