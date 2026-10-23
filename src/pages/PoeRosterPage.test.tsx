@@ -4,23 +4,18 @@ import { renderWithRouter } from '../test/render';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { PoeRosterPage } from './PoeRosterPage';
-import * as service from '../api/path-of-exile-service';
+import { getPoeRoster } from '../api/path-of-exile-service';
 import { handlers } from '../mocks/handlers';
 import { poeRoster } from '../mocks/poe-roster';
+
+vi.mock('../api/path-of-exile-service', { spy: true });
 
 const server = setupServer(...handlers);
 
 describe('PoE roster page', () => {
-  beforeEach(() => {
-    vi.spyOn(service, 'getPoeRoster');
-  });
-
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
-  afterEach(() => {
-    server.resetHandlers();
-    vi.restoreAllMocks();
-  });
+  afterEach(() => server.resetHandlers());
 
   afterAll(() => server.close());
 
@@ -31,7 +26,7 @@ describe('PoE roster page', () => {
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(rosterRequest).toHaveBeenCalledTimes(1);
-    expect(service.getPoeRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
+    expect(getPoeRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
     expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
     expect(screen.getByText(/Path of Exile/)).toBeInTheDocument();
     expect(screen.getByText('Regular · Archived')).toBeInTheDocument();
@@ -49,13 +44,12 @@ describe('PoE roster page', () => {
     const retry = await screen.findByRole('button', { name: 'Try again' });
 
     expect(rosterRequest).toHaveBeenCalledTimes(1);
-    expect(service.getPoeRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
+    expect(getPoeRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
 
     await user.click(retry);
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(rosterRequest).toHaveBeenCalledTimes(2);
-    expect(service.getPoeRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
-    expect(service.getPoeRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
+    expect(getPoeRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
   });
 });

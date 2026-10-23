@@ -4,24 +4,19 @@ import { renderWithRouter } from '../test/render';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { WorldOfWarcraftRosterPage } from './WorldOfWarcraftRosterPage';
-import * as service from '../api/world-of-warcraft-service';
+import { getRoster } from '../api/world-of-warcraft-service';
 import { handlers } from '../mocks/handlers';
 import { wowRoster as roster } from '../mocks/wow-roster';
+
+vi.mock('../api/world-of-warcraft-service', { spy: true });
 
 const server = setupServer(...handlers);
 const renderRoster = () => renderWithRouter(<WorldOfWarcraftRosterPage />);
 
 describe('World of Warcraft roster', () => {
-  beforeEach(() => {
-    vi.spyOn(service, 'getRoster');
-  });
-
   beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
-  afterEach(() => {
-    server.resetHandlers();
-    vi.restoreAllMocks();
-  });
+  afterEach(() => server.resetHandlers());
 
   afterAll(() => server.close());
 
@@ -33,7 +28,7 @@ describe('World of Warcraft roster', () => {
     expect(screen.getByText('Loading characters…')).toBeInTheDocument();
     expect(await screen.findByText('2,540')).toBeInTheDocument();
     expect(rosterRequest).toHaveBeenCalledTimes(1);
-    expect(service.getRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
+    expect(getRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
     expect(screen.getByText(/Current scores may be up to 30 minutes old/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
   });
@@ -48,14 +43,13 @@ describe('World of Warcraft roster', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Could not load characters');
     expect(rosterRequest).toHaveBeenCalledTimes(1);
-    expect(service.getRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
+    expect(getRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
 
     await user.click(screen.getByRole('button', { name: 'Retry characters' }));
 
     expect(await screen.findByText('2,540')).toBeInTheDocument();
     expect(rosterRequest).toHaveBeenCalledTimes(2);
-    expect(service.getRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
-    expect(service.getRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
+    expect(getRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
   });
 
   it('should show an empty roster without requesting scores', async () => {

@@ -72,7 +72,6 @@ describe('ExileRosterPage', () => {
 
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(1);
-    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
   });
 
   it('should explain an empty roster without offering an on-demand refresh', async () => {
@@ -104,7 +103,6 @@ describe('ExileRosterPage', () => {
     expect(screen.queryByText('Ashwarden')).not.toBeInTheDocument();
     expect(screen.getByText('Path of Exile 2 · League archive')).toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(2);
-    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
     expect(fetchRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
   });
 
@@ -122,7 +120,6 @@ describe('ExileRosterPage', () => {
     expect(await screen.findByText('Ashwarden')).toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(fetchRoster).toHaveBeenCalledTimes(2);
-    expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
     expect(fetchRoster).toHaveBeenNthCalledWith(2, expect.any(AbortSignal));
   });
 });

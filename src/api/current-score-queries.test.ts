@@ -2,9 +2,11 @@
 import { QueryClient } from '@tanstack/react-query';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import * as service from './world-of-warcraft-service';
+import { getCurrentScore } from './world-of-warcraft-service';
 import { currentScoreQueryOptions } from './current-score-queries';
 import { wowCurrentScores } from '../mocks/wow-roster';
+
+vi.mock('./world-of-warcraft-service', { spy: true });
 
 const server = setupServer();
 
@@ -12,7 +14,6 @@ describe('Current score queries', () => {
   let client: QueryClient, current: (typeof wowCurrentScores)[number];
 
   beforeEach(() => {
-    vi.spyOn(service, 'getCurrentScore');
     client = new QueryClient();
     current = wowCurrentScores[0];
   });
@@ -22,7 +23,6 @@ describe('Current score queries', () => {
   afterEach(() => {
     client.clear();
     server.resetHandlers();
-    vi.restoreAllMocks();
   });
 
   afterAll(() => server.close());
@@ -34,8 +34,8 @@ describe('Current score queries', () => {
     await client.fetchQuery(currentScoreQueryOptions('char-aeloria', 'demo-season'));
 
     expect(request).toHaveBeenCalledTimes(2);
-    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
-    expect(service.getCurrentScore).toHaveBeenNthCalledWith(2, 'char-aeloria', expect.any(AbortSignal));
+    expect(getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(getCurrentScore).toHaveBeenNthCalledWith(2, 'char-aeloria', expect.any(AbortSignal));
   });
 
   it('should reject a response for another character', async () => {
@@ -53,7 +53,7 @@ describe('Current score queries', () => {
     const settled = Promise.allSettled([pending]);
     await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
 
-    expect(service.getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
+    expect(getCurrentScore).toHaveBeenNthCalledWith(1, 'char-aeloria', expect.any(AbortSignal));
 
     await client.cancelQueries({ queryKey: ['wow', 'current-score', 'char-aeloria'] });
     const results = await settled;
