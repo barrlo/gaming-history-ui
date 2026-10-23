@@ -15,5 +15,3 @@ Routine dependency synchronization, such as merging a parent feature branch into
 Do not start a preview server just because work is finished or a PR is opened. Jacob will request one or start it himself. Stop temporary servers used for automated verification when checks finish.
 
 Keep setup instructions and available check commands in [README.md](../README.md). Run checks appropriate to the changes and report their results in the PR. Documentation-only changes require formatting and link checks rather than rerunning application tests.
-
-Use caret (`^`) ranges for direct dependencies and development dependencies; the project `.npmrc` sets this saving convention. Commit the npm-generated `package-lock.json` alongside manifest changes and use `npm ci` in CI. Review resolved-version changes in the lockfile, and keep major upgrades explicit. Caret ranges below version 1 are narrower: `^0.2.5` permits patches below `0.3.0`.
