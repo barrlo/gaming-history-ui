@@ -14,13 +14,10 @@ test.describe('Path of Exile roster', () => {
       .click();
 
     await expect(page.getByRole('heading', { name: 'My characters' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText([
-      'Demo league · Emberfall',
-      'Demo league · Firstlight',
-    ]);
-    await expect(page.getByRole('listitem')).toHaveCount(3);
-    await expect(page.getByText('Regular · Archived')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Ashwarden' })).toHaveCount(0);
+    await expect(page.getByRole('heading', { level: 2 })).toHaveText(['Emberfall', 'Tidefall', 'Uncharted']);
+    await expect(page.getByRole('listitem')).toHaveCount(5);
+    await expect(page.getByText('Regular · Archived')).toHaveCount(2);
+    await expect(page.getByRole('link', { name: 'Ashwarden' })).toHaveCount(1);
 
     await page.reload();
 

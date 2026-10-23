@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Anchor, Box, Button, Flex, Skeleton, Stack, Text, Title } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
 import type { ExileRoster } from '../api/exile-types';
+import { formatObservation } from '../helpers/format-observation';
 import styles from './ExileRosterPage.module.css';
 
 type ExileRosterPageProps = {
@@ -13,17 +14,6 @@ type ExileRosterPageProps = {
 
 const formatDate = (value: string) => {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value));
-};
-
-const formatObservation = (value: string) => {
-  return new Intl.DateTimeFormat(undefined, {
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    month: 'short',
-    timeZoneName: 'short',
-    year: 'numeric',
-  }).format(new Date(value));
 };
 
 export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPageProps) => {
@@ -44,7 +34,6 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
         <Text
           className={styles.note}
         >{`Latest collected builds. Times shown in ${Intl.DateTimeFormat().resolvedOptions().timeZone}.`}</Text>
-        <Text className={styles.note}>{'Character build pages are coming next.'}</Text>
       </Box>
       {roster.isPending && (
         <Stack aria-label="Loading characters" role="status">
@@ -87,7 +76,9 @@ export const ExileRosterPage = ({ fetchRoster, game, title }: ExileRosterPagePro
                     key={`${character.id}-${league.id}`}
                   >
                     <Box>
-                      <Text className={styles.name}>{character.name}</Text>
+                      <Anchor className={styles.name} component={Link} to={`/${game}/characters/${character.id}`}>
+                        {character.name}
+                      </Anchor>
                       <Text className={styles.identity}>
                         {character.ascendancy.status === 'known'
                           ? `${character.class} · ${character.ascendancy.name}`

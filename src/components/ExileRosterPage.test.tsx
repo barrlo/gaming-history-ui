@@ -21,21 +21,32 @@ describe('ExileRosterPage', () => {
     const headings = screen.getAllByRole('heading', { level: 2 });
     const rows = screen.getAllByRole('listitem');
 
-    expect(headings).toHaveLength(2);
-    expect(headings[0]).toHaveTextContent('Demo league · Emberfall');
-    expect(headings[1]).toHaveTextContent('Demo league · Firstlight');
-    expect(rows).toHaveLength(3);
-    expect(within(rows[0]).getByText(/^Lv /)).toHaveTextContent('Lv 91');
-    expect(within(rows[1]).getByText(/^Lv /)).toHaveTextContent('Lv 67');
-    expect(within(rows[2]).getByText(/^Lv /)).toHaveTextContent('Lv 94');
-    expect(screen.getByText('Witch · Elementalist')).toBeInTheDocument();
-    expect(screen.getByText('Hardcore · SSF')).toBeInTheDocument();
-    expect(screen.getByText('Regular · Archived')).toBeInTheDocument();
+    expect(headings).toHaveLength(3);
+    expect(headings[0]).toHaveTextContent('Emberfall');
+    expect(headings[1]).toHaveTextContent('Tidefall');
+    expect(headings[2]).toHaveTextContent('Uncharted');
+    expect(rows).toHaveLength(5);
+    expect(rows[0]).toHaveTextContent('Emberwitch');
+    expect(within(rows[0]).getByText(/^Lv /)).toHaveTextContent('Lv 93');
+    expect(rows[1]).toHaveTextContent('IronAsh');
+    expect(within(rows[1]).getByText(/^Lv /)).toHaveTextContent('Lv 75');
+    expect(rows[2]).toHaveTextContent('Ashwarden');
+    expect(within(rows[2]).getByText(/^Lv /)).toHaveTextContent('Lv 18');
+    expect(rows[3]).toHaveTextContent('OldFlame');
+    expect(within(rows[3]).getByText(/^Lv /)).toHaveTextContent('Lv 96');
+    expect(rows[4]).toHaveTextContent('FirstSteps');
+    expect(within(rows[4]).getByText(/^Lv /)).toHaveTextContent('Lv 8');
+    expect(screen.getByText('Witch · Necromancer')).toBeInTheDocument();
+    expect(screen.getByText('Hardcore')).toBeInTheDocument();
+    expect(screen.getAllByText('Regular · Archived')).toHaveLength(2);
     expect(screen.getByText(/Latest collected builds. Times shown in /)).toHaveTextContent(
       Intl.DateTimeFormat().resolvedOptions().timeZone,
     );
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
-    expect(screen.queryByRole('link', { name: /Ashwarden/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Ashwarden/ })).toHaveAttribute(
+      'href',
+      `/poe/characters/${'a'.repeat(64)}`,
+    );
     expect(fetchRoster).toHaveBeenCalledTimes(1);
     expect(fetchRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
   });
@@ -43,13 +54,14 @@ describe('ExileRosterPage', () => {
   it('should distinguish no ascendancy from unavailable data and awaiting a first build', async () => {
     const roster = structuredClone(poeRoster);
     roster.leagues[0].startAt = null;
+    roster.leagues = [roster.leagues[0]];
+    roster.leagues[0].characters = roster.leagues[0].characters.slice(0, 2);
     roster.leagues[0].characters[0].character.ascendancy = { name: null, status: 'none' };
     roster.leagues[0].characters[0].buildAvailable = false;
     roster.leagues[0].characters[1].character.ascendancy = { name: null, status: 'unavailable' };
     renderRoster(vi.fn().mockResolvedValue(roster));
 
-    expect(await screen.findByText('Witch')).toBeInTheDocument();
-    expect(screen.getByText('Marauder')).toBeInTheDocument();
+    expect(await screen.findAllByText('Witch')).toHaveLength(2);
     expect(screen.getByText('Ascendancy unavailable')).toBeInTheDocument();
     expect(screen.getByText('Awaiting first build collection')).toBeInTheDocument();
     expect(screen.getByText('League start date unavailable')).toBeInTheDocument();

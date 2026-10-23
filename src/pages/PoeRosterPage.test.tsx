@@ -29,9 +29,9 @@ describe('PoE roster page', () => {
     expect(getPoeRoster).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
     expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
     expect(screen.getByText(/Path of Exile/)).toBeInTheDocument();
-    expect(screen.getByText('Regular · Archived')).toBeInTheDocument();
+    expect(screen.getAllByText('Regular · Archived')).toHaveLength(2);
     expect(screen.queryByRole('button', { name: /update/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /Ashwarden/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Ashwarden/i })).toBeInTheDocument();
   });
 
   it('should retry the PoE roster endpoint after a failure', async () => {

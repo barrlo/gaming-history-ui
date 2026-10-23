@@ -16,11 +16,11 @@ test.describe('Path of Exile 2 roster', () => {
     await expect(page.getByRole('heading', { name: 'My characters' })).toBeVisible();
     await expect(page.getByText('Path of Exile 2 · League archive')).toBeVisible();
     await expect(page.getByText('Ashwarden')).toBeVisible();
-    await expect(page.getByText('Witch', { exact: true })).toBeVisible();
-    await expect(page.getByText('Warrior · Titan')).toBeVisible();
+    await expect(page.getByText('Witch', { exact: true })).toHaveCount(2);
+    await expect(page.getByText('Witch · Infernalist')).toBeVisible();
     await expect(page.getByText('Sorceress · Stormweaver')).toBeVisible();
-    await expect(page.getByText('Regular · Archived')).toBeVisible();
-    await expect(page.getByRole('link', { name: /Ashwarden/ })).toHaveCount(0);
+    await expect(page.getByText('Regular · Archived')).toHaveCount(2);
+    await expect(page.getByRole('link', { name: /Ashwarden/ })).toHaveCount(1);
   });
 
   test('retries its own roster endpoint after a failure', async ({ page }) => {
