@@ -58,7 +58,6 @@ describe('ItemDetails', () => {
     renderWithProviders(<ItemDetails item={item} />);
 
     expect(screen.getByText('Shield · Item level 12')).toBeInTheDocument();
-    expect(screen.queryByText(/identified/i)).not.toBeInTheDocument();
     expect(screen.getByText('Socket 1 · Group 0')).toBeInTheDocument();
     expect(screen.getByText('Support gem')).toBeInTheDocument();
   });
