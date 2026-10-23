@@ -23,10 +23,17 @@ Treat the package name as a literal npm package name, not shell code or an arbit
    Inspect the tree and diagnostics, not just the exit code: npm can return a nonzero status for an empty result
    or an invalid dependency tree. The project header and `(empty)` do not count as package matches.
    Do not interpret command failures, unreadable output, or dependency errors as a clean result.
-3. For each matching path, identify the direct dependency declared in this project's manifest at the top of the path.
+3. Run `npm audit --json` and record findings for the specified package, including affected version ranges
+   and advisory identifiers. Combine these with any vulnerable versions or ranges supplied by the user or alert.
+   Keep this baseline for final verification; a different version number alone does not prove a fix.
+   Audit findings for other packages are outside this task's scope. A nonzero audit exit status can indicate
+   findings; inspect the report rather than treating that status alone as a command failure.
+   If the report cannot be retrieved or parsed, or the target's vulnerable versions cannot be established,
+   report that verification is blocked rather than guessing which versions are safe.
+4. For each matching path, identify the direct dependency declared in this project's manifest at the top of the path.
    Include all such direct dependencies, including development dependencies and deduplicated paths.
    If the affected package itself is a direct dependency, include it too.
-4. Before any uninstall, record each affected direct package's name, original manifest specification,
+5. Before any uninstall, record each affected direct package's name, original manifest specification,
    dependency section, exact installed version, and installed major version. Resolve versions from the installed
    tree or lockfile rather than guessing from a range. Keep this restoration inventory across all iterations;
    record each package only once. If a version cannot be determined or a package uses an alias, workspace,
@@ -37,6 +44,8 @@ If the initial inspection has no matches, report that the package is not present
 Do not claim that this proves the Dependabot alert is resolved.
 
 ## Remove until absent
+
+Package absence is an intermediate requirement before reinstalling, not the final success criterion.
 
 1. Run `npm uninstall <direct-package> ...` for the direct dependencies identified in the current tree.
    Use npm to update the manifest and lockfile; do not hand-edit the lockfile or delete it to force resolution.
@@ -66,14 +75,21 @@ Do not leave missing dependencies silently or describe a blocked attempt as a su
 2. Confirm every removed direct dependency has been restored in the correct section and still uses the recorded
    major version. If installation fails, report the failure and restore this workflow's removals using the saved
    original specifications where possible; explicitly identify anything still unrestored.
-3. Run `npm ls "<package>" --all` again after all reinstalls complete. For this workflow, **clean means no matches
-   for the named package**, not merely a zero exit status or a different installed version.
-   A patched version still appearing in the tree does not satisfy this absence-based check.
-4. If any occurrence remains, state: **"The issue was not fixed by reinstalling current versions."**
-   Include the remaining versions and direct dependency paths. Do not repeat the entire reinstall cycle
-   automatically or claim that the alert is resolved.
-5. If no occurrences remain and inspection has no unresolved errors, report that the requested package is absent.
-   Distinguish this local result from confirmation that GitHub has closed the Dependabot alert.
+3. Run `npm ls "<package>" --all` again after all reinstalls complete. Check every installed occurrence against
+   the recorded vulnerable versions and affected ranges. Patched versions of the package may remain installed;
+   success requires that none of its installed versions are vulnerable.
+4. Run `npm audit --json` again and inspect findings for the exact specified package name, including scoped names.
+   Success also requires that audit no longer reports that package as vulnerable. Ignore findings for other
+   packages when deciding this task's outcome; do not fix them automatically. An overall nonzero audit exit
+   status caused only by unrelated findings does not make this remediation fail.
+   Treat a network error, an unavailable audit service, malformed output, or an unresolved dependency-tree error
+   as blocked verification, not as evidence of success or of a confirmed remaining vulnerability.
+5. If a vulnerable installed version remains or audit still reports the specified package as vulnerable, state:
+   **"The issue was not fixed by reinstalling current versions."** Include the remaining vulnerable versions,
+   direct dependency paths, and relevant audit findings. Do not repeat the entire reinstall cycle automatically.
+   If both checks pass, report that no vulnerable version remains in the tree and audit has no findings for
+   the specified package. Distinguish this local result from confirmation that GitHub has closed the alert.
 6. Review the manifest and lockfile diff for unintended removals, section changes, or major-version changes.
    Run the repository checks appropriate to the changed dependencies before submitting the result for review.
-   Summarize removed/reinstalled packages, their before/after versions, final inspection, and validation results.
+   Summarize removed/reinstalled packages, their before/after versions, final tree and targeted audit results,
+   and validation results. If unrelated audit findings remain, note that they were outside this task's scope.
