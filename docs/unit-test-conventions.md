@@ -52,3 +52,9 @@ Rely on React Testing Library automatic unmount cleanup. Capture a render result
 Keep reusable render helpers at file scope when they do not depend on suite-local state; pass test-specific inputs as arguments. When render utilities are needed, destructure only those used, such as `const { rerender } = renderWithRouter(...)`.
 
 When a suite repeatedly creates and clears its own QueryClient, declare it inside `describe`, create a fresh instance in `beforeEach`, and clear it in `afterEach`. This keeps tests isolated and ensures teardown runs after failed assertions. Do not add explicit clients to component tests that can use the shared render helpers’ default client.
+
+Vitest defaults to jsdom for component tests. API-only test files explicitly select Node with `// @vitest-environment node`; do not add redundant jsdom annotations to component tests.
+
+When asserting counts of service calls that accept arguments, also use `toHaveBeenNthCalledWith` to check the expected arguments for each newly made call, including retries. After an action, assert arguments only for new calls; do not repeat argument assertions for earlier calls already checked. Keep real-service/MSW integration: use named service imports with `vi.mock(module, { spy: true })` when call-through spies are needed, without replacing service implementations. MSW resolver arguments describe requests, not service-function arguments, so do not assert those as a substitute. Use explicit expected identifiers and appropriate matchers for framework-owned AbortSignals.
+
+Vitest enables `clearMocks: true` and `restoreMocks: true` to isolate call histories and restore per-test spies automatically. Do not add redundant `vi.clearAllMocks()` or `vi.restoreAllMocks()` hooks. Module spy mocks retain their real implementations; keep teardown for resources such as MSW servers and QueryClients.

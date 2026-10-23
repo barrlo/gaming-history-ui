@@ -1,14 +1,14 @@
 # Gaming History UI
 
-React/TypeScript application with the approved shared layout and landing page. Game cards link to the existing placeholder routes; the character roster, history chart and freshness behavior follow in separate PRs.
+React/TypeScript application with the shared layout, landing page, game rosters, and WoW character history. Character names on the WoW roster link to their current-season history.
 
 ## Local development
 
 Use Node 24 (`nvm use`, installing Node 24 yourself if necessary), then `npm ci` and `npm run start`. Vite serves http://localhost:5173 and proxies `/api` and `/health` to the API at http://localhost:5080. Start the API independently using its README.
 
-For independent mock development, copy `.env.example` to `.env.local` and set `VITE_ENABLE_MOCKS=true`. Browser MSW is opt-in and development-only. The development handlers support the populated roster, all four current scores, and Aeloria detail. Mock responses use the fixed fictional September 15, 2026 fixture clock and must not be represented as today's data.
+For independent mock development, copy `.env.example` to `.env.local` and set `VITE_ENABLE_MOCKS=true`. Browser MSW is opt-in and development-only. The development handlers support the populated roster, all four current scores and character histories. Mock responses use the fixed fictional September 15, 2026 fixture clock and must not be represented as today's data.
 
-Mantine Charts and its required Recharts dependency are installed; the approved chart prototype is deferred to the next checkpoint. The shared layout provides dark mode by default, a persisted light theme, active navigation, a keyboard skip link, and a mobile drawer below Mantine’s `md` breakpoint (992px). The landing page introduces all three games and identifies PoE and PoE2 as under construction. No authentication, persistence, collection, AWS resources or deployment are implemented here.
+The WoW history chart uses Mantine Charts with Recharts. The shared layout provides dark mode by default, a persisted light theme, active navigation, a keyboard skip link, and a mobile drawer below Mantine’s `md` breakpoint (992px). The landing page introduces all three games. No authentication, persistence, collection, AWS resources or deployment are implemented here.
 
 ## Contract boundary
 
@@ -18,7 +18,11 @@ Mantine Charts and its required Recharts dependency are installed; the approved 
 
 The generator declares a TypeScript 5 peer dependency; TypeScript 5.9.3 is pinned intentionally. Compatible versions and all transitive packages are captured in `package-lock.json`. Runtime packages have exact versions. Revisit upgrades together with the generator and lint tooling.
 
-The WoW roster fetches identities on entry and requests current scores independently with a maximum of three concurrent requests. Queries are keyed by character and season, revalidate on entry, and reject mismatched character/season responses. The API owns the bounded 30-minute reuse; the UI adds no second freshness timer and does not poll or refresh on focus. Individual score failures are retryable without losing other rows. Previous results retained after a failed refresh are explicitly labeled with their observation time. Scores sort descending, then character name, realm, and ID; null is distinct from zero. Between seasons, identities remain visible without current-score requests. Rows are intentionally non-clickable until character history is implemented.
+The WoW roster fetches identities on entry and requests current scores independently. Queries are keyed by character and season, revalidate on entry, and reject mismatched character/season responses. The API owns the bounded 30-minute reuse; the UI adds no second freshness timer and does not poll or refresh on focus. Individual score failures are retryable without losing other rows. Previous results retained after a failed refresh are explicitly labeled with their observation time. Scores sort descending, then character name, realm, and ID; null is distinct from zero. Between seasons, identities remain visible without current-score requests. Character names link to their history; retry controls remain independent.
+
+The WoW history page loads the API's current-season weekly projection, then independently requests the character's current score using the shared character/season query. It does not calculate weekly carry-forward values or seasonal boundaries in the browser. Saved observations use a solid line; Current uses an outlined marker and a dashed connector. Tooltips support keyboard and touch inspection and show observation time and carry-forward status; a screen-reader list exposes the same score observations. Leading unknown weeks remain unknown, never zero.
+
+Current-score loading and failure preserve saved history. Refresh/retry requests only current score, retaining the last fetched result on a background failure. The comparison uses the API's `weeklyChange` and completed-week baseline, not the historical summary's week-to-week delta. There is no idle polling, season selector, or client freshness timer. The public contract is unchanged; live collection remains separate work.
 
 ## Checks
 
@@ -30,7 +34,7 @@ The WoW roster fetches identities on entry and requests current scores independe
 
 Coverage includes untested runtime source files under `src`. It excludes the `main.tsx` bootstrap entry point, tests, test setup, development mocks, generated declarations, and the compile-only type compatibility checks. Component tests use React Testing Library with jsdom and real Mantine/Router components; browser tests remain responsible for responsive layout.
 
-CI installs the locked dependencies and checks generation, formatting, lint, tests with the same coverage thresholds, build and the layout/landing and WoW roster browser checks. The real-API integration test is opt-in until cross-repository CI orchestration is designed. UI deployment will target existing API-provisioned infrastructure in a later checkpoint; no deployment workflow is included yet.
+CI installs the locked dependencies and checks generation, formatting, lint, tests with the same coverage thresholds, build and the layout, roster, and WoW history browser checks. The real-API integration test is opt-in until cross-repository CI orchestration is designed. UI deployment will target existing API-provisioned infrastructure in a later checkpoint; no deployment workflow is included yet.
 
 Vitest settings live in `vitest.config.ts`, separately from Vite development/build settings. Vitest globals are enabled, so React Testing Library automatically cleans up rendered components after each test. Keep explicit teardown hooks only for other resources, such as resetting MSW handlers or closing its server.
 

@@ -36,3 +36,5 @@ Display collection timestamps and league dates in the browser's timezone. Genera
 Use Prettier with `printWidth: 120`. For test-specific import ordering, follow [unit-test conventions](unit-test-conventions.md).
 
 Combine consecutive uninitialized `let` declarations in the same scope into one declaration statement, for example `let client: QueryClient, current: CurrentScore;`. Prettier may wrap the declarators across multiple lines; keep them in one statement. This convention is reviewed manually.
+
+Prettier controls JSX layout, including closing-tag placement. Extract lengthy JSX expressions into readable local values or functions when it improves readability, without imposing formatting that overrides Prettier. Do not add a JSX formatting plugin for this convention; ESLint Stylistic may be revisited separately in the future.

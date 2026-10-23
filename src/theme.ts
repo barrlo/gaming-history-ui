@@ -37,6 +37,7 @@ export const cssVariablesResolver: CSSVariablesResolver = () => ({
   },
   variables: {
     '--site-font-size-caption': '0.8125rem',
+    '--site-font-size-score': '2.25rem',
     '--site-radius-roster': '0.75rem',
     '--site-spacing-compact': '0.5rem',
     '--site-spacing-roster': '1.5rem',

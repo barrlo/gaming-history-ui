@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -47,9 +46,21 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: 'My characters' })).toBeInTheDocument();
   });
 
+  it('should open a character history from the WoW roster and return to the roster', async () => {
+    const user = userEvent.setup();
+    renderApp('/wow');
+    await user.click(await screen.findByRole('link', { name: 'Aeloria' }));
+
+    expect(await screen.findByRole('heading', { name: 'Aeloria' })).toBeInTheDocument();
+    expect(await screen.findByText('Last completed week: 2,362')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('link', { name: 'All characters' }));
+
+    expect(await screen.findByRole('heading', { name: 'My characters' })).toBeInTheDocument();
+  });
+
   it.each([
     ['/wow', 'My characters'],
-    ['/wow/characters/char-aeloria', 'Character history'],
     ['/poe', 'My characters'],
     ['/poe2', 'My characters'],
     ['/unknown', 'Page not found'],

@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   test: {
+    clearMocks: true,
     coverage: {
       exclude: [
         'src/main.tsx',
@@ -19,8 +20,9 @@ export default defineConfig({
       reporter: ['text', 'html', 'lcov', 'json-summary'],
       thresholds: { branches: 90, functions: 90, lines: 90, statements: 90 },
     },
-    environment: 'node',
+    environment: 'jsdom',
     globals: true,
     include: ['src/**/*.test.{ts,tsx}'],
+    restoreMocks: true,
   },
 });

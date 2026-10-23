@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { getRoster, getCurrentScore, getHistory } from './world-of-warcraft-service';

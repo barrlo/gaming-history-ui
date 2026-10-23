@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { screen, within } from '@testing-library/react';
 import { renderWithRouter } from '../test/render';
 import { HomePage } from './HomePage';

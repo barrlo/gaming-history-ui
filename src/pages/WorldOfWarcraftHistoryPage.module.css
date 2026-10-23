@@ -1,0 +1,47 @@
+.backLink {
+  align-items: center;
+  color: var(--site-description);
+  display: inline-flex;
+  font-size: var(--mantine-font-size-sm);
+  gap: var(--site-spacing-compact);
+  width: fit-content;
+}
+
+.name {
+  font-size: 2.5rem;
+  overflow-wrap: anywhere;
+}
+
+.identity {
+  color: var(--site-description);
+  text-transform: capitalize;
+}
+
+.label {
+  color: var(--site-muted);
+  font-size: var(--mantine-font-size-xs);
+  text-transform: uppercase;
+}
+
+.score {
+  font-size: 2.75rem;
+  font-weight: 600;
+}
+
+.change {
+  font-size: var(--site-font-size-score);
+}
+
+@media (max-width: 47.99375em) {
+  .name {
+    font-size: 2rem;
+  }
+
+  .score {
+    font-size: var(--site-font-size-score);
+  }
+
+  .change {
+    font-size: 1.875rem;
+  }
+}
